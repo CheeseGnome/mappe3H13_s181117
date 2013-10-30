@@ -19,28 +19,12 @@ public class MainMenuActivity extends Activity {
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_main_menu);
-		LogReader reader = new LogReader();
-		String seperator = "\n\n";
-		String line;
-		StringBuilder log = new StringBuilder();
-		int pid;
-		String p_name;
-		try {
-			while ((line = reader.readLine()) != null) {
-				pid = getPID(line);
-				if (pid != -1) {
-					Log.d("d", "" + pid);
-					p_name = getProcessName(pid);
-					line = line.replace("" + pid, p_name);
-				}
-				log.append(line);
-				log.append(seperator);
-
-			}
-		} catch (IOException ioe) {
-			// TODO Exception handling
-		}
-		((TextView) findViewById(R.id.textView1)).setText(log.toString());
+		
+	}
+	
+	protected void onResume(){
+		super.onResume();
+		log();
 	}
 
 	private int getPID(String line) {
@@ -64,6 +48,31 @@ public class MainMenuActivity extends Activity {
 				return process_info.processName;
 		}
 		return "Failed to fetch process name";
+	}
+	
+	private void log(){
+		LogReader reader = new LogReader();
+		String seperator = "\n\n";
+		String line;
+		StringBuilder log = new StringBuilder();
+		int pid;
+		String p_name;
+		try {
+			while ((line = reader.readLine()) != null) {
+				pid = getPID(line);
+				if (pid != -1) {
+					p_name = getProcessName(pid);
+					line = line.replace("" + pid, p_name);
+				}
+				log.append(line);
+				log.append(seperator);
+
+			}
+		} catch (IOException ioe) {
+			// TODO Exception handling
+		}
+		Log.d("D", "Done");
+		((TextView) findViewById(R.id.textView1)).setText(log.toString());
 	}
 
 	@Override
