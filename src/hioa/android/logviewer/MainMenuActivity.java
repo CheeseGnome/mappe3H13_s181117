@@ -1,7 +1,7 @@
 package hioa.android.logviewer;
 
-import android.os.Bundle;
 import android.app.Activity;
+import android.os.Bundle;
 import android.view.Menu;
 
 public class MainMenuActivity extends Activity {
