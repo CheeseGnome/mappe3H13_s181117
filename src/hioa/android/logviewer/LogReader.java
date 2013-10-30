@@ -17,7 +17,7 @@ import java.io.InputStreamReader;
  */
 public class LogReader extends BufferedReader {
 
-	private static final String[] COMMAND = { "logcat", "-d" };
+	private static final String[] COMMAND = { "logcat", "-d", "-n", "" + Integer.MAX_VALUE};
 
 	private static Process logcat_process;
 	static {
