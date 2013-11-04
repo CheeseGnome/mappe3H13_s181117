@@ -1,5 +1,6 @@
-package hioa.android.logviewer;
+package hioa.android.chess;
 
+import hioa.android.logviewer.R;
 import android.app.Activity;
 import android.os.Bundle;
 import android.view.Menu;

@@ -1,0 +1,4 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <integer name="chessboard_tiles_count">64</integer>
+</resources>
