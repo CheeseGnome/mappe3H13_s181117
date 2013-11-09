@@ -9,9 +9,11 @@ package hioa.android.chess;
 
 public class Pawn extends Chesspiece {
 
-	// TODO En passant
 	/*
-	 * Can make en passant by placing an invisible en passant piece on double moves
+	 * TODO En passant
+	 * 
+	 * Can make en passant by placing an invisible en passant piece on double
+	 * moves
 	 */
 	/**
 	 * Used to determine whether or not this piece can move 2 spaces
@@ -34,6 +36,15 @@ public class Pawn extends Chesspiece {
 			return true;
 		} else
 			return false;
+	}
+
+	@Override
+	public boolean threatensPosition(int row, int column) {
+		if ( (getRow() == row + 1 && getColor() == WHITE) || (getRow() == row - 1 && getColor() == BLACK) ) {
+			if (getColumn() == column - 1 || getColumn() == column + 1)
+				return true;
+		}
+		return false;
 	}
 
 	@Override

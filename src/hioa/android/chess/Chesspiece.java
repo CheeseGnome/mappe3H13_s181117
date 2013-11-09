@@ -12,8 +12,6 @@ import android.content.Context;
  * @version 2013-11-09
  */
 
-//TODO Make sure the king is not in check after a "legal" move
-
 public abstract class Chesspiece {
 	public static final int NO_PIECE = -1, BLACK = 0, WHITE = 1;
 	
@@ -38,6 +36,14 @@ public abstract class Chesspiece {
 	 * @return A 2d boolean array representing the chessboard where all legal moves are true and all illegal moves are false
 	 */
 	public abstract boolean[][] legalMoves();
+	
+	/**
+	 * Used to determine whether or not this piece is currently checking the opposing king
+	 * @param row The row that the opposing king is on
+	 * @param column The column that the opposing king is on
+	 * @return True if this piece is threatening the given position
+	 */
+	public abstract boolean threatensPosition(int row, int column);
 
 	public int getColor() {
 		return mColor;

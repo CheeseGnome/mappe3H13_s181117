@@ -12,6 +12,19 @@ public class Knight extends Chesspiece {
 		} else
 			return false;
 	}
+	
+	@Override
+	public boolean threatensPosition(int row, int column) {
+		if(getRow() == row - 2 || getRow() == row + 2){
+			if(getColumn() == column - 1 || getColumn() == column + 1)
+				return true;
+		}
+		if(getRow() == row - 1 || getRow() == row + 1){
+			if(getColumn() == column - 2 || getColumn() == column + 2)
+				return true;
+		}
+		return false;
+	}
 
 	@Override
 	public boolean[][] legalMoves() {

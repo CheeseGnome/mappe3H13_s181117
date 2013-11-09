@@ -21,6 +21,12 @@ public class Rook extends Chesspiece {
 	}
 
 	@Override
+	public boolean threatensPosition(int row, int column) {
+		// TODO Auto-generated method stub
+		return false;
+	}
+	
+	@Override
 	public boolean move(int row, int column) {
 		if (legalMoves()[row][column] == true) {
 			chessboard.move(this, row, column);
