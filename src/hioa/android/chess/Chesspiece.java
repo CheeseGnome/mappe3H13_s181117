@@ -2,7 +2,6 @@ package hioa.android.chess;
 
 import hioa.android.logviewer.R;
 import android.content.Context;
-import android.graphics.Color;
 
 /**
  * Superclass for the various Chesspieces
@@ -12,6 +11,8 @@ import android.graphics.Color;
  * @author Lars Sætaberget
  * @version 2013-11-09
  */
+
+//TODO Make sure the king is not in check after a "legal" move
 
 public abstract class Chesspiece {
 	public static final int NO_PIECE = -1, BLACK = 0, WHITE = 1;

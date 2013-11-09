@@ -10,6 +10,9 @@ package hioa.android.chess;
 public class Pawn extends Chesspiece {
 
 	// TODO En passant
+	/*
+	 * Can make en passant by placing an invisible en passant piece on double moves
+	 */
 	/**
 	 * Used to determine whether or not this piece can move 2 spaces
 	 */
@@ -24,6 +27,7 @@ public class Pawn extends Chesspiece {
 	@Override
 	public boolean move(int row, int column) {
 		if (legalMoves()[row][column] == true) {
+			chessboard.move(this, row, column);
 			setRow(row);
 			setColumn(column);
 			mHasMoved = true;
@@ -34,46 +38,78 @@ public class Pawn extends Chesspiece {
 
 	@Override
 	public boolean[][] legalMoves() {
-		int row = getRow();
-		int column = getColumn();
 		boolean[][] board = new boolean[chessboard.getMaxRows()][chessboard.getMaxColumns()];
 
 		if (getColor() == WHITE) {
-			getLegalWhiteMoves(board, row, column);
+			getLegalWhiteMoves(board);
 		} else {
-			getLegalBlackMoves(board, row, column);
+			getLegalBlackMoves(board);
 		}
 		return board;
 	}
 
-	private void getLegalBlackMoves(boolean[][] board, int row, int column) {
-		if (chessboard.tileContains(row + 1, column - 1) == WHITE) {
+	/**
+	 * Modifies the provided boolean-array to reflect all possible moves if this
+	 * pawn moves as a black pawn
+	 * 
+	 * @param board
+	 *            The array which will represent the possible moves
+	 */
+	private void getLegalBlackMoves(boolean[][] board) {
+		int row = getRow();
+		int column = getColumn();
+		// capture left
+		if (!chessboard.kingInCheckAfter(this, row + 1, column - 1)
+				&& chessboard.tileContains(row + 1, column - 1) == WHITE) {
 			board[row + 1][column - 1] = true;
 		}
-		if (chessboard.tileContains(row + 1, column + 1) == WHITE) {
+		// capture right
+		if (!chessboard.kingInCheckAfter(this, row + 1, column + 1)
+				&& chessboard.tileContains(row + 1, column + 1) == WHITE) {
 			board[row + 1][column + 1] = true;
 		}
-		if (chessboard.tileContains(row + 1, column) == NO_PIECE) {
+		// move forward 1
+		if (!chessboard.kingInCheckAfter(this, row + 1, column) && chessboard.tileContains(row + 1, column) == NO_PIECE) {
 			board[row + 1][column] = true;
 		}
-		if (mHasMoved == false && chessboard.tileContains(row + 2, column) == NO_PIECE && chessboard.tileContains(row + 1, column) == NO_PIECE) {
+		// move forward 2
+		if (!chessboard.kingInCheckAfter(this, row + 2, column) && mHasMoved == false
+				&& chessboard.tileContains(row + 2, column) == NO_PIECE
+				&& chessboard.tileContains(row + 1, column) == NO_PIECE) {
 			board[row + 2][column] = true;
-		} 
+		}
 	}
 
-	private void getLegalWhiteMoves(boolean[][] board, int row, int column) {
-		if (chessboard.tileContains(row - 1, column - 1) == BLACK) {
+	/**
+	 * Modifies the provided boolean-array to reflect all possible moves if this
+	 * pawn moves as a white pawn
+	 * 
+	 * @param board
+	 *            The array which will represent the possible moves
+	 */
+	private void getLegalWhiteMoves(boolean[][] board) {
+		int row = getRow();
+		int column = getColumn();
+		// capture left
+		if (!chessboard.kingInCheckAfter(this, row - 1, column - 1)
+				&& chessboard.tileContains(row - 1, column - 1) == BLACK) {
 			board[row - 1][column - 1] = true;
 		}
-		if (chessboard.tileContains(row - 1, column + 1) == BLACK) {
+		// capture right
+		if (!chessboard.kingInCheckAfter(this, row - 1, column + 1)
+				&& chessboard.tileContains(row - 1, column + 1) == BLACK) {
 			board[row - 1][column + 1] = true;
 		}
-		if (chessboard.tileContains(row - 1, column) == NO_PIECE) {
+		// move forward 1
+		if (!chessboard.kingInCheckAfter(this, row - 1, column) && chessboard.tileContains(row - 1, column) == NO_PIECE) {
 			board[row - 1][column] = true;
 		}
-		if (mHasMoved == false && chessboard.tileContains(row - 2, column) == NO_PIECE && chessboard.tileContains(row - 1, column) == NO_PIECE) {
+		// move forward 2
+		if (!chessboard.kingInCheckAfter(this, row - 2, column) && mHasMoved == false
+				&& chessboard.tileContains(row - 2, column) == NO_PIECE
+				&& chessboard.tileContains(row - 1, column) == NO_PIECE) {
 			board[row - 2][column] = true;
-		} 
+		}
 	}
 
 }
