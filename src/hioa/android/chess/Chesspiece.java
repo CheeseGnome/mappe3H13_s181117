@@ -1,6 +1,6 @@
 package hioa.android.chess;
 
-import hioa.android.logviewer.R;
+import hioa.android.chess.R;
 import android.content.Context;
 
 /**

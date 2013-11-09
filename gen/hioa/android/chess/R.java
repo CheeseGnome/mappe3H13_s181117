@@ -5,7 +5,7 @@
  * should not be modified by hand.
  */
 
-package hioa.android.logviewer;
+package hioa.android.chess;
 
 public final class R {
     public static final class attr {
