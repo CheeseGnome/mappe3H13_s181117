@@ -29,6 +29,8 @@ public final class R {
     }
     public static final class integer {
         public static final int chessboard_tiles_count=0x7f050000;
+        public static final int chesspiece_max_column_index=0x7f050002;
+        public static final int chesspiece_max_row_index=0x7f050001;
     }
     public static final class layout {
         public static final int activity_main_menu=0x7f030000;

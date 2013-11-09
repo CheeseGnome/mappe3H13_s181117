@@ -1,50 +1,33 @@
 package hioa.android.chess;
 
 import hioa.android.logviewer.R;
-
-import java.util.ArrayList;
-
-import android.annotation.SuppressLint;
 import android.content.Context;
-import android.graphics.Canvas;
-import android.graphics.Color;
-import android.graphics.Paint;
-import android.util.AttributeSet;
-import android.view.View;
+import android.util.Log;
 
-public class Chessboard extends View {
+public class Chessboard {
 
-	private ArrayList<Paint> mTiles = new ArrayList<Paint>(R.integer.chessboard_tiles_count);
-	
+	private Chesspiece[][] mChessboard;
+	private Context mContext;
+
 	public Chessboard(Context context) {
-		super(context);
-		// TODO Auto-generated constructor stub
+		mContext = context;
+		Chesspiece.context = context;
+		Chesspiece.chessboard = this;
+		
 	}
 
-	public Chessboard(Context context, AttributeSet attrs) {
-		super(context, attrs);
-		// TODO Auto-generated constructor stub
-	}
-
-	public Chessboard(Context context, AttributeSet attrs, int defStyle) {
-		super(context, attrs, defStyle);
-		// TODO Auto-generated constructor stub
+	public int tileContains(int row, int column) {
+		if (mChessboard[row][column] != null)
+			return mChessboard[row][column].getColor();
+		else
+			return Chesspiece.NO_PIECE;
 	}
 	
-	@SuppressLint("DrawAllocation")
-	@Override
-	protected void onDraw(Canvas canvas){
+	public int getMaxRows(){
+		return 1 + mContext.getResources().getInteger(R.integer.chesspiece_max_row_index);
 	}
 	
-	private void createPaintObjects(Color whiteTileColor, Color blackTileColor){
-		for(int i = 0; i < mTiles.size(); i++){
-			if(i % 2 == 0){
-				mTiles.add(new Paint());
-			}
-			else{
-				
-			}
-		}
+	public int getMaxColumns(){
+		return 1 + mContext.getResources().getInteger(R.integer.chesspiece_max_column_index);
 	}
-
 }
