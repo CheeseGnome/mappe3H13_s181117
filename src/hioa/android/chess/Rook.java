@@ -1,5 +1,12 @@
 package hioa.android.chess;
 
+/**
+ * Represents a rook
+ * 
+ * @author Lars Sætaberget
+ * @version 2013-11-09
+ */
+
 public class Rook extends Chesspiece {
 
 	/**
@@ -28,15 +35,6 @@ public class Rook extends Chesspiece {
 	@Override
 	public boolean[][] legalMoves() {
 		boolean[][] board = new boolean[chessboard.getMaxRows()][chessboard.getMaxColumns()];
-		getLegalMoves(board);
-		return board;
-	}
-	
-	public boolean canCastle(){
-		return !mHasMoved;
-	}
-
-	private void getLegalMoves(boolean[][] board) {
 		int enemy;
 		if (getColor() == WHITE)
 			enemy = BLACK;
@@ -46,7 +44,23 @@ public class Rook extends Chesspiece {
 		getLegalMovesUp(board, enemy);
 		getLegalMovesLeft(board, enemy);
 		getLegalMovesDown(board, enemy);
+		return board;
 	}
+
+	public boolean canCastle() {
+		return !mHasMoved;
+	}
+
+	/**
+	 * Modifies the provided boolean-array to reflect all possible moves towards
+	 * the right direction
+	 * 
+	 * @param board
+	 *            The array which will represent the possible moves
+	 * @param enemy
+	 *            An int representing the enemy color as specified by the
+	 *            constants in {@link Chesspiece}
+	 */
 
 	private void getLegalMovesRight(boolean[][] board, int enemy) {
 		for (int i = getRow() + 1; i < chessboard.getMaxRows(); i++) {
@@ -68,6 +82,17 @@ public class Rook extends Chesspiece {
 
 		}
 	}
+
+	/**
+	 * Modifies the provided boolean-array to reflect all possible moves in an
+	 * upwards direction
+	 * 
+	 * @param board
+	 *            The array which will represent the possible moves
+	 * @param enemy
+	 *            An int representing the enemy color as specified by the
+	 *            constants in {@link Chesspiece}
+	 */
 
 	private void getLegalMovesUp(boolean[][] board, int enemy) {
 
@@ -91,6 +116,16 @@ public class Rook extends Chesspiece {
 
 	}
 
+	/**
+	 * Modifies the provided boolean-array to reflect all possible moves towards
+	 * the left direction
+	 * 
+	 * @param board
+	 *            The array which will represent the possible moves
+	 * @param enemy
+	 *            An int representing the enemy color as specified by the
+	 *            constants in {@link Chesspiece}
+	 */
 	private void getLegalMovesLeft(boolean[][] board, int enemy) {
 
 		for (int i = getRow() - 1; i < chessboard.getMaxRows(); i--) {
@@ -114,6 +149,16 @@ public class Rook extends Chesspiece {
 
 	}
 
+	/**
+	 * Modifies the provided boolean-array to reflect all possible moves in a
+	 * downwards direction
+	 * 
+	 * @param board
+	 *            The array which will represent the possible moves
+	 * @param enemy
+	 *            An int representing the enemy color as specified by the
+	 *            constants in {@link Chesspiece}
+	 */
 	private void getLegalMovesDown(boolean[][] board, int enemy) {
 		for (int i = getColumn() - 1; i < chessboard.getMaxRows(); i--) {
 			// empty tile
