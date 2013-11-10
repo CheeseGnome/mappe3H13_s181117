@@ -22,10 +22,23 @@ public class Rook extends Chesspiece {
 
 	@Override
 	public boolean threatensPosition(int row, int column) {
-		// TODO Auto-generated method stub
+		if (getRow() == row) {
+			if (column > getColumn()) {
+				return threatensRight(column);
+			} else {
+				return threatensLeft(column);
+			}
+		}
+		if (getColumn() == column) {
+			if (row > getRow()) {
+				return threatensDown(row);
+			} else {
+				return threatensUp(row);
+			}
+		}
 		return false;
 	}
-	
+
 	@Override
 	public boolean move(int row, int column) {
 		if (legalMoves()[row][column] == true) {
@@ -68,8 +81,8 @@ public class Rook extends Chesspiece {
 	 *            constants in {@link Chesspiece}
 	 */
 
-	private void getLegalMovesRight(boolean[][] board, int enemy) {
-		for (int i = getRow() + 1; i < chessboard.getMaxRows(); i++) {
+	private void getLegalMovesUp(boolean[][] board, int enemy) {
+		for (int i = getRow() - 1; i < chessboard.getMaxRows(); i--) {
 			// empty tile
 			if (!chessboard.kingInCheckAfter(this, i, getColumn())
 					&& chessboard.tileContains(i, getColumn()) == NO_PIECE) {
@@ -100,9 +113,9 @@ public class Rook extends Chesspiece {
 	 *            constants in {@link Chesspiece}
 	 */
 
-	private void getLegalMovesUp(boolean[][] board, int enemy) {
+	private void getLegalMovesRight(boolean[][] board, int enemy) {
 
-		for (int i = getColumn() + 1; i < chessboard.getMaxRows(); i++) {
+		for (int i = getColumn() + 1; i < chessboard.getMaxColumns(); i++) {
 			// empty tile
 			if (!chessboard.kingInCheckAfter(this, getRow(), i) && chessboard.tileContains(i, getColumn()) == NO_PIECE) {
 				board[getRow()][i] = true;
@@ -132,9 +145,9 @@ public class Rook extends Chesspiece {
 	 *            An int representing the enemy color as specified by the
 	 *            constants in {@link Chesspiece}
 	 */
-	private void getLegalMovesLeft(boolean[][] board, int enemy) {
+	private void getLegalMovesDown(boolean[][] board, int enemy) {
 
-		for (int i = getRow() - 1; i < chessboard.getMaxRows(); i--) {
+		for (int i = getRow() + 1; i < chessboard.getMaxRows(); i++) {
 			// empty tile
 			if (!chessboard.kingInCheckAfter(this, i, getColumn())
 					&& chessboard.tileContains(i, getColumn()) == NO_PIECE) {
@@ -165,8 +178,8 @@ public class Rook extends Chesspiece {
 	 *            An int representing the enemy color as specified by the
 	 *            constants in {@link Chesspiece}
 	 */
-	private void getLegalMovesDown(boolean[][] board, int enemy) {
-		for (int i = getColumn() - 1; i < chessboard.getMaxRows(); i--) {
+	private void getLegalMovesLeft(boolean[][] board, int enemy) {
+		for (int i = getColumn() - 1; i < chessboard.getMaxColumns(); i--) {
 			// empty tile
 			if (!chessboard.kingInCheckAfter(this, getRow(), i) && chessboard.tileContains(i, getColumn()) == NO_PIECE) {
 				board[getRow()][i] = true;
@@ -183,6 +196,78 @@ public class Rook extends Chesspiece {
 			}
 
 		}
+	}
+
+	private boolean threatensDown(int row) {
+		for (int i = getRow() + 1; i < chessboard.getMaxRows(); i++) {
+			// Piece found
+			if (chessboard.tileContains(i, getColumn()) != NO_PIECE) {
+				// King
+				if (i == row) {
+					return true;
+				}
+				// Blocking piece
+				else {
+					return false;
+				}
+
+			}
+		}
+		return false;
+	}
+
+	private boolean threatensUp(int row) {
+		for (int i = getRow() - 1; i < chessboard.getMaxRows(); i--) {
+			// Piece found
+			if (chessboard.tileContains(i, getColumn()) != NO_PIECE) {
+				// King
+				if (i == row) {
+					return true;
+				}
+				// Blocking piece
+				else {
+					return false;
+				}
+
+			}
+		}
+		return false;
+	}
+
+	private boolean threatensLeft(int column) {
+		for (int i = getColumn() - 1; i < chessboard.getMaxColumns(); i--) {
+			// Piece found
+			if (chessboard.tileContains(getRow(), i) != NO_PIECE) {
+				// King
+				if (i == column) {
+					return true;
+				}
+				// Blocking piece
+				else {
+					return false;
+				}
+
+			}
+		}
+		return false;
+	}
+
+	private boolean threatensRight(int column) {
+		for (int i = getColumn() + 1; i < chessboard.getMaxColumns(); i++) {
+			// Piece found
+			if (chessboard.tileContains(getRow(), i) != NO_PIECE) {
+				// King
+				if (i == column) {
+					return true;
+				}
+				// Blocking piece
+				else {
+					return false;
+				}
+
+			}
+		}
+		return false;
 	}
 
 }
