@@ -15,6 +15,12 @@ public class Chessboard {
 		mChessboard = createChessboard();
 	}
 
+	/**
+	 * Initializes a new chessboard filled with {@link Chesspiece}s
+	 * 
+	 * @return A 2d-array of chesspieces representing a chessboard in it's
+	 *         starting position
+	 */
 	private Chesspiece[][] createChessboard() {
 		Chesspiece[][] board = new Chesspiece[getMaxRows()][getMaxColumns()];
 
@@ -56,7 +62,46 @@ public class Chessboard {
 	 * @return True if the king ends up in check
 	 */
 	public boolean kingInCheckAfter(Chesspiece piece, int row, int column) {
-		return false;
+		int oldRow = piece.getRow();
+		int oldColumn = piece.getColumn();
+		Chesspiece oldPiece = getPieceAt(row, column);
+
+		mChessboard[oldRow][oldColumn] = null;
+		mChessboard[row][column] = piece;
+
+		int enemy;
+		if (piece.getColor() == Chesspiece.WHITE) {
+			enemy = Chesspiece.BLACK;
+		} else {
+			enemy = Chesspiece.WHITE;
+		}
+
+		int kingRow = -1, kingColumn = -1;
+		// find the king
+		kingSearch: for (int i = 0; i < getMaxRows(); i++) {
+			for (int j = 0; j < getMaxColumns(); j++) {
+				if (mChessboard[i][j] instanceof King && mChessboard[i][j].getColor() == piece.getColor()) {
+					kingRow = i;
+					kingColumn = j;
+					break kingSearch;
+				}
+			}
+		}
+		boolean result = false;
+		// search for threats
+		loop: for (int i = 0; i < getMaxRows(); i++) {
+			for (int j = 0; j < getMaxColumns(); j++) {
+				if (mChessboard[i][j].getColor() == enemy && mChessboard[i][j].threatensPosition(kingRow, kingColumn)) {
+					result = true;
+					break loop;
+				}
+			}
+		}
+
+		mChessboard[oldRow][oldColumn] = piece;
+		mChessboard[row][column] = oldPiece;
+
+		return result;
 	}
 
 	/**
@@ -123,7 +168,16 @@ public class Chessboard {
 	 *            The piece's new column position
 	 */
 	public void move(Chesspiece piece, int row, int column) {
-		// TODO delete enpassant
+		//Kill En-Passant
+		if (mChessboard[row][column] != null && mChessboard[row][column].getColor() == Chesspiece.EN_PASSANT) {
+			mChessboard[mEnPassant.getPawn().getRow()][mEnPassant.getPawn().getColumn()] = null;
+		}
+		//Remove En-Passant opportunity (if there is one)
+		if (mEnPassant != null) {
+			mChessboard[mEnPassant.getRow()][mEnPassant.getColumn()] = null;
+			mEnPassant = null;
+		}
+
 		mChessboard[piece.getRow()][piece.getColumn()] = null;
 		mChessboard[row][column] = piece;
 	}

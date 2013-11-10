@@ -10,6 +10,8 @@ package hioa.android.chess;
 
 public class EnPassant extends Chesspiece {
 
+	private Pawn mPawn;
+	
 	public EnPassant(Pawn pawn) {
 		setColor(EN_PASSANT);
 		setColumn(pawn.getColumn());
@@ -18,7 +20,12 @@ public class EnPassant extends Chesspiece {
 		} else {
 			setRow(pawn.getRow() - 1);
 		}
+		mPawn = pawn;
 		chessboard.placeEnPassant(this);
+	}
+	
+	public Pawn getPawn(){
+		return mPawn;
 	}
 
 	@Override
