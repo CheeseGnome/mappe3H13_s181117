@@ -182,7 +182,7 @@ public class Chessboard {
 	}
 
 	/**
-	 * Creates a hash over the current boardstate and stores it in the database.
+	 * Creates a hash of the current boardstate and stores it in the database.
 	 * <p>
 	 * These hashes are used to draw the game if the exact same boardstate
 	 * appears 3 times in 1 game
