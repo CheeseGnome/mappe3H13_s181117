@@ -59,10 +59,17 @@ public abstract class Chesspiece {
 		mColor = color;
 	}
 	
+	/**
+	 * Get the row that this piece is currently positioned at
+	 * @return The row position for this piece
+	 */
 	protected int getRow(){
 		return mCurrentRow;
 	}
-	
+	/**
+	 * Get the column that this piece is currently positioned at
+	 * @return The column position for this piece
+	 */
 	protected int getColumn(){
 		return mCurrentColumn;
 	}
