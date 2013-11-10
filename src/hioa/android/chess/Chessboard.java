@@ -157,18 +157,27 @@ public class Chessboard {
 		mChessboard[row][column] = piece;
 
 		createPositionHash();
-		checkForDraw();
-		checkForWin();
+		checkForGameEnd(piece.getColor());
 	}
 
-	private void checkForWin() {
-		// TODO lag denne
-	}
+	private void checkForGameEnd(int color) {
+		int enemy;
+		if (color == Chesspiece.WHITE) {
+			enemy = Chesspiece.BLACK;
+		} else {
+			enemy = Chesspiece.WHITE;
+		}
+		if (!hasLegalMoves(enemy)) {
+			if (isInCheck(enemy)) {
+				// TODO win the game
+			} else {
+				// TODO draw
+			}
 
-	private void checkForDraw() {
+		}
+
 		/*
 		 * TODO lag denne Sjekk: Posisjonshash 50 trekk uten sjakk/fanget brikke
-		 * Ingen lovlige trekk uten å være i sjakk
 		 */
 	}
 
@@ -226,7 +235,6 @@ public class Chessboard {
 	 * @return True if the player has at least 1 legal move
 	 */
 	private boolean hasLegalMoves(int color) {
-		boolean[][] board;
 		for (int i = 0; i < getMaxRows(); i++) {
 			for (int j = 0; j < getMaxColumns(); j++) {
 				if (mChessboard[i][j].getColor() == color) {
