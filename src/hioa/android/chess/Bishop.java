@@ -9,6 +9,12 @@ package hioa.android.chess;
 
 public class Bishop extends Chesspiece {
 
+	public Bishop(int color, int row, int column) {
+		setColor(color);
+		setRow(row);
+		setColumn(column);
+	}
+	
 	@Override
 	public boolean move(int row, int column) {
 		if (legalMoves()[row][column] == true) {

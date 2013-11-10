@@ -28,8 +28,7 @@ public class Rook extends Chesspiece {
 			} else {
 				return threatensLeft(column);
 			}
-		}
-		else if (getColumn() == column) {
+		} else if (getColumn() == column) {
 			if (row > getRow()) {
 				return threatensDown(row);
 			} else {
@@ -198,6 +197,16 @@ public class Rook extends Chesspiece {
 		}
 	}
 
+	/**
+	 * Checks if the piece is threatening the provided position in a downwards
+	 * direction
+	 * <p>
+	 * Note: This method assumes that the column is the same
+	 * 
+	 * @param row
+	 *            The row to check if this piece is threatening
+	 * @return True if this piece is threatening the position
+	 */
 	private boolean threatensDown(int row) {
 		for (int i = getRow() + 1; i < chessboard.getMaxRows(); i++) {
 			// Piece found
@@ -216,6 +225,16 @@ public class Rook extends Chesspiece {
 		return false;
 	}
 
+	/**
+	 * Checks if the piece is threatening the provided position in an upwards
+	 * direction
+	 * <p>
+	 * Note: This method assumes that the column is the same
+	 * 
+	 * @param row
+	 *            The row to check if this piece is threatening
+	 * @return True if this piece is threatening the position
+	 */
 	private boolean threatensUp(int row) {
 		for (int i = getRow() - 1; i < chessboard.getMaxRows(); i--) {
 			// Piece found
@@ -234,6 +253,15 @@ public class Rook extends Chesspiece {
 		return false;
 	}
 
+	/**
+	 * Checks if the piece is threatening the provided position toward the left
+	 * <p>
+	 * Note: This method assumes that the row is the same
+	 * 
+	 * @param column
+	 *            The column to check if this piece is threatening
+	 * @return True if this piece is threatening the position
+	 */
 	private boolean threatensLeft(int column) {
 		for (int i = getColumn() - 1; i < chessboard.getMaxColumns(); i--) {
 			// Piece found
@@ -252,6 +280,16 @@ public class Rook extends Chesspiece {
 		return false;
 	}
 
+	/**
+	 * Checks if the piece is threatening the provided position toward the
+	 * right.
+	 * <p>
+	 * Note: This method assumes that the row is the same
+	 * 
+	 * @param column
+	 *            The column to check if this piece is threatening
+	 * @return True if this piece is threatening the position
+	 */
 	private boolean threatensRight(int column) {
 		for (int i = getColumn() + 1; i < chessboard.getMaxColumns(); i++) {
 			// Piece found

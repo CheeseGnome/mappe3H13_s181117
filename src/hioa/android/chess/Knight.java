@@ -3,11 +3,17 @@ package hioa.android.chess;
 /**
  * Represents a knight
  * @author Lars Sætaberget
- * @version 2013-11-09
+ * @version 2013-11-10
  */
 
 public class Knight extends Chesspiece {
 
+	public Knight(int color, int row, int column) {
+		setColor(color);
+		setRow(row);
+		setColumn(column);
+	}
+	
 	@Override
 	public boolean move(int row, int column) {
 		if (legalMoves()[row][column] == true) {
