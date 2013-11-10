@@ -81,7 +81,8 @@ public class Knight extends Chesspiece {
 	 * @return True if the move is legal
 	 */
 	private boolean legalMove(int row, int column) {
-		if (!chessboard.kingInCheckAfter(this, row, column) && chessboard.tileContains(row, column) != getColor()) {
+		if (!chessboard.kingInCheckAfter(this, row, column)
+				&& chessboard.tileContains(row, column, false) != getColor()) {
 			return true;
 		}
 		return false;

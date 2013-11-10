@@ -96,12 +96,12 @@ public class Queen extends Chesspiece {
 		for (int i = getRow() - 1; i < chessboard.getMaxRows(); i--) {
 			// empty tile
 			if (!chessboard.kingInCheckAfter(this, i, getColumn())
-					&& chessboard.tileContains(i, getColumn()) == NO_PIECE) {
+					&& chessboard.tileContains(i, getColumn(), false) == NO_PIECE) {
 				board[i][getColumn()] = true;
 			}
 			// Piece which can be captured
 			else if (!chessboard.kingInCheckAfter(this, i, getColumn())
-					&& chessboard.tileContains(i, getColumn()) == enemy) {
+					&& chessboard.tileContains(i, getColumn(), false) == enemy) {
 				board[i][getColumn()] = true;
 				break;
 			}
@@ -128,12 +128,13 @@ public class Queen extends Chesspiece {
 
 		for (int i = getColumn() + 1; i < chessboard.getMaxColumns(); i++) {
 			// empty tile
-			if (!chessboard.kingInCheckAfter(this, getRow(), i) && chessboard.tileContains(i, getColumn()) == NO_PIECE) {
+			if (!chessboard.kingInCheckAfter(this, getRow(), i)
+					&& chessboard.tileContains(i, getColumn(), false) == NO_PIECE) {
 				board[getRow()][i] = true;
 			}
 			// Piece which can be captured
 			else if (!chessboard.kingInCheckAfter(this, getRow(), i)
-					&& chessboard.tileContains(i, getColumn()) == enemy) {
+					&& chessboard.tileContains(i, getColumn(), false) == enemy) {
 				board[getRow()][i] = true;
 				break;
 			}
@@ -161,12 +162,12 @@ public class Queen extends Chesspiece {
 		for (int i = getRow() + 1; i < chessboard.getMaxRows(); i++) {
 			// empty tile
 			if (!chessboard.kingInCheckAfter(this, i, getColumn())
-					&& chessboard.tileContains(i, getColumn()) == NO_PIECE) {
+					&& chessboard.tileContains(i, getColumn(), false) == NO_PIECE) {
 				board[i][getColumn()] = true;
 			}
 			// Piece which can be captured
 			else if (!chessboard.kingInCheckAfter(this, i, getColumn())
-					&& chessboard.tileContains(i, getColumn()) == enemy) {
+					&& chessboard.tileContains(i, getColumn(), false) == enemy) {
 				board[i][getColumn()] = true;
 				break;
 			}
@@ -192,12 +193,13 @@ public class Queen extends Chesspiece {
 	private void getLegalMovesLeft(boolean[][] board, int enemy) {
 		for (int i = getColumn() - 1; i < chessboard.getMaxColumns(); i--) {
 			// empty tile
-			if (!chessboard.kingInCheckAfter(this, getRow(), i) && chessboard.tileContains(i, getColumn()) == NO_PIECE) {
+			if (!chessboard.kingInCheckAfter(this, getRow(), i)
+					&& chessboard.tileContains(i, getColumn(), false) == NO_PIECE) {
 				board[getRow()][i] = true;
 			}
 			// Piece which can be captured
 			else if (!chessboard.kingInCheckAfter(this, getRow(), i)
-					&& chessboard.tileContains(i, getColumn()) == enemy) {
+					&& chessboard.tileContains(i, getColumn(), false) == enemy) {
 				board[getRow()][i] = true;
 				break;
 			}
@@ -226,11 +228,13 @@ public class Queen extends Chesspiece {
 
 		while (row >= 0 && column < chessboard.getMaxColumns()) {
 			// empty tile
-			if (!chessboard.kingInCheckAfter(this, row, column) && chessboard.tileContains(row, column) == NO_PIECE) {
+			if (!chessboard.kingInCheckAfter(this, row, column)
+					&& chessboard.tileContains(row, column, false) == NO_PIECE) {
 				board[row][column] = true;
 			}
 			// Piece which can be captured
-			else if (!chessboard.kingInCheckAfter(this, row, column) && chessboard.tileContains(row, column) == enemy) {
+			else if (!chessboard.kingInCheckAfter(this, row, column)
+					&& chessboard.tileContains(row, column, false) == enemy) {
 				board[row][column] = true;
 				break;
 			}
@@ -259,11 +263,13 @@ public class Queen extends Chesspiece {
 
 		while (row >= 0 && column >= 0) {
 			// empty tile
-			if (!chessboard.kingInCheckAfter(this, row, column) && chessboard.tileContains(row, column) == NO_PIECE) {
+			if (!chessboard.kingInCheckAfter(this, row, column)
+					&& chessboard.tileContains(row, column, false) == NO_PIECE) {
 				board[row][column] = true;
 			}
 			// Piece which can be captured
-			else if (!chessboard.kingInCheckAfter(this, row, column) && chessboard.tileContains(row, column) == enemy) {
+			else if (!chessboard.kingInCheckAfter(this, row, column)
+					&& chessboard.tileContains(row, column, false) == enemy) {
 				board[row][column] = true;
 				break;
 			}
@@ -292,11 +298,13 @@ public class Queen extends Chesspiece {
 
 		while (column >= 0 && row < chessboard.getMaxRows()) {
 			// empty tile
-			if (!chessboard.kingInCheckAfter(this, row, column) && chessboard.tileContains(row, column) == NO_PIECE) {
+			if (!chessboard.kingInCheckAfter(this, row, column)
+					&& chessboard.tileContains(row, column, false) == NO_PIECE) {
 				board[row][column] = true;
 			}
 			// Piece which can be captured
-			else if (!chessboard.kingInCheckAfter(this, row, column) && chessboard.tileContains(row, column) == enemy) {
+			else if (!chessboard.kingInCheckAfter(this, row, column)
+					&& chessboard.tileContains(row, column, false) == enemy) {
 				board[row][column] = true;
 				break;
 			}
@@ -326,11 +334,13 @@ public class Queen extends Chesspiece {
 
 		while (row < chessboard.getMaxRows() && column < chessboard.getMaxColumns()) {
 			// empty tile
-			if (!chessboard.kingInCheckAfter(this, row, column) && chessboard.tileContains(row, column) == NO_PIECE) {
+			if (!chessboard.kingInCheckAfter(this, row, column)
+					&& chessboard.tileContains(row, column, false) == NO_PIECE) {
 				board[row][column] = true;
 			}
 			// Piece which can be captured
-			else if (!chessboard.kingInCheckAfter(this, row, column) && chessboard.tileContains(row, column) == enemy) {
+			else if (!chessboard.kingInCheckAfter(this, row, column)
+					&& chessboard.tileContains(row, column, false) == enemy) {
 				board[row][column] = true;
 				break;
 			}
@@ -356,7 +366,7 @@ public class Queen extends Chesspiece {
 	private boolean threatensDown(int row) {
 		for (int i = getRow() + 1; i < chessboard.getMaxRows(); i++) {
 			// Piece found
-			if (chessboard.tileContains(i, getColumn()) != NO_PIECE) {
+			if (chessboard.tileContains(i, getColumn(), false) != NO_PIECE) {
 				// King
 				if (i == row) {
 					return true;
@@ -384,7 +394,7 @@ public class Queen extends Chesspiece {
 	private boolean threatensUp(int row) {
 		for (int i = getRow() - 1; i < chessboard.getMaxRows(); i--) {
 			// Piece found
-			if (chessboard.tileContains(i, getColumn()) != NO_PIECE) {
+			if (chessboard.tileContains(i, getColumn(), false) != NO_PIECE) {
 				// King
 				if (i == row) {
 					return true;
@@ -411,7 +421,7 @@ public class Queen extends Chesspiece {
 	private boolean threatensLeft(int column) {
 		for (int i = getColumn() - 1; i < chessboard.getMaxColumns(); i--) {
 			// Piece found
-			if (chessboard.tileContains(getRow(), i) != NO_PIECE) {
+			if (chessboard.tileContains(getRow(), i, false) != NO_PIECE) {
 				// King
 				if (i == column) {
 					return true;
@@ -439,7 +449,7 @@ public class Queen extends Chesspiece {
 	private boolean threatensRight(int column) {
 		for (int i = getColumn() + 1; i < chessboard.getMaxColumns(); i++) {
 			// Piece found
-			if (chessboard.tileContains(getRow(), i) != NO_PIECE) {
+			if (chessboard.tileContains(getRow(), i, false) != NO_PIECE) {
 				// King
 				if (i == column) {
 					return true;
@@ -470,7 +480,7 @@ public class Queen extends Chesspiece {
 
 		while (row >= 0 && column < chessboard.getMaxColumns()) {
 			// non-empty tile
-			if (chessboard.tileContains(row, column) != NO_PIECE) {
+			if (chessboard.tileContains(row, column, false) != NO_PIECE) {
 				if (row == kingRow && column == kingColumn)
 					return true;
 				else {
@@ -499,7 +509,7 @@ public class Queen extends Chesspiece {
 
 		while (row >= 0 && column >= 0) {
 			// non-empty tile
-			if (chessboard.tileContains(row, column) != NO_PIECE) {
+			if (chessboard.tileContains(row, column, false) != NO_PIECE) {
 				if (row == kingRow && column == kingColumn)
 					return true;
 				else {
@@ -528,7 +538,7 @@ public class Queen extends Chesspiece {
 
 		while (row < chessboard.getMaxRows() && column < chessboard.getMaxColumns()) {
 			// non-empty tile
-			if (chessboard.tileContains(row, column) != NO_PIECE) {
+			if (chessboard.tileContains(row, column, false) != NO_PIECE) {
 				if (row == kingRow && column == kingColumn)
 					return true;
 				else {
@@ -557,7 +567,7 @@ public class Queen extends Chesspiece {
 
 		while (row < chessboard.getMaxRows() && column >= 0) {
 			// non-empty tile
-			if (chessboard.tileContains(row, column) != NO_PIECE) {
+			if (chessboard.tileContains(row, column, false) != NO_PIECE) {
 				if (row == kingRow && column == kingColumn)
 					return true;
 				else {

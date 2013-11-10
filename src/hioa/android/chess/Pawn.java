@@ -40,7 +40,7 @@ public class Pawn extends Chesspiece {
 
 	@Override
 	public boolean threatensPosition(int row, int column) {
-		if ( (getRow() == row + 1 && getColor() == WHITE) || (getRow() == row - 1 && getColor() == BLACK) ) {
+		if ((getRow() == row + 1 && getColor() == WHITE) || (getRow() == row - 1 && getColor() == BLACK)) {
 			if (getColumn() == column - 1 || getColumn() == column + 1)
 				return true;
 		}
@@ -70,23 +70,28 @@ public class Pawn extends Chesspiece {
 		int row = getRow();
 		int column = getColumn();
 		// capture left
-		if (!chessboard.kingInCheckAfter(this, row + 1, column - 1)
-				&& chessboard.tileContains(row + 1, column - 1) == WHITE) {
-			board[row + 1][column - 1] = true;
+		if (!chessboard.kingInCheckAfter(this, row + 1, column - 1)) {
+			if (chessboard.tileContains(row + 1, column - 1, true) == WHITE
+					|| chessboard.tileContains(row + 1, column - 1, true) == EN_PASSANT) {
+				board[row + 1][column - 1] = true;
+			}
 		}
 		// capture right
-		if (!chessboard.kingInCheckAfter(this, row + 1, column + 1)
-				&& chessboard.tileContains(row + 1, column + 1) == WHITE) {
-			board[row + 1][column + 1] = true;
+		if (!chessboard.kingInCheckAfter(this, row + 1, column + 1)) {
+			if (chessboard.tileContains(row + 1, column + 1, true) == WHITE
+					&& chessboard.tileContains(row + 1, column + 1, true) == EN_PASSANT) {
+				board[row + 1][column + 1] = true;
+			}
 		}
 		// move forward 1
-		if (!chessboard.kingInCheckAfter(this, row + 1, column) && chessboard.tileContains(row + 1, column) == NO_PIECE) {
+		if (!chessboard.kingInCheckAfter(this, row + 1, column)
+				&& chessboard.tileContains(row + 1, column, true) == NO_PIECE) {
 			board[row + 1][column] = true;
 		}
 		// move forward 2
 		if (!chessboard.kingInCheckAfter(this, row + 2, column) && mHasMoved == false
-				&& chessboard.tileContains(row + 2, column) == NO_PIECE
-				&& chessboard.tileContains(row + 1, column) == NO_PIECE) {
+				&& chessboard.tileContains(row + 2, column, true) == NO_PIECE
+				&& chessboard.tileContains(row + 1, column, true) == NO_PIECE) {
 			board[row + 2][column] = true;
 		}
 	}
@@ -102,23 +107,28 @@ public class Pawn extends Chesspiece {
 		int row = getRow();
 		int column = getColumn();
 		// capture left
-		if (!chessboard.kingInCheckAfter(this, row - 1, column - 1)
-				&& chessboard.tileContains(row - 1, column - 1) == BLACK) {
-			board[row - 1][column - 1] = true;
+		if (!chessboard.kingInCheckAfter(this, row - 1, column - 1)) {
+			if (chessboard.tileContains(row - 1, column - 1, true) == BLACK
+					|| chessboard.tileContains(row - 1, column - 1, true) == EN_PASSANT) {
+				board[row - 1][column - 1] = true;
+			}
 		}
 		// capture right
-		if (!chessboard.kingInCheckAfter(this, row - 1, column + 1)
-				&& chessboard.tileContains(row - 1, column + 1) == BLACK) {
-			board[row - 1][column + 1] = true;
+		if (!chessboard.kingInCheckAfter(this, row - 1, column + 1)) {
+			if (chessboard.tileContains(row - 1, column + 1, true) == BLACK
+					|| chessboard.tileContains(row - 1, column + 1, true) == EN_PASSANT) {
+				board[row - 1][column + 1] = true;
+			}
 		}
 		// move forward 1
-		if (!chessboard.kingInCheckAfter(this, row - 1, column) && chessboard.tileContains(row - 1, column) == NO_PIECE) {
+		if (!chessboard.kingInCheckAfter(this, row - 1, column)
+				&& chessboard.tileContains(row - 1, column, true) == NO_PIECE) {
 			board[row - 1][column] = true;
 		}
 		// move forward 2
 		if (!chessboard.kingInCheckAfter(this, row - 2, column) && mHasMoved == false
-				&& chessboard.tileContains(row - 2, column) == NO_PIECE
-				&& chessboard.tileContains(row - 1, column) == NO_PIECE) {
+				&& chessboard.tileContains(row - 2, column, true) == NO_PIECE
+				&& chessboard.tileContains(row - 1, column, true) == NO_PIECE) {
 			board[row - 2][column] = true;
 		}
 	}

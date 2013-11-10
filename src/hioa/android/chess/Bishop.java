@@ -14,7 +14,7 @@ public class Bishop extends Chesspiece {
 		setRow(row);
 		setColumn(column);
 	}
-	
+
 	@Override
 	public boolean move(int row, int column) {
 		if (legalMoves()[row][column] == true) {
@@ -79,7 +79,7 @@ public class Bishop extends Chesspiece {
 
 		while (row >= 0 && column < chessboard.getMaxColumns()) {
 			// non-empty tile
-			if (chessboard.tileContains(row, column) != NO_PIECE) {
+			if (chessboard.tileContains(row, column, false) != NO_PIECE) {
 				if (row == kingRow && column == kingColumn)
 					return true;
 				else {
@@ -108,7 +108,7 @@ public class Bishop extends Chesspiece {
 
 		while (row >= 0 && column >= 0) {
 			// non-empty tile
-			if (chessboard.tileContains(row, column) != NO_PIECE) {
+			if (chessboard.tileContains(row, column, false) != NO_PIECE) {
 				if (row == kingRow && column == kingColumn)
 					return true;
 				else {
@@ -137,7 +137,7 @@ public class Bishop extends Chesspiece {
 
 		while (row < chessboard.getMaxRows() && column < chessboard.getMaxColumns()) {
 			// non-empty tile
-			if (chessboard.tileContains(row, column) != NO_PIECE) {
+			if (chessboard.tileContains(row, column, false) != NO_PIECE) {
 				if (row == kingRow && column == kingColumn)
 					return true;
 				else {
@@ -166,7 +166,7 @@ public class Bishop extends Chesspiece {
 
 		while (row < chessboard.getMaxRows() && column >= 0) {
 			// non-empty tile
-			if (chessboard.tileContains(row, column) != NO_PIECE) {
+			if (chessboard.tileContains(row, column, false) != NO_PIECE) {
 				if (row == kingRow && column == kingColumn)
 					return true;
 				else {
@@ -196,11 +196,13 @@ public class Bishop extends Chesspiece {
 
 		while (row >= 0 && column < chessboard.getMaxColumns()) {
 			// empty tile
-			if (!chessboard.kingInCheckAfter(this, row, column) && chessboard.tileContains(row, column) == NO_PIECE) {
+			if (!chessboard.kingInCheckAfter(this, row, column)
+					&& chessboard.tileContains(row, column, false) == NO_PIECE) {
 				board[row][column] = true;
 			}
 			// Piece which can be captured
-			else if (!chessboard.kingInCheckAfter(this, row, column) && chessboard.tileContains(row, column) == enemy) {
+			else if (!chessboard.kingInCheckAfter(this, row, column)
+					&& chessboard.tileContains(row, column, false) == enemy) {
 				board[row][column] = true;
 				break;
 			}
@@ -229,11 +231,13 @@ public class Bishop extends Chesspiece {
 
 		while (row >= 0 && column >= 0) {
 			// empty tile
-			if (!chessboard.kingInCheckAfter(this, row, column) && chessboard.tileContains(row, column) == NO_PIECE) {
+			if (!chessboard.kingInCheckAfter(this, row, column)
+					&& chessboard.tileContains(row, column, false) == NO_PIECE) {
 				board[row][column] = true;
 			}
 			// Piece which can be captured
-			else if (!chessboard.kingInCheckAfter(this, row, column) && chessboard.tileContains(row, column) == enemy) {
+			else if (!chessboard.kingInCheckAfter(this, row, column)
+					&& chessboard.tileContains(row, column, false) == enemy) {
 				board[row][column] = true;
 				break;
 			}
@@ -262,11 +266,13 @@ public class Bishop extends Chesspiece {
 
 		while (column >= 0 && row < chessboard.getMaxRows()) {
 			// empty tile
-			if (!chessboard.kingInCheckAfter(this, row, column) && chessboard.tileContains(row, column) == NO_PIECE) {
+			if (!chessboard.kingInCheckAfter(this, row, column)
+					&& chessboard.tileContains(row, column, false) == NO_PIECE) {
 				board[row][column] = true;
 			}
 			// Piece which can be captured
-			else if (!chessboard.kingInCheckAfter(this, row, column) && chessboard.tileContains(row, column) == enemy) {
+			else if (!chessboard.kingInCheckAfter(this, row, column)
+					&& chessboard.tileContains(row, column, false) == enemy) {
 				board[row][column] = true;
 				break;
 			}
@@ -296,11 +302,13 @@ public class Bishop extends Chesspiece {
 
 		while (row < chessboard.getMaxRows() && column < chessboard.getMaxColumns()) {
 			// empty tile
-			if (!chessboard.kingInCheckAfter(this, row, column) && chessboard.tileContains(row, column) == NO_PIECE) {
+			if (!chessboard.kingInCheckAfter(this, row, column)
+					&& chessboard.tileContains(row, column, false) == NO_PIECE) {
 				board[row][column] = true;
 			}
 			// Piece which can be captured
-			else if (!chessboard.kingInCheckAfter(this, row, column) && chessboard.tileContains(row, column) == enemy) {
+			else if (!chessboard.kingInCheckAfter(this, row, column)
+					&& chessboard.tileContains(row, column, false) == enemy) {
 				board[row][column] = true;
 				break;
 			}

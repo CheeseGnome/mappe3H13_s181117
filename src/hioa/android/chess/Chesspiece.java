@@ -9,12 +9,18 @@ import android.content.Context;
  * Note: This is an abstract class
  * 
  * @author Lars Sætaberget
- * @version 2013-11-09
+ * @version 2013-11-10
  */
 
 public abstract class Chesspiece {
-	public static final int NO_PIECE = -1, BLACK = 0, WHITE = 1;
+	public static final int NO_PIECE = -1, BLACK = 0, WHITE = 1, EN_PASSANT = 2;
 	
+	/**
+	 * This variable is only used for allowing the pieces to easily orient themselves on the board.
+	 * It is used to determine legal moves and which positions they threaten.
+	 * <p>
+	 * The values for all other pieces in the same methods are derived from the current board state in {@link Chessboard}
+	 */
 	private int mCurrentRow, mCurrentColumn;
 	private int mColor;
 	public static Context context;
