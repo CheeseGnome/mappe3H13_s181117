@@ -26,7 +26,7 @@ public class Chessboard {
 
 		for (int i = 0; i < getMaxColumns(); i++) {
 			board[1][i] = new Pawn(Chesspiece.BLACK, 1, i);
-			board[getMaxRows() - 2][i] = new Pawn(Chesspiece.WHITE, 1, i);
+			board[getMaxRows() - 2][i] = new Pawn(Chesspiece.WHITE, getMaxRows() - 2, i);
 		}
 		board[0][0] = new Rook(Chesspiece.BLACK, 0, 0);
 		board[0][1] = new Knight(Chesspiece.BLACK, 0, 1);
