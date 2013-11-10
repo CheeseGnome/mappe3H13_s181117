@@ -64,40 +64,15 @@ public class Chessboard {
 	public boolean kingInCheckAfter(Chesspiece piece, int row, int column) {
 		int oldRow = piece.getRow();
 		int oldColumn = piece.getColumn();
-		Chesspiece oldPiece = getPieceAt(row, column);
 
+		// Temporary move
+		Chesspiece oldPiece = getPieceAt(row, column);
 		mChessboard[oldRow][oldColumn] = null;
 		mChessboard[row][column] = piece;
 
-		int enemy;
-		if (piece.getColor() == Chesspiece.WHITE) {
-			enemy = Chesspiece.BLACK;
-		} else {
-			enemy = Chesspiece.WHITE;
-		}
+		boolean result = isInCheck(piece.getColor());
 
-		int kingRow = -1, kingColumn = -1;
-		// find the king
-		kingSearch: for (int i = 0; i < getMaxRows(); i++) {
-			for (int j = 0; j < getMaxColumns(); j++) {
-				if (mChessboard[i][j] instanceof King && mChessboard[i][j].getColor() == piece.getColor()) {
-					kingRow = i;
-					kingColumn = j;
-					break kingSearch;
-				}
-			}
-		}
-		boolean result = false;
-		// search for threats
-		loop: for (int i = 0; i < getMaxRows(); i++) {
-			for (int j = 0; j < getMaxColumns(); j++) {
-				if (mChessboard[i][j].getColor() == enemy && mChessboard[i][j].threatensPosition(kingRow, kingColumn)) {
-					result = true;
-					break loop;
-				}
-			}
-		}
-
+		// revert the move
 		mChessboard[oldRow][oldColumn] = piece;
 		mChessboard[row][column] = oldPiece;
 
@@ -168,11 +143,11 @@ public class Chessboard {
 	 *            The piece's new column position
 	 */
 	public void move(Chesspiece piece, int row, int column) {
-		//Kill En-Passant
+		// Kill En-Passant
 		if (mChessboard[row][column] != null && mChessboard[row][column].getColor() == Chesspiece.EN_PASSANT) {
 			mChessboard[mEnPassant.getPawn().getRow()][mEnPassant.getPawn().getColumn()] = null;
 		}
-		//Remove En-Passant opportunity (if there is one)
+		// Remove En-Passant opportunity (if there is one)
 		if (mEnPassant != null) {
 			mChessboard[mEnPassant.getRow()][mEnPassant.getColumn()] = null;
 			mEnPassant = null;
@@ -180,6 +155,106 @@ public class Chessboard {
 
 		mChessboard[piece.getRow()][piece.getColumn()] = null;
 		mChessboard[row][column] = piece;
+
+		createPositionHash();
+		checkForDraw();
+		checkForWin();
+	}
+
+	private void checkForWin() {
+		// TODO lag denne
+	}
+
+	private void checkForDraw() {
+		/*
+		 * TODO lag denne Sjekk: Posisjonshash 50 trekk uten sjakk/fanget brikke
+		 * Ingen lovlige trekk uten å være i sjakk
+		 */
+	}
+
+	/**
+	 * Creates a hash over the current boardstate and stores it in the database.
+	 * <p>
+	 * These hashes are used to draw the game if the exact same boardstate
+	 * appears 3 times in 1 game
+	 */
+	private void createPositionHash() {
+		// TODO lag denne
+	}
+
+	/**
+	 * Checks if the player controlling this color is in check
+	 * 
+	 * @param color
+	 *            The color of pieces to check
+	 * @return True if the player is in check
+	 */
+	private boolean isInCheck(int color) {
+		int kingRow = -1, kingColumn = -1;
+		// find the king
+		kingSearch: for (int i = 0; i < getMaxRows(); i++) {
+			for (int j = 0; j < getMaxColumns(); j++) {
+				if (mChessboard[i][j] instanceof King && mChessboard[i][j].getColor() == color) {
+					kingRow = i;
+					kingColumn = j;
+					break kingSearch;
+				}
+			}
+		}
+		int enemy;
+		if (color == Chesspiece.WHITE) {
+			enemy = Chesspiece.BLACK;
+		} else {
+			enemy = Chesspiece.WHITE;
+		}
+		// search for threats
+		for (int i = 0; i < getMaxRows(); i++) {
+			for (int j = 0; j < getMaxColumns(); j++) {
+				if (mChessboard[i][j].getColor() == enemy && mChessboard[i][j].threatensPosition(kingRow, kingColumn)) {
+					return true;
+				}
+			}
+		}
+		return false;
+	}
+
+	/**
+	 * Checks if the player controlling this color has at least 1 legal move
+	 * 
+	 * @param color
+	 *            The color of pieces to check
+	 * @return True if the player has at least 1 legal move
+	 */
+	private boolean hasLegalMoves(int color) {
+		boolean[][] board;
+		for (int i = 0; i < getMaxRows(); i++) {
+			for (int j = 0; j < getMaxColumns(); j++) {
+				if (mChessboard[i][j].getColor() == color) {
+					if (containsTrue(mChessboard[i][j].legalMoves())) {
+						return true;
+					}
+				}
+			}
+		}
+		return false;
+	}
+
+	/**
+	 * Checks the 2d boolean array for true values
+	 * 
+	 * @param board
+	 *            The array to check
+	 * @return True if the array contains at least 1 field set to true
+	 */
+	private boolean containsTrue(boolean[][] board) {
+		for (int i = 0; i < getMaxRows(); i++) {
+			for (int j = 0; j < getMaxColumns(); j++) {
+				if (board[i][j] == true) {
+					return true;
+				}
+			}
+		}
+		return false;
 	}
 
 	public int getMaxRows() {
