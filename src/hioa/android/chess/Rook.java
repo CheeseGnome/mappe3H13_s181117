@@ -4,7 +4,7 @@ package hioa.android.chess;
  * Represents a rook
  * 
  * @author Lars Sætaberget
- * @version 2013-11-09
+ * @version 2013-11-10
  */
 
 public class Rook extends Chesspiece {
@@ -29,7 +29,7 @@ public class Rook extends Chesspiece {
 				return threatensLeft(column);
 			}
 		}
-		if (getColumn() == column) {
+		else if (getColumn() == column) {
 			if (row > getRow()) {
 				return threatensDown(row);
 			} else {

@@ -1,5 +1,11 @@
 package hioa.android.chess;
 
+/**
+ * Represents a knight
+ * @author Lars Sætaberget
+ * @version 2013-11-09
+ */
+
 public class Knight extends Chesspiece {
 
 	@Override
