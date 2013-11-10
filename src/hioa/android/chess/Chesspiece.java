@@ -38,7 +38,7 @@ public abstract class Chesspiece {
 	public abstract boolean[][] legalMoves();
 	
 	/**
-	 * Used to determine whether or not this piece is currently checking the opposing king
+	 * Used to determine whether or not this piece is currently checking the opposing king.
 	 * @param row The row that the opposing king is on
 	 * @param column The column that the opposing king is on
 	 * @return True if this piece is threatening the given position
