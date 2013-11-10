@@ -12,7 +12,35 @@ public class Chessboard {
 		mContext = context;
 		Chesspiece.context = context;
 		Chesspiece.chessboard = this;
+		mChessboard = createChessboard();
+	}
 
+	private Chesspiece[][] createChessboard() {
+		Chesspiece[][] board = new Chesspiece[getMaxRows()][getMaxColumns()];
+
+		for (int i = 0; i < getMaxColumns(); i++) {
+			board[1][i] = new Pawn(Chesspiece.BLACK, 1, i);
+			board[getMaxRows() - 2][i] = new Pawn(Chesspiece.WHITE, 1, i);
+		}
+		board[0][0] = new Rook(Chesspiece.BLACK, 0, 0);
+		board[0][1] = new Knight(Chesspiece.BLACK, 0, 1);
+		board[0][2] = new Bishop(Chesspiece.BLACK, 0, 2);
+		board[0][3] = new Queen(Chesspiece.BLACK, 0, 3);
+		board[0][4] = new King(Chesspiece.BLACK, 0, 4);
+		board[0][5] = new Bishop(Chesspiece.BLACK, 0, 5);
+		board[0][6] = new Knight(Chesspiece.BLACK, 0, 6);
+		board[0][7] = new Rook(Chesspiece.BLACK, 0, 7);
+
+		board[getMaxRows() - 1][0] = new Rook(Chesspiece.WHITE, getMaxRows() - 1, 0);
+		board[getMaxRows() - 1][1] = new Knight(Chesspiece.WHITE, getMaxRows() - 1, 1);
+		board[getMaxRows() - 1][2] = new Bishop(Chesspiece.WHITE, getMaxRows() - 1, 2);
+		board[getMaxRows() - 1][3] = new Queen(Chesspiece.WHITE, getMaxRows() - 1, 3);
+		board[getMaxRows() - 1][4] = new King(Chesspiece.WHITE, getMaxRows() - 1, 4);
+		board[getMaxRows() - 1][5] = new Bishop(Chesspiece.WHITE, getMaxRows() - 1, 5);
+		board[getMaxRows() - 1][6] = new Knight(Chesspiece.WHITE, getMaxRows() - 1, 6);
+		board[getMaxRows() - 1][7] = new Rook(Chesspiece.WHITE, getMaxRows() - 1, 7);
+
+		return board;
 	}
 
 	/**
