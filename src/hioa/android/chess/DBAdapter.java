@@ -1,9 +1,8 @@
 package hioa.android.birthdaycalendar;
 
 import java.text.SimpleDateFormat;
-import java.util.Calendar;
+import java.util.Date;
 
-import android.annotation.SuppressLint;
 import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
@@ -22,14 +21,17 @@ public class DBAdapter {
         Context context;
 
         static final String DB_NAME = "chess.db";
-        static final String TABLE = "game";
+        static final String TABLE = "game", TABLE_POSITION = "position";
+        static final String HASH = "hash";
         static final String ID = BaseColumns._ID;
         static final String DATE = "played_on";
         static final String WHITE_PLAYER = "white_player";
         static final String BLACK_PLAYER = "black_player";
-        static final String WHITE_WON = "white_won";
+        static final String RESULT = "result";
         static final String MOVES = "moves";
         static final int DB_VERSION = 1;
+        
+        public static final String WHITE_WON = "white_won", BLACK_WON = "black_won", DRAW = "draw";
 
         private DatabaseHelper dbHelper;
         private SQLiteDatabase database;
@@ -62,19 +64,15 @@ public class DBAdapter {
          * @param cv
          * The values to be put into the database
          */
-        protected void insertPerson(ContentValues cv) {
-                database.insert(TABLE, null, cv);
-        }
-
-        /**
-         * Insert an SMS text into the database
-         *
-         * @param cv
-         * The values to be put into the database
-         */
-        protected void insertSMS(ContentValues cv) {
-                database.delete(TABLE_SMS, null, null);
-                database.insert(TABLE_SMS, null, cv);
+        protected void insertGameResult(String white_name, String black_name, String moves, String result, Date date) {
+            ContentValues values = new ContentValues();
+            values.put(WHITE_PLAYER, white_name);
+            values.put(BLACK_PLAYER, black_name);
+            values.put(MOVES, moves);
+            values.put(RESULT, result);
+            SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd");
+            values.put(DATE, format.format(date));
+        	database.insert(TABLE, null, values);
         }
 
         /**
@@ -128,7 +126,7 @@ public class DBAdapter {
          * @return A Cursor object positioned before the first entry
          */
         protected Cursor query(String where, String having) {
-                String[] columns = { ID, WHITE_PLAYER, LASTNAME, DATE, PHONE };
+                String[] columns = { ID, WHITE_PLAYER, BLACK_PLAYER, DATE, RESULT, MOVES };
                 return database.query(false, TABLE, columns, where, null, null, having, WHITE_PLAYER + " ASC", null, null);
         }
 
@@ -158,88 +156,6 @@ public class DBAdapter {
         }
 
         /**
-         * Get the currently saved default SMS from the database. This is an
-         * untreated direct copy of the String entered in EditSMSActivity. It will
-         * still contain all special tags.
-         *
-         * @return A string representing the default SMS
-         */
-        protected String getDefaultSMS() {
-                Cursor cursor = database.query(false, TABLE_SMS, new String[] { SMS }, IS_DEFAULT + "=1", null, null, null,
-                                null, null, null);
-
-                if (cursor.getCount() != 1)
-                        throw new IllegalStateException("The number of default SMS in database is not exactly 1");
-
-                cursor.moveToFirst();
-                return cursor.getString(cursor.getColumnIndex(SMS));
-        }
-
-        /**
-         * Returns all people who's birthdays are today and who have not received an
-         * SMS today If a person was born on february 29th they will be returned on
-         * March 1st if the current year is not a leap year
-         *
-         * @return A cursor positioned before the first entry
-         */
-        @SuppressLint("SimpleDateFormat")
-        protected Cursor getTodaysBirthdays() {
-                Calendar today = Calendar.getInstance();
-                // month is indexed from 0-11 in Calendar, but from 1-12 in DB
-                int m = today.get(Calendar.MONTH) + 1;
-                SimpleDateFormat date_format = new SimpleDateFormat("yyyy-MM-dd");
-
-                String month = "" + m;
-                if (m < 10)
-                        month = "0" + m;
-
-                String sql = "strftime('%m', " + DATE + ")='" + month + "' AND strftime('%d', " + DATE + ")='"
-                                + today.get(Calendar.DAY_OF_MONTH) + "'";
-
-                if (leapYearShouldBeIncluded(today)) {
-                        sql += " OR strftime('%m', " + DATE + ")='02' AND strftime('%d', " + DATE + ")='29'";
-                }
-                sql += " AND " + LAST_SMS_SENT + "!='" + date_format.format(today.getTime()) + "'";
-
-                String[] columns = { ID, WHITE_PLAYER, LASTNAME, DATE, PHONE };
-                return database.query(false, TABLE, columns, sql, null, null, null, null, null, null);
-        }
-
-        /**
-         * Help method for getTodaysBirthdays(). Returns true if feb. 29th should be
-         * included in the results.
-         *
-         * @param date
-         * A calendar object set to today
-         * @return True if today is march 1st and it is not a leap year
-         */
-        private boolean leapYearShouldBeIncluded(Calendar date) {
-                // No special case if this year has feb 29th
-                if (isLeapYear(date))
-                        return false;
-                else if (date.get(Calendar.MONTH) == Calendar.MARCH && date.get(Calendar.DAY_OF_MONTH) == 1)
-                        return true;
-                return false;
-        }
-
-        /**
-         * Help-method for leapYearShouldBeIncluded.
-         *
-         * @param date
-         * A calendar object set to today
-         * @return True if it is currently a leap year
-         */
-        private boolean isLeapYear(Calendar date) {
-                if (date.get(Calendar.YEAR) % 400 == 0)
-                        return true;
-                else if (date.get(Calendar.YEAR) % 100 == 0)
-                        return false;
-                else if (date.get(Calendar.YEAR) % 4 == 0)
-                        return true;
-                return false;
-        }
-
-        /**
          * Appropriate implementation of SQLiteOpenHelper
          *
          * @author Lars Sætaberget
@@ -256,7 +172,7 @@ public class DBAdapter {
                 @Override
                 public void onCreate(SQLiteDatabase db) {
                         String sql = "create table " + TABLE + " (" + ID + " integer primary key autoincrement, "
-                                        + WHITE_PLAYER + " text, " + BLACK_PLAYER + " text, " + DATE + " date, " + WHITE_WON + " boolean, "
+                                        + WHITE_PLAYER + " text, " + BLACK_PLAYER + " text, " + DATE + " date, " + RESULT + " text, "
                                         + MOVES + " text);";
                         db.execSQL(sql);
                 }
