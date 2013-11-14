@@ -2,7 +2,7 @@ package hioa.android.chess;
 
 public class King extends Chesspiece {
 
-	private boolean mCanCastle = true;
+	private boolean mHasMoved = false;
 	private boolean mInCheck = false;
 
 	public King(int color, int row, int column) {
@@ -16,8 +16,6 @@ public class King extends Chesspiece {
 	}
 
 	public void setInCheck(boolean inCheck) {
-		if (inCheck == true)
-			mCanCastle = false;
 		mInCheck = inCheck;
 	}
 
@@ -28,7 +26,7 @@ public class King extends Chesspiece {
 			chessboard.move(this, row, column);
 			setRow(row);
 			setColumn(column);
-			mCanCastle = false;
+			mHasMoved = true;
 			return true;
 		} else
 			return false;
@@ -79,7 +77,7 @@ public class King extends Chesspiece {
 		int row = getRow();
 		int column = getColumn();
 		// Kingside Castle
-		if (mCanCastle && chessboard.tileContains(row, column + 1, false) == NO_PIECE
+		if (!mHasMoved && chessboard.tileContains(row, column + 1, false) == NO_PIECE
 				&& chessboard.tileContains(row, column + 2, false) == NO_PIECE) {
 
 			Chesspiece rook = chessboard.getPieceAt(row, column + 3);
@@ -88,7 +86,7 @@ public class King extends Chesspiece {
 			}
 		}
 		// Queenside Castle
-		if (mCanCastle && chessboard.tileContains(row, column - 1, false) == NO_PIECE
+		if (!mHasMoved && chessboard.tileContains(row, column - 1, false) == NO_PIECE
 				&& chessboard.tileContains(row, column - 2, false) == NO_PIECE
 				&& chessboard.tileContains(row, column - 3, false) == NO_PIECE) {
 
