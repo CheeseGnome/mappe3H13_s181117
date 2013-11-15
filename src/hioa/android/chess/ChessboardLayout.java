@@ -13,11 +13,17 @@ import android.widget.TableLayout;
 
 public class ChessboardLayout extends TableLayout {
 
+	Chessboard mChessboard;
+	
 	public ChessboardLayout(Context context, AttributeSet attributes) {
 		super(context, attributes);
 		LayoutInflater layoutInflater = (LayoutInflater)context
 	              .getSystemService(Context.LAYOUT_INFLATER_SERVICE);
 	    layoutInflater.inflate(R.layout.chessboardlayout, this);
+	}
+	
+	public void setChessboard(Chessboard board){
+		mChessboard = board;
 	}
 
 }
