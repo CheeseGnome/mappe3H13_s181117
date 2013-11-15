@@ -24,16 +24,18 @@ public class ChessboardLayout extends TableLayout {
 
 	public ChessboardLayout(Context context, AttributeSet attributes) {
 		super(context, attributes);
+
 		LayoutInflater layoutInflater = (LayoutInflater) context
 				.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
 		layoutInflater.inflate(R.layout.chessboardlayout, this);
 		resources = getResources();
+		setChessboard(new Chessboard(context));
 		initializeButtonArray();
+		insertPieces();
 	}
 
 	public void setChessboard(Chessboard board) {
 		mChessboard = board;
-		insertPieces();
 	}
 
 	private void insertPieces() {
@@ -53,7 +55,7 @@ public class ChessboardLayout extends TableLayout {
 	}
 
 	private Drawable getPieceIcon(Chesspiece piece) {
-		//TODO denne burde skrives om til å bare bruke id direkte
+		// TODO denne burde skrives om til å bare bruke id direkte
 		String identifier;
 		if (piece.getColor() == Chesspiece.WHITE) {
 			identifier = "white_";
@@ -73,8 +75,9 @@ public class ChessboardLayout extends TableLayout {
 		} else if (piece instanceof King) {
 			identifier += "king";
 		}
-		
-		int id = resources.getIdentifier(identifier, "id", "hioa.android.chess");
+
+		int id = resources
+				.getIdentifier(identifier + ".png", "id", "hioa.android.chess");
 		return resources.getDrawable(id);
 	}
 
