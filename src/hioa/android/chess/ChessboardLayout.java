@@ -10,6 +10,7 @@ import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.util.AttributeSet;
 import android.view.LayoutInflater;
+import android.view.View;
 import android.widget.ImageButton;
 import android.widget.TableLayout;
 
@@ -25,14 +26,15 @@ public class ChessboardLayout extends TableLayout {
 
 	Chessboard mChessboard;
 	ImageButton[][] mButtons;
-	Resources resources;
+	Resources mResources;
+	Chesspiece mSelected;
 
 	public ChessboardLayout(Context context, AttributeSet attributes) {
 		super(context, attributes);
 
 		LayoutInflater layoutInflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
 		layoutInflater.inflate(R.layout.chessboardlayout, this);
-		resources = getResources();
+		mResources = getResources();
 		setChessboard(new Chessboard(context));
 		initializeButtonArray();
 		insertPieces();
@@ -95,9 +97,9 @@ public class ChessboardLayout extends TableLayout {
 				id = R.drawable.black_king;
 			}
 		}
-		Drawable dr = resources.getDrawable(id);
+		Drawable dr = mResources.getDrawable(id);
 		Bitmap bitmap = ((BitmapDrawable) dr).getBitmap();
-		int size = resources.getDimensionPixelSize(R.dimen.tile_size);
+		int size = mResources.getDimensionPixelSize(R.dimen.tile_size);
 		return new BitmapDrawable(getResources(), Bitmap.createScaledBitmap(bitmap, size, size, true));
 	}
 
@@ -106,10 +108,37 @@ public class ChessboardLayout extends TableLayout {
 		int id;
 		for (int i = 0; i < mChessboard.getMaxRows(); i++) {
 			for (int j = 0; j < mChessboard.getMaxColumns(); j++) {
-				id = resources.getIdentifier("tile" + i + j, "id", "hioa.android.chess");
+				id = mResources.getIdentifier("tile" + i + j, "id", "hioa.android.chess");
 				mButtons[i][j] = (ImageButton) findViewById(id);
+				setButtonListener(mButtons[i][j], i, j);
 			}
 		}
 	}
 
+	private void setButtonListener(ImageButton button, final int row, final int column) {
+		button.setOnClickListener(new View.OnClickListener() {
+			public void onClick(View v) {
+				// TODO gjør ferdig
+//				if (mSelected == null) {
+					mSelected = mChessboard.getPieceAt(row, column);
+					if (mSelected != null)
+						setLegalMovesHint(mSelected.legalMoves());
+//				} else {
+					mSelected = null;
+//				}
+			}
+		});
+	}
+
+	private void setLegalMovesHint(boolean[][] legalMoves) {
+		for (int i = 0; i < mChessboard.getMaxRows(); i++) {
+			for (int j = 0; j < mChessboard.getMaxColumns(); j++) {
+				if(legalMoves[i][j]){
+					mButtons[i][j].setBackgroundColor(mResources.getColor(android.R.color.holo_green_light));
+				}else{
+					mButtons[i][j].setBackgroundColor(mResources.getColor(android.R.color.transparent));
+				}
+			}
+		}
+	}
 }

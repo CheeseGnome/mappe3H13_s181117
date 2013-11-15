@@ -219,7 +219,7 @@ public class Chessboard {
 		// search for threats
 		for (int i = 0; i < getMaxRows(); i++) {
 			for (int j = 0; j < getMaxColumns(); j++) {
-				if (mChessboard[i][j].getColor() == enemy && mChessboard[i][j].threatensPosition(kingRow, kingColumn)) {
+				if (mChessboard[i][j] != null && mChessboard[i][j].getColor() == enemy && mChessboard[i][j].threatensPosition(kingRow, kingColumn)) {
 					return true;
 				}
 			}

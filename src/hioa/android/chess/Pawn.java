@@ -26,7 +26,7 @@ public class Pawn extends Chesspiece {
 			chessboard.move(this, row, column);
 			setRow(row);
 			setColumn(column);
-			if(Math.abs(row - getRow()) == 2){
+			if (Math.abs(row - getRow()) == 2) {
 				chessboard.placeEnPassant(new EnPassant(this));
 			}
 			mHasMoved = true;
@@ -67,26 +67,26 @@ public class Pawn extends Chesspiece {
 		int row = getRow();
 		int column = getColumn();
 		// capture left
-		if (!chessboard.kingInCheckAfter(this, row + 1, column - 1)) {
+		if (row+1 < chessboard.getMaxRows() && column - 1 >= 0 && !chessboard.kingInCheckAfter(this, row + 1, column - 1)) {
 			if (chessboard.tileContains(row + 1, column - 1, true) == WHITE
 					|| chessboard.tileContains(row + 1, column - 1, true) == EN_PASSANT) {
 				board[row + 1][column - 1] = true;
 			}
 		}
 		// capture right
-		if (!chessboard.kingInCheckAfter(this, row + 1, column + 1)) {
+		if (row+1 < chessboard.getMaxRows() && column+1 < chessboard.getMaxColumns() && !chessboard.kingInCheckAfter(this, row + 1, column + 1)) {
 			if (chessboard.tileContains(row + 1, column + 1, true) == WHITE
 					&& chessboard.tileContains(row + 1, column + 1, true) == EN_PASSANT) {
 				board[row + 1][column + 1] = true;
 			}
 		}
 		// move forward 1
-		if (!chessboard.kingInCheckAfter(this, row + 1, column)
+		if (row+1 < chessboard.getMaxRows() && !chessboard.kingInCheckAfter(this, row + 1, column)
 				&& chessboard.tileContains(row + 1, column, true) == NO_PIECE) {
 			board[row + 1][column] = true;
 		}
 		// move forward 2
-		if (!chessboard.kingInCheckAfter(this, row + 2, column) && mHasMoved == false
+		if (mHasMoved == false && !chessboard.kingInCheckAfter(this, row + 2, column)
 				&& chessboard.tileContains(row + 2, column, true) == NO_PIECE
 				&& chessboard.tileContains(row + 1, column, true) == NO_PIECE) {
 			board[row + 2][column] = true;
@@ -104,26 +104,26 @@ public class Pawn extends Chesspiece {
 		int row = getRow();
 		int column = getColumn();
 		// capture left
-		if (!chessboard.kingInCheckAfter(this, row - 1, column - 1)) {
+		if (row - 1 >= 0 && column - 1 >= 0 && !chessboard.kingInCheckAfter(this, row - 1, column - 1)) {
 			if (chessboard.tileContains(row - 1, column - 1, true) == BLACK
 					|| chessboard.tileContains(row - 1, column - 1, true) == EN_PASSANT) {
 				board[row - 1][column - 1] = true;
 			}
 		}
 		// capture right
-		if (!chessboard.kingInCheckAfter(this, row - 1, column + 1)) {
+		if (column+1 < chessboard.getMaxColumns() && row - 1 >= 0 && !chessboard.kingInCheckAfter(this, row - 1, column + 1)) {
 			if (chessboard.tileContains(row - 1, column + 1, true) == BLACK
 					|| chessboard.tileContains(row - 1, column + 1, true) == EN_PASSANT) {
 				board[row - 1][column + 1] = true;
 			}
 		}
 		// move forward 1
-		if (!chessboard.kingInCheckAfter(this, row - 1, column)
+		if (row - 1 >= 0 && !chessboard.kingInCheckAfter(this, row - 1, column)
 				&& chessboard.tileContains(row - 1, column, true) == NO_PIECE) {
 			board[row - 1][column] = true;
 		}
 		// move forward 2
-		if (!chessboard.kingInCheckAfter(this, row - 2, column) && mHasMoved == false
+		if (mHasMoved == false && !chessboard.kingInCheckAfter(this, row - 2, column)
 				&& chessboard.tileContains(row - 2, column, true) == NO_PIECE
 				&& chessboard.tileContains(row - 1, column, true) == NO_PIECE) {
 			board[row - 2][column] = true;

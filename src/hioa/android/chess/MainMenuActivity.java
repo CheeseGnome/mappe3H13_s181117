@@ -19,10 +19,10 @@ public class MainMenuActivity extends Activity {
 		Button button = (Button) findViewById(R.id.button1);
 		final Intent gameIntent = new Intent(this, GameActivity.class);
 		button.setOnClickListener(new View.OnClickListener() {
-            public void onClick(View v) {
-                startActivity(gameIntent);
-        }
-});
+			public void onClick(View v) {
+				startActivity(gameIntent);
+			}
+		});
 		
 	}
 	
