@@ -207,7 +207,7 @@ public class Bishop extends Chesspiece {
 				break;
 			}
 			// Friendly piece blocking
-			else {
+			else if (chessboard.tileContains(row, column, false) == getColor()){
 				break;
 			}
 			row -= 1;
@@ -242,7 +242,7 @@ public class Bishop extends Chesspiece {
 				break;
 			}
 			// Friendly piece blocking
-			else {
+			else  if (chessboard.tileContains(row, column, false) == getColor()){
 				break;
 			}
 			row -= 1;
@@ -277,7 +277,7 @@ public class Bishop extends Chesspiece {
 				break;
 			}
 			// Friendly piece blocking
-			else {
+			else  if (chessboard.tileContains(row, column, false) == getColor()){
 				break;
 			}
 			row += 1;
@@ -313,7 +313,7 @@ public class Bishop extends Chesspiece {
 				break;
 			}
 			// Friendly piece blocking
-			else {
+			else  if (chessboard.tileContains(row, column, false) == getColor()){
 				break;
 			}
 			row += 1;

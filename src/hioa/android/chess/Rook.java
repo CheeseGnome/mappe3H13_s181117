@@ -52,7 +52,8 @@ public class Rook extends Chesspiece {
 
 	@Override
 	public boolean[][] legalMoves() {
-		boolean[][] board = new boolean[chessboard.getMaxRows()][chessboard.getMaxColumns()];
+		boolean[][] board = new boolean[chessboard.getMaxRows()][chessboard
+				.getMaxColumns()];
 		int enemy;
 		if (getColor() == WHITE)
 			enemy = BLACK;
@@ -94,7 +95,7 @@ public class Rook extends Chesspiece {
 				break;
 			}
 			// Friendly piece blocking
-			else {
+			else if (chessboard.tileContains(i, getColumn(), false) == getColor()) {
 				break;
 			}
 
@@ -127,7 +128,7 @@ public class Rook extends Chesspiece {
 				break;
 			}
 			// Friendly piece blocking
-			else {
+			else if (chessboard.tileContains(getRow(), i, false) == getColor()) {
 				break;
 			}
 
@@ -160,7 +161,7 @@ public class Rook extends Chesspiece {
 				break;
 			}
 			// Friendly piece blocking
-			else {
+			else if (chessboard.tileContains(i, getColumn(), false) == getColor()) {
 				break;
 			}
 
@@ -192,7 +193,7 @@ public class Rook extends Chesspiece {
 				break;
 			}
 			// Friendly piece blocking
-			else {
+			else if (chessboard.tileContains(getRow(), i, false) == getColor()) {
 				break;
 			}
 

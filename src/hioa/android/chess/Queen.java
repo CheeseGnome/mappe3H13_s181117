@@ -108,7 +108,7 @@ public class Queen extends Chesspiece {
 				break;
 			}
 			// Friendly piece blocking
-			else {
+			else if (chessboard.tileContains(i, getColumn(), false) == getColor()) {
 				break;
 			}
 
@@ -141,7 +141,7 @@ public class Queen extends Chesspiece {
 				break;
 			}
 			// Friendly piece blocking
-			else {
+			else if (chessboard.tileContains(getRow(), i, false) == getColor()) {
 				break;
 			}
 
@@ -174,7 +174,7 @@ public class Queen extends Chesspiece {
 				break;
 			}
 			// Friendly piece blocking
-			else {
+			else if (chessboard.tileContains(i, getColumn(), false) == getColor()) {
 				break;
 			}
 
@@ -206,7 +206,7 @@ public class Queen extends Chesspiece {
 				break;
 			}
 			// Friendly piece blocking
-			else {
+			else if (chessboard.tileContains(getRow(), i, false) == getColor()) {
 				break;
 			}
 
@@ -241,7 +241,7 @@ public class Queen extends Chesspiece {
 				break;
 			}
 			// Friendly piece blocking
-			else {
+			else  if (chessboard.tileContains(row, column, false) == getColor()){
 				break;
 			}
 			row -= 1;
@@ -276,7 +276,7 @@ public class Queen extends Chesspiece {
 				break;
 			}
 			// Friendly piece blocking
-			else {
+			else  if (chessboard.tileContains(row, column, false) == getColor()){
 				break;
 			}
 			row -= 1;
@@ -311,7 +311,7 @@ public class Queen extends Chesspiece {
 				break;
 			}
 			// Friendly piece blocking
-			else {
+			else  if (chessboard.tileContains(row, column, false) == getColor()){
 				break;
 			}
 			row += 1;
@@ -348,7 +348,7 @@ public class Queen extends Chesspiece {
 				break;
 			}
 			// Friendly piece blocking
-			else {
+			else  if (chessboard.tileContains(row, column, false) == getColor()){
 				break;
 			}
 			row += 1;
