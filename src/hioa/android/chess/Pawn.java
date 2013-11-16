@@ -1,5 +1,7 @@
 package hioa.android.chess;
 
+import android.util.Log;
+
 /**
  * Represents a pawn
  * 
@@ -24,9 +26,10 @@ public class Pawn extends Chesspiece {
 	public boolean move(int row, int column) {
 		if (legalMoves()[row][column] == true) {
 			chessboard.move(this, row, column);
+			boolean placeEnPassant = Math.abs(row - getRow()) == 2;
 			setRow(row);
 			setColumn(column);
-			if (Math.abs(row - getRow()) == 2) {
+			if (placeEnPassant) {
 				chessboard.placeEnPassant(new EnPassant(this));
 			}
 			mHasMoved = true;
@@ -78,7 +81,7 @@ public class Pawn extends Chesspiece {
 		if (row + 1 < chessboard.getMaxRows() && column + 1 < chessboard.getMaxColumns()
 				&& !chessboard.kingInCheckAfter(this, row + 1, column + 1)) {
 			if (chessboard.tileContains(row + 1, column + 1, true) == WHITE
-					&& chessboard.tileContains(row + 1, column + 1, true) == EN_PASSANT) {
+					|| chessboard.tileContains(row + 1, column + 1, true) == EN_PASSANT) {
 				board[row + 1][column + 1] = true;
 			}
 		}

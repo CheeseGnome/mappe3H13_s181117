@@ -57,7 +57,7 @@ public class ChessboardLayout extends TableLayout {
 		for (int i = 0; i < mChessboard.getMaxRows(); i++) {
 			for (int j = 0; j < mChessboard.getMaxColumns(); j++) {
 				piece = mChessboard.getPieceAt(i, j);
-				if (piece == null) {
+				if (piece == null || piece.getColor() == Chesspiece.EN_PASSANT) {
 					mButtons[i][j]
 							.setImageResource(android.R.color.transparent);
 				} else {
@@ -69,6 +69,7 @@ public class ChessboardLayout extends TableLayout {
 
 	private Drawable getPieceIcon(Chesspiece piece) {
 		int id = -1;
+		
 		if (piece.getColor() == Chesspiece.WHITE) {
 			if (piece instanceof Pawn) {
 				id = R.drawable.white_pawn;
@@ -132,7 +133,6 @@ public class ChessboardLayout extends TableLayout {
 						invalidate();
 					}
 				} else if (mLegalMoves[row][column]) {
-					Log.d("D","move");
 					mSelected.move(row, column);
 					mSelected = null;
 					mLegalMoves = null;

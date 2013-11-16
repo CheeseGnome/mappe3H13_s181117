@@ -26,13 +26,12 @@ public class EnPassant extends Chesspiece {
 	public EnPassant(Pawn pawn) {
 		setColor(EN_PASSANT);
 		setColumn(pawn.getColumn());
-		if (getColor() == WHITE) {
+		if (pawn.getColor() == WHITE) {
 			setRow(pawn.getRow() + 1);
 		} else {
 			setRow(pawn.getRow() - 1);
 		}
 		mPawn = pawn;
-		chessboard.placeEnPassant(this);
 	}
 
 	/**

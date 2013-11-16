@@ -22,7 +22,16 @@ public class King extends Chesspiece {
 	@Override
 	public boolean move(int row, int column) {
 		if (legalMoves()[row][column] == true) {
-			// TODO castle
+			//Castle
+			if (Math.abs(getColumn() - column) == 2) {
+				if (column > getColumn()) {
+					chessboard.getPieceAt(row, column + 1)
+							.move(row, column - 1);
+				} else {
+					chessboard.getPieceAt(row, column - 2)
+							.move(row, column + 1);
+				}
+			}
 			chessboard.move(this, row, column);
 			setRow(row);
 			setColumn(column);
@@ -34,7 +43,8 @@ public class King extends Chesspiece {
 
 	@Override
 	public boolean[][] legalMoves() {
-		boolean[][] board = new boolean[chessboard.getMaxRows()][chessboard.getMaxColumns()];
+		boolean[][] board = new boolean[chessboard.getMaxRows()][chessboard
+				.getMaxColumns()];
 		getLegalCastles(board);
 
 		int row = getRow();
@@ -77,7 +87,8 @@ public class King extends Chesspiece {
 		int row = getRow();
 		int column = getColumn();
 		// Kingside Castle
-		if (!mHasMoved && chessboard.tileContains(row, column + 1, false) == NO_PIECE
+		if (!mHasMoved
+				&& chessboard.tileContains(row, column + 1, false) == NO_PIECE
 				&& chessboard.tileContains(row, column + 2, false) == NO_PIECE) {
 
 			Chesspiece rook = chessboard.getPieceAt(row, column + 3);
@@ -86,7 +97,8 @@ public class King extends Chesspiece {
 			}
 		}
 		// Queenside Castle
-		if (!mHasMoved && chessboard.tileContains(row, column - 1, false) == NO_PIECE
+		if (!mHasMoved
+				&& chessboard.tileContains(row, column - 1, false) == NO_PIECE
 				&& chessboard.tileContains(row, column - 2, false) == NO_PIECE
 				&& chessboard.tileContains(row, column - 3, false) == NO_PIECE) {
 
@@ -124,7 +136,8 @@ public class King extends Chesspiece {
 	 * @return True if both indexes are within the allowed range
 	 */
 	private boolean legalIndexes(int row, int column) {
-		return (row >= 0 && row < chessboard.getMaxRows() && column >= 0 && column < chessboard.getMaxColumns());
+		return (row >= 0 && row < chessboard.getMaxRows() && column >= 0 && column < chessboard
+				.getMaxColumns());
 	}
 
 	@Override

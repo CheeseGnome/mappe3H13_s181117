@@ -1,6 +1,7 @@
 package hioa.android.chess;
 
 import android.content.Context;
+import android.util.Log;
 
 public class Chessboard {
 
@@ -26,7 +27,8 @@ public class Chessboard {
 
 		for (int i = 0; i < getMaxColumns(); i++) {
 			board[1][i] = new Pawn(Chesspiece.BLACK, 1, i);
-			board[getMaxRows() - 2][i] = new Pawn(Chesspiece.WHITE, getMaxRows() - 2, i);
+			board[getMaxRows() - 2][i] = new Pawn(Chesspiece.WHITE,
+					getMaxRows() - 2, i);
 		}
 		board[0][0] = new Rook(Chesspiece.BLACK, 0, 0);
 		board[0][1] = new Knight(Chesspiece.BLACK, 0, 1);
@@ -37,14 +39,22 @@ public class Chessboard {
 		board[0][6] = new Knight(Chesspiece.BLACK, 0, 6);
 		board[0][7] = new Rook(Chesspiece.BLACK, 0, 7);
 
-		board[getMaxRows() - 1][0] = new Rook(Chesspiece.WHITE, getMaxRows() - 1, 0);
-		board[getMaxRows() - 1][1] = new Knight(Chesspiece.WHITE, getMaxRows() - 1, 1);
-		board[getMaxRows() - 1][2] = new Bishop(Chesspiece.WHITE, getMaxRows() - 1, 2);
-		board[getMaxRows() - 1][3] = new Queen(Chesspiece.WHITE, getMaxRows() - 1, 3);
-		board[getMaxRows() - 1][4] = new King(Chesspiece.WHITE, getMaxRows() - 1, 4);
-		board[getMaxRows() - 1][5] = new Bishop(Chesspiece.WHITE, getMaxRows() - 1, 5);
-		board[getMaxRows() - 1][6] = new Knight(Chesspiece.WHITE, getMaxRows() - 1, 6);
-		board[getMaxRows() - 1][7] = new Rook(Chesspiece.WHITE, getMaxRows() - 1, 7);
+		board[getMaxRows() - 1][0] = new Rook(Chesspiece.WHITE,
+				getMaxRows() - 1, 0);
+		board[getMaxRows() - 1][1] = new Knight(Chesspiece.WHITE,
+				getMaxRows() - 1, 1);
+		board[getMaxRows() - 1][2] = new Bishop(Chesspiece.WHITE,
+				getMaxRows() - 1, 2);
+		board[getMaxRows() - 1][3] = new Queen(Chesspiece.WHITE,
+				getMaxRows() - 1, 3);
+		board[getMaxRows() - 1][4] = new King(Chesspiece.WHITE,
+				getMaxRows() - 1, 4);
+		board[getMaxRows() - 1][5] = new Bishop(Chesspiece.WHITE,
+				getMaxRows() - 1, 5);
+		board[getMaxRows() - 1][6] = new Knight(Chesspiece.WHITE,
+				getMaxRows() - 1, 6);
+		board[getMaxRows() - 1][7] = new Rook(Chesspiece.WHITE,
+				getMaxRows() - 1, 7);
 
 		return board;
 	}
@@ -98,9 +108,6 @@ public class Chessboard {
 	 * @param enPassant
 	 */
 	public void placeEnPassant(EnPassant enPassant) {
-		if (mEnPassant != null) {
-			mChessboard[mEnPassant.getRow()][mEnPassant.getColumn()] = null;
-		}
 		mEnPassant = enPassant;
 		mChessboard[enPassant.getRow()][enPassant.getColumn()] = enPassant;
 	}
@@ -121,7 +128,8 @@ public class Chessboard {
 	 */
 	public int tileContains(int row, int column, boolean showEnPassant) {
 		if (mChessboard[row][column] != null) {
-			if (mChessboard[row][column].getColor() == Chesspiece.EN_PASSANT && !showEnPassant) {
+			if (mChessboard[row][column].getColor() == Chesspiece.EN_PASSANT
+					&& !showEnPassant) {
 				return Chesspiece.NO_PIECE;
 			}
 			return mChessboard[row][column].getColor();
@@ -144,8 +152,10 @@ public class Chessboard {
 	 */
 	public void move(Chesspiece piece, int row, int column) {
 		// Kill En-Passant
-		if (mChessboard[row][column] != null && mChessboard[row][column].getColor() == Chesspiece.EN_PASSANT) {
-			mChessboard[mEnPassant.getPawn().getRow()][mEnPassant.getPawn().getColumn()] = null;
+		if (mChessboard[row][column] != null
+				&& mChessboard[row][column].getColor() == Chesspiece.EN_PASSANT) {
+			mChessboard[mEnPassant.getPawn().getRow()][mEnPassant.getPawn()
+					.getColumn()] = null;
 		}
 		// Remove En-Passant opportunity (if there is one)
 		if (mEnPassant != null) {
@@ -203,7 +213,8 @@ public class Chessboard {
 		// find the king
 		kingSearch: for (int i = 0; i < getMaxRows(); i++) {
 			for (int j = 0; j < getMaxColumns(); j++) {
-				if (mChessboard[i][j] instanceof King && mChessboard[i][j].getColor() == color) {
+				if (mChessboard[i][j] instanceof King
+						&& mChessboard[i][j].getColor() == color) {
 					kingRow = i;
 					kingColumn = j;
 					break kingSearch;
@@ -219,7 +230,10 @@ public class Chessboard {
 		// search for threats
 		for (int i = 0; i < getMaxRows(); i++) {
 			for (int j = 0; j < getMaxColumns(); j++) {
-				if (mChessboard[i][j] != null && mChessboard[i][j].getColor() == enemy && mChessboard[i][j].threatensPosition(kingRow, kingColumn)) {
+				if (mChessboard[i][j] != null
+						&& mChessboard[i][j].getColor() == enemy
+						&& mChessboard[i][j].threatensPosition(kingRow,
+								kingColumn)) {
 					return true;
 				}
 			}
@@ -237,7 +251,8 @@ public class Chessboard {
 	private boolean hasLegalMoves(int color) {
 		for (int i = 0; i < getMaxRows(); i++) {
 			for (int j = 0; j < getMaxColumns(); j++) {
-				if (mChessboard[i][j] != null && mChessboard[i][j].getColor() == color) {
+				if (mChessboard[i][j] != null
+						&& mChessboard[i][j].getColor() == color) {
 					if (containsTrue(mChessboard[i][j].legalMoves())) {
 						return true;
 					}
@@ -266,10 +281,12 @@ public class Chessboard {
 	}
 
 	public int getMaxRows() {
-		return 1 + mContext.getResources().getInteger(R.integer.chesspiece_max_row_index);
+		return 1 + mContext.getResources().getInteger(
+				R.integer.chesspiece_max_row_index);
 	}
 
 	public int getMaxColumns() {
-		return 1 + mContext.getResources().getInteger(R.integer.chesspiece_max_column_index);
+		return 1 + mContext.getResources().getInteger(
+				R.integer.chesspiece_max_column_index);
 	}
 }
