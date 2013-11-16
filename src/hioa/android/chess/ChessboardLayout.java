@@ -1,5 +1,6 @@
 package hioa.android.chess;
 
+import android.app.Dialog;
 import android.content.Context;
 import android.content.res.Resources;
 import android.graphics.Bitmap;
@@ -27,16 +28,16 @@ public class ChessboardLayout extends TableLayout {
 	boolean[][] mLegalMoves;
 	Resources mResources;
 	Chesspiece mSelected;
+	Context mContext;
 	int mCurrentPlayer = Chesspiece.WHITE;
 
 	public ChessboardLayout(Context context, AttributeSet attributes) {
 		super(context, attributes);
 
-		LayoutInflater layoutInflater = (LayoutInflater) context
-				.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+		LayoutInflater layoutInflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
 		layoutInflater.inflate(R.layout.chessboardlayout, this);
 		mResources = getResources();
-
+		mContext = context;
 		setChessboard(new Chessboard(context));
 		initializeButtonArray();
 		insertPieces();
@@ -52,14 +53,73 @@ public class ChessboardLayout extends TableLayout {
 		mChessboard = board;
 	}
 
+	public void winTheGame(int color) {
+
+	}
+
+	public void promote(Pawn pawn,final int row, final int column) {
+		final Dialog dialog = new Dialog(mContext);
+		TableLayout contentView = (TableLayout) View.inflate(mContext, R.layout.promotiondialog, null);
+		dialog.setContentView(contentView);
+
+		Queen queen = new Queen(pawn.getColor(), pawn.getRow(), pawn.getColumn());
+		Rook rook = new Rook(pawn.getColor(), pawn.getRow(), pawn.getColumn());
+		Bishop bishop = new Bishop(pawn.getColor(), pawn.getRow(), pawn.getColumn());
+		Knight knight = new Knight(pawn.getColor(), pawn.getRow(), pawn.getColumn());
+
+		ImageButton btn_queen = (ImageButton) contentView.findViewById(R.id.btn_queen);
+		ImageButton btn_rook = (ImageButton) contentView.findViewById(R.id.btn_rook);
+		ImageButton btn_bishop = (ImageButton) contentView.findViewById(R.id.btn_bishop);
+		ImageButton btn_knight = (ImageButton) contentView.findViewById(R.id.btn_knight);
+
+		btn_queen.setImageDrawable(getPieceIcon(queen));
+		btn_rook.setImageDrawable(getPieceIcon(rook));
+		btn_bishop.setImageDrawable(getPieceIcon(bishop));
+		btn_knight.setImageDrawable(getPieceIcon(knight));
+
+		btn_queen.setOnClickListener(new OnClickListener() {
+			@Override
+			public void onClick(View v) {
+				mChessboard.setPromotionFlag(Chessboard.QUEEN);
+				performMove(row,column);
+				dialog.dismiss();
+			}
+		});
+		btn_rook.setOnClickListener(new OnClickListener() {
+			@Override
+			public void onClick(View v) {
+				mChessboard.setPromotionFlag(Chessboard.ROOK);
+				performMove(row,column);
+				dialog.dismiss();
+			}
+		});
+		btn_bishop.setOnClickListener(new OnClickListener() {
+			@Override
+			public void onClick(View v) {
+				mChessboard.setPromotionFlag(Chessboard.BISHOP);
+				performMove(row,column);
+				dialog.dismiss();
+			}
+		});
+		btn_knight.setOnClickListener(new OnClickListener() {
+			@Override
+			public void onClick(View v) {
+				mChessboard.setPromotionFlag(Chessboard.KNIGHT);
+				performMove(row,column);
+				dialog.dismiss();
+			}
+		});
+		dialog.setTitle(mResources.getString(R.string.promotion_title));
+		dialog.show();
+	}
+
 	private void insertPieces() {
 		Chesspiece piece;
 		for (int i = 0; i < mChessboard.getMaxRows(); i++) {
 			for (int j = 0; j < mChessboard.getMaxColumns(); j++) {
 				piece = mChessboard.getPieceAt(i, j);
 				if (piece == null || piece.getColor() == Chesspiece.EN_PASSANT) {
-					mButtons[i][j]
-							.setImageResource(android.R.color.transparent);
+					mButtons[i][j].setImageResource(android.R.color.transparent);
 				} else {
 					mButtons[i][j].setImageDrawable(getPieceIcon(piece));
 				}
@@ -102,26 +162,22 @@ public class ChessboardLayout extends TableLayout {
 		Drawable dr = mResources.getDrawable(id);
 		Bitmap bitmap = ((BitmapDrawable) dr).getBitmap();
 		int size = mResources.getDimensionPixelSize(R.dimen.tile_size);
-		return new BitmapDrawable(getResources(), Bitmap.createScaledBitmap(
-				bitmap, size, size, true));
+		return new BitmapDrawable(getResources(), Bitmap.createScaledBitmap(bitmap, size, size, true));
 	}
 
 	private void initializeButtonArray() {
-		mButtons = new ImageButton[mChessboard.getMaxRows()][mChessboard
-				.getMaxColumns()];
+		mButtons = new ImageButton[mChessboard.getMaxRows()][mChessboard.getMaxColumns()];
 		int id;
 		for (int i = 0; i < mChessboard.getMaxRows(); i++) {
 			for (int j = 0; j < mChessboard.getMaxColumns(); j++) {
-				id = mResources.getIdentifier("tile" + i + j, "id",
-						"hioa.android.chess");
+				id = mResources.getIdentifier("tile" + i + j, "id", "hioa.android.chess");
 				mButtons[i][j] = (ImageButton) findViewById(id);
 				setButtonListener(mButtons[i][j], i, j);
 			}
 		}
 	}
 
-	private void setButtonListener(ImageButton button, final int row,
-			final int column) {
+	private void setButtonListener(ImageButton button, final int row, final int column) {
 		button.setOnClickListener(new View.OnClickListener() {
 			public void onClick(View v) {
 
@@ -137,13 +193,19 @@ public class ChessboardLayout extends TableLayout {
 					invalidate();
 
 				} else if (mLegalMoves[row][column]) {
+					if (mSelected instanceof Pawn) {
+						if (row == 0 || row == mChessboard.getMaxRows() - 1) {
+							promote((Pawn) mSelected, row, column);
+							return;
+						}
+					}
 					mSelected.move(row, column);
+
 					mSelected = null;
 					mLegalMoves = null;
-					if(mCurrentPlayer == Chesspiece.WHITE){
+					if (mCurrentPlayer == Chesspiece.WHITE) {
 						mCurrentPlayer = Chesspiece.BLACK;
-					}
-					else{
+					} else {
 						mCurrentPlayer = Chesspiece.WHITE;
 					}
 					setLegalMovesHint();
@@ -155,6 +217,20 @@ public class ChessboardLayout extends TableLayout {
 				}
 			}
 		});
+	}
+	
+	private void performMove(int row, int column){
+		mSelected.move(row, column);
+
+		mSelected = null;
+		mLegalMoves = null;
+		if (mCurrentPlayer == Chesspiece.WHITE) {
+			mCurrentPlayer = Chesspiece.BLACK;
+		} else {
+			mCurrentPlayer = Chesspiece.WHITE;
+		}
+		setLegalMovesHint();
+		insertPieces();
 	}
 
 	private void setLegalMovesHint() {
@@ -172,8 +248,7 @@ public class ChessboardLayout extends TableLayout {
 					}
 					mButtons[i][j].setBackgroundColor(mResources.getColor(id));
 				} else {
-					mButtons[i][j].setBackgroundColor(mResources
-							.getColor(getTileColorId(i, j)));
+					mButtons[i][j].setBackgroundColor(mResources.getColor(getTileColorId(i, j)));
 				}
 			}
 		}

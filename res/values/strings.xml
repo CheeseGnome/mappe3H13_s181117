@@ -6,5 +6,11 @@
     <string name="tile_description">Tile</string>
     <string name="title_activity_game">GameActivity</string>
     <string name="hello_world">Hello world!</string>
+     <string name="promotion_title">Promotion!</string>
+    <string name="promotion_text">Select a piece to promote to</string>
+    <string name="description_queen">Queen</string>
+    <string name="description_rook">Rook</string>
+    <string name="description_bishop">Bishop</string>
+    <string name="description_knight">Knight</string>
 
 </resources>

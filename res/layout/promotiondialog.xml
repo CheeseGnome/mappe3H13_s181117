@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="utf-8"?>
+<TableLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/TableLayout1"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent" >
+
+    <TableRow
+        android:id="@+id/tableRow1"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:gravity="center_horizontal" >
+
+        <TextView
+            android:id="@+id/textView1"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/promotion_text"
+            android:textAppearance="?android:attr/textAppearanceLarge" />
+    </TableRow>
+
+    <TableRow
+        android:id="@+id/tableRow2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:gravity="center_horizontal" >
+
+        <ImageButton
+            android:id="@+id/btn_queen"
+            android:layout_width="0.0dip"
+            android:layout_height="wrap_content"
+            android:layout_weight="1.0"
+            android:contentDescription="@string/description_queen" />
+
+        <ImageButton
+            android:id="@+id/btn_rook"
+            android:layout_width="0.0dip"
+            android:layout_height="wrap_content"
+            android:layout_weight="1.0"
+            android:contentDescription="@string/description_rook" />
+    </TableRow>
+
+    <TableRow
+        android:id="@+id/tableRow3"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:gravity="center_horizontal" >
+
+        <ImageButton
+            android:id="@+id/btn_bishop"
+            android:layout_width="0.0dip"
+            android:layout_height="wrap_content"
+            android:layout_weight="1.0"
+            android:contentDescription="@string/description_bishop" />
+
+        <ImageButton
+            android:id="@+id/btn_knight"
+            android:layout_width="0.0dip"
+            android:layout_height="wrap_content"
+            android:layout_weight="1.0"
+            android:contentDescription="@string/description_knight" />
+    </TableRow>
+
+</TableLayout>

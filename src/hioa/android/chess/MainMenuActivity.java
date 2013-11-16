@@ -16,7 +16,7 @@ public class MainMenuActivity extends Activity {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_main_menu);
 		
-		Button button = (Button) findViewById(R.id.button1);
+		Button button = (Button) findViewById(R.id.btn_new_game);
 		final Intent gameIntent = new Intent(this, GameActivity.class);
 		button.setOnClickListener(new View.OnClickListener() {
 			public void onClick(View v) {
