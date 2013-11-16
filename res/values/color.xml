@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <color name="black_tile">#0099FF</color>
+    <color name="white_tile">#FFFFFF</color>
+    <color name="black_tile_marked">#00FF00</color>
+    <color name="white_tile_marked">#BBFF00</color>
+
+</resources>
