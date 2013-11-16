@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
+import android.graphics.Paint;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.util.AttributeSet;
@@ -24,8 +25,11 @@ public class ChessboardLayout extends TableLayout {
 
 	Chessboard mChessboard;
 	ImageButton[][] mButtons;
+	boolean[][] mLegalMoves;
 	Resources mResources;
 	Chesspiece mSelected;
+
+	Paint mHintPaint;
 
 	public ChessboardLayout(Context context, AttributeSet attributes) {
 		super(context, attributes);
@@ -34,16 +38,34 @@ public class ChessboardLayout extends TableLayout {
 				.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
 		layoutInflater.inflate(R.layout.chessboardlayout, this);
 		mResources = getResources();
+		mHintPaint = new Paint();
+		mHintPaint.setColor(mResources
+				.getColor(android.R.color.holo_green_light));
 		setChessboard(new Chessboard(context));
 		initializeButtonArray();
 		insertPieces();
+		setWillNotDraw(false);
+
 	}
 
 	@Override
-	protected void dispatchDraw(Canvas canvas) {
-		// canvas.setDrawFilter(new PaintFlagsDrawFilter(1,
-		// Paint.ANTI_ALIAS_FLAG));
-		super.dispatchDraw(canvas);
+	protected void onDraw(Canvas canvas) {
+		super.onDraw(canvas);
+
+		if (mLegalMoves == null)
+			return;
+		
+		int radius = mButtons[0][0].getWidth() / 4;
+		int x, y, half = mButtons[0][0].getWidth() / 2;
+		for (int i = 0; i < mChessboard.getMaxRows(); i++) {
+			for (int j = 0; j < mChessboard.getMaxColumns(); j++) {
+				if (mLegalMoves[i][j]) {
+					x = mButtons[i][j].getLeft() + half;
+					y = mButtons[i][j].getBottom() - half;
+					canvas.drawCircle(100, 100, radius, mHintPaint);
+				}
+			}
+		}
 	}
 
 	public void setChessboard(Chessboard board) {
@@ -126,16 +148,16 @@ public class ChessboardLayout extends TableLayout {
 				// if (mSelected == null) {
 				mSelected = mChessboard.getPieceAt(row, column);
 				if (mSelected != null)
-					setLegalMovesHint(mSelected.legalMoves());
+					mLegalMoves = mSelected.legalMoves();
 				// } else {
 				mSelected = null;
+				invalidate();
 				// }
 			}
 		});
 	}
 
 	private void setLegalMovesHint(boolean[][] legalMoves) {
-		int colorId;
 		for (int i = 0; i < mChessboard.getMaxRows(); i++) {
 			for (int j = 0; j < mChessboard.getMaxColumns(); j++) {
 				if (legalMoves[i][j]) {
@@ -161,7 +183,6 @@ public class ChessboardLayout extends TableLayout {
 			}
 		} else {
 			if (column % 2 == 0) {
-
 				id = android.R.color.holo_blue_light;
 			} else {
 				id = android.R.color.white;
