@@ -4,8 +4,6 @@ import android.content.Context;
 import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
-import android.graphics.Paint;
-import android.graphics.PaintFlagsDrawFilter;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.util.AttributeSet;
@@ -32,7 +30,8 @@ public class ChessboardLayout extends TableLayout {
 	public ChessboardLayout(Context context, AttributeSet attributes) {
 		super(context, attributes);
 
-		LayoutInflater layoutInflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+		LayoutInflater layoutInflater = (LayoutInflater) context
+				.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
 		layoutInflater.inflate(R.layout.chessboardlayout, this);
 		mResources = getResources();
 		setChessboard(new Chessboard(context));
@@ -58,7 +57,8 @@ public class ChessboardLayout extends TableLayout {
 				piece = mChessboard.getPieceAt(i, j);
 
 				if (piece == null) {
-					mButtons[i][j].setImageResource(android.R.color.transparent);
+					mButtons[i][j]
+							.setImageResource(android.R.color.transparent);
 				} else {
 					mButtons[i][j].setImageDrawable(getPieceIcon(piece));
 				}
@@ -100,45 +100,73 @@ public class ChessboardLayout extends TableLayout {
 		Drawable dr = mResources.getDrawable(id);
 		Bitmap bitmap = ((BitmapDrawable) dr).getBitmap();
 		int size = mResources.getDimensionPixelSize(R.dimen.tile_size);
-		return new BitmapDrawable(getResources(), Bitmap.createScaledBitmap(bitmap, size, size, true));
+		return new BitmapDrawable(getResources(), Bitmap.createScaledBitmap(
+				bitmap, size, size, true));
 	}
 
 	private void initializeButtonArray() {
-		mButtons = new ImageButton[mChessboard.getMaxRows()][mChessboard.getMaxColumns()];
+		mButtons = new ImageButton[mChessboard.getMaxRows()][mChessboard
+				.getMaxColumns()];
 		int id;
 		for (int i = 0; i < mChessboard.getMaxRows(); i++) {
 			for (int j = 0; j < mChessboard.getMaxColumns(); j++) {
-				id = mResources.getIdentifier("tile" + i + j, "id", "hioa.android.chess");
+				id = mResources.getIdentifier("tile" + i + j, "id",
+						"hioa.android.chess");
 				mButtons[i][j] = (ImageButton) findViewById(id);
 				setButtonListener(mButtons[i][j], i, j);
 			}
 		}
 	}
 
-	private void setButtonListener(ImageButton button, final int row, final int column) {
+	private void setButtonListener(ImageButton button, final int row,
+			final int column) {
 		button.setOnClickListener(new View.OnClickListener() {
 			public void onClick(View v) {
 				// TODO gjør ferdig
-//				if (mSelected == null) {
-					mSelected = mChessboard.getPieceAt(row, column);
-					if (mSelected != null)
-						setLegalMovesHint(mSelected.legalMoves());
-//				} else {
-					mSelected = null;
-//				}
+				// if (mSelected == null) {
+				mSelected = mChessboard.getPieceAt(row, column);
+				if (mSelected != null)
+					setLegalMovesHint(mSelected.legalMoves());
+				// } else {
+				mSelected = null;
+				// }
 			}
 		});
 	}
 
 	private void setLegalMovesHint(boolean[][] legalMoves) {
+		int colorId;
 		for (int i = 0; i < mChessboard.getMaxRows(); i++) {
 			for (int j = 0; j < mChessboard.getMaxColumns(); j++) {
-				if(legalMoves[i][j]){
-					mButtons[i][j].setBackgroundColor(mResources.getColor(android.R.color.holo_green_light));
-				}else{
-					mButtons[i][j].setBackgroundColor(mResources.getColor(android.R.color.transparent));
+				if (legalMoves[i][j]) {
+					mButtons[i][j].setBackgroundColor(mResources
+							.getColor(android.R.color.holo_green_light));
+				} else {
+					mButtons[i][j].setBackgroundColor(mResources
+							.getColor(getTileColorId(i, j)));
 				}
 			}
 		}
+
+	}
+
+	private int getTileColorId(final int row, final int column) {
+		int id = -1;
+		if (row % 2 == 0) {
+			if (column % 2 == 0) {
+				id = android.R.color.white;
+			} else {
+
+				id = android.R.color.holo_blue_light;
+			}
+		} else {
+			if (column % 2 == 0) {
+
+				id = android.R.color.holo_blue_light;
+			} else {
+				id = android.R.color.white;
+			}
+		}
+		return id;
 	}
 }

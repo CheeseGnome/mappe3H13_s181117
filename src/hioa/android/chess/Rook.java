@@ -81,7 +81,7 @@ public class Rook extends Chesspiece {
 	 */
 
 	private void getLegalMovesUp(boolean[][] board, int enemy) {
-		for (int i = getRow() - 1; i < chessboard.getMaxRows(); i--) {
+		for (int i = getRow() - 1; i >= 0; i--) {
 			// empty tile
 			if (!chessboard.kingInCheckAfter(this, i, getColumn())
 					&& chessboard.tileContains(i, getColumn(), false) == NO_PIECE) {
@@ -117,12 +117,12 @@ public class Rook extends Chesspiece {
 		for (int i = getColumn() + 1; i < chessboard.getMaxColumns(); i++) {
 			// empty tile
 			if (!chessboard.kingInCheckAfter(this, getRow(), i)
-					&& chessboard.tileContains(i, getColumn(), false) == NO_PIECE) {
+					&& chessboard.tileContains(getRow(), i, false) == NO_PIECE) {
 				board[getRow()][i] = true;
 			}
 			// Piece which can be captured
 			else if (!chessboard.kingInCheckAfter(this, getRow(), i)
-					&& chessboard.tileContains(i, getColumn(), false) == enemy) {
+					&& chessboard.tileContains(getRow(), i, false) == enemy) {
 				board[getRow()][i] = true;
 				break;
 			}
@@ -179,15 +179,15 @@ public class Rook extends Chesspiece {
 	 *            constants in {@link Chesspiece}
 	 */
 	private void getLegalMovesLeft(boolean[][] board, int enemy) {
-		for (int i = getColumn() - 1; i < chessboard.getMaxColumns(); i--) {
+		for (int i = getColumn() - 1; i >= 0; i--) {
 			// empty tile
 			if (!chessboard.kingInCheckAfter(this, getRow(), i)
-					&& chessboard.tileContains(i, getColumn(), false) == NO_PIECE) {
+					&& chessboard.tileContains(getRow(), i, false) == NO_PIECE) {
 				board[getRow()][i] = true;
 			}
 			// Piece which can be captured
 			else if (!chessboard.kingInCheckAfter(this, getRow(), i)
-					&& chessboard.tileContains(i, getColumn(), false) == enemy) {
+					&& chessboard.tileContains(getRow(), i, false) == enemy) {
 				board[getRow()][i] = true;
 				break;
 			}
@@ -238,7 +238,7 @@ public class Rook extends Chesspiece {
 	 * @return True if this piece is threatening the position
 	 */
 	private boolean threatensUp(int row) {
-		for (int i = getRow() - 1; i < chessboard.getMaxRows(); i--) {
+		for (int i = getRow() - 1; i >= 0; i--) {
 			// Piece found
 			if (chessboard.tileContains(i, getColumn(), false) != NO_PIECE) {
 				// King
@@ -265,7 +265,7 @@ public class Rook extends Chesspiece {
 	 * @return True if this piece is threatening the position
 	 */
 	private boolean threatensLeft(int column) {
-		for (int i = getColumn() - 1; i < chessboard.getMaxColumns(); i--) {
+		for (int i = getColumn() - 1; i >= 0; i--) {
 			// Piece found
 			if (chessboard.tileContains(getRow(), i, false) != NO_PIECE) {
 				// King

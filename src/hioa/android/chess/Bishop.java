@@ -38,7 +38,7 @@ public class Bishop extends Chesspiece {
 		getLegalMovesUpLeft(board, enemy);
 		getLegalMovesDownLeft(board, enemy);
 		getLegalMovesDownRight(board, enemy);
-		return null;
+		return board;
 	}
 
 	@Override
