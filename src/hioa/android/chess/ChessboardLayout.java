@@ -7,7 +7,6 @@ import android.graphics.Canvas;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.util.AttributeSet;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.ImageButton;
@@ -28,6 +27,7 @@ public class ChessboardLayout extends TableLayout {
 	boolean[][] mLegalMoves;
 	Resources mResources;
 	Chesspiece mSelected;
+	int mCurrentPlayer = Chesspiece.WHITE;
 
 	public ChessboardLayout(Context context, AttributeSet attributes) {
 		super(context, attributes);
@@ -69,7 +69,7 @@ public class ChessboardLayout extends TableLayout {
 
 	private Drawable getPieceIcon(Chesspiece piece) {
 		int id = -1;
-		
+
 		if (piece.getColor() == Chesspiece.WHITE) {
 			if (piece instanceof Pawn) {
 				id = R.drawable.white_pawn;
@@ -126,20 +126,29 @@ public class ChessboardLayout extends TableLayout {
 			public void onClick(View v) {
 
 				if (mSelected == null) {
-					mSelected = mChessboard.getPieceAt(row, column);
-					if (mSelected != null) {
-						mLegalMoves = mSelected.legalMoves();
-						setLegalMovesHint();
-						invalidate();
-					}
+					Chesspiece piece = mChessboard.getPieceAt(row, column);
+
+					if (piece == null || piece.getColor() != mCurrentPlayer)
+						return;
+
+					mSelected = piece;
+					mLegalMoves = mSelected.legalMoves();
+					setLegalMovesHint();
+					invalidate();
+
 				} else if (mLegalMoves[row][column]) {
 					mSelected.move(row, column);
 					mSelected = null;
 					mLegalMoves = null;
+					if(mCurrentPlayer == Chesspiece.WHITE){
+						mCurrentPlayer = Chesspiece.BLACK;
+					}
+					else{
+						mCurrentPlayer = Chesspiece.WHITE;
+					}
 					setLegalMovesHint();
 					insertPieces();
-				}
-				else{
+				} else {
 					mSelected = null;
 					mLegalMoves = null;
 					setLegalMovesHint();
