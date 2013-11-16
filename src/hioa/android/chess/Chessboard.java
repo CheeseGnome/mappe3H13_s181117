@@ -183,6 +183,17 @@ public class Chessboard {
 		return null;
 	}
 
+	private King getKing(int color) {
+		for (int i = 0; i < getMaxRows(); i++) {
+			for (int j = 0; j < getMaxColumns(); j++) {
+				if (mChessboard[i][j] instanceof King && mChessboard[i][j].getColor() == color) {
+					return (King) mChessboard[i][j];
+				}//TODO denne funker ikke
+			}
+		}
+		return null;
+	}
+
 	private void checkForGameEnd(int color) {
 		int enemy;
 		if (color == Chesspiece.WHITE) {
@@ -190,8 +201,12 @@ public class Chessboard {
 		} else {
 			enemy = Chesspiece.WHITE;
 		}
+		
+		boolean inCheck = isInCheck(enemy);
+		getKing(color).setInCheck(inCheck);
+		
 		if (!hasLegalMoves(enemy)) {
-			if (isInCheck(enemy)) {
+			if (inCheck) {
 				// TODO win the game
 			} else {
 				// TODO draw
@@ -222,17 +237,8 @@ public class Chessboard {
 	 * @return True if the player is in check
 	 */
 	private boolean isInCheck(int color) {
-		int kingRow = -1, kingColumn = -1;
-		// find the king
-		kingSearch: for (int i = 0; i < getMaxRows(); i++) {
-			for (int j = 0; j < getMaxColumns(); j++) {
-				if (mChessboard[i][j] instanceof King && mChessboard[i][j].getColor() == color) {
-					kingRow = i;
-					kingColumn = j;
-					break kingSearch;
-				}
-			}
-		}
+		King king = getKing(color);
+
 		int enemy;
 		if (color == Chesspiece.WHITE) {
 			enemy = Chesspiece.BLACK;
@@ -243,7 +249,7 @@ public class Chessboard {
 		for (int i = 0; i < getMaxRows(); i++) {
 			for (int j = 0; j < getMaxColumns(); j++) {
 				if (mChessboard[i][j] != null && mChessboard[i][j].getColor() == enemy
-						&& mChessboard[i][j].threatensPosition(kingRow, kingColumn)) {
+						&& mChessboard[i][j].threatensPosition(king.getRow(), king.getColumn())) {
 					return true;
 				}
 			}
