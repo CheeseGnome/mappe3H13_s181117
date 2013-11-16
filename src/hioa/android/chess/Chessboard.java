@@ -237,7 +237,7 @@ public class Chessboard {
 	private boolean hasLegalMoves(int color) {
 		for (int i = 0; i < getMaxRows(); i++) {
 			for (int j = 0; j < getMaxColumns(); j++) {
-				if (mChessboard[i][j].getColor() == color) {
+				if (mChessboard[i][j] != null && mChessboard[i][j].getColor() == color) {
 					if (containsTrue(mChessboard[i][j].legalMoves())) {
 						return true;
 					}

@@ -4,11 +4,10 @@ import android.content.Context;
 import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
-import android.graphics.Paint;
-import android.graphics.RectF;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.ImageButton;
@@ -58,7 +57,6 @@ public class ChessboardLayout extends TableLayout {
 		for (int i = 0; i < mChessboard.getMaxRows(); i++) {
 			for (int j = 0; j < mChessboard.getMaxColumns(); j++) {
 				piece = mChessboard.getPieceAt(i, j);
-				// TODO
 				if (piece == null) {
 					mButtons[i][j]
 							.setImageResource(android.R.color.transparent);
@@ -125,25 +123,36 @@ public class ChessboardLayout extends TableLayout {
 			final int column) {
 		button.setOnClickListener(new View.OnClickListener() {
 			public void onClick(View v) {
-				// TODO gjør ferdig
-				// if (mSelected == null) {
-				mSelected = mChessboard.getPieceAt(row, column);
-				if (mSelected != null)
 
-					// } else {
-					setLegalMovesHint(mSelected.legalMoves());
-				mSelected = null;
-				invalidate();
-				// }
+				if (mSelected == null) {
+					mSelected = mChessboard.getPieceAt(row, column);
+					if (mSelected != null) {
+						mLegalMoves = mSelected.legalMoves();
+						setLegalMovesHint();
+						invalidate();
+					}
+				} else if (mLegalMoves[row][column]) {
+					Log.d("D","move");
+					mSelected.move(row, column);
+					mSelected = null;
+					mLegalMoves = null;
+					setLegalMovesHint();
+					insertPieces();
+				}
+				else{
+					mSelected = null;
+					mLegalMoves = null;
+					setLegalMovesHint();
+				}
 			}
 		});
 	}
 
-	private void setLegalMovesHint(boolean[][] legalMoves) {
+	private void setLegalMovesHint() {
 		int id = -1;
 		for (int i = 0; i < mChessboard.getMaxRows(); i++) {
 			for (int j = 0; j < mChessboard.getMaxColumns(); j++) {
-				if (legalMoves[i][j]) {
+				if (mLegalMoves != null && mLegalMoves[i][j]) {
 					switch (getTileColorId(i, j)) {
 					case R.color.white_tile:
 						id = R.color.white_tile_marked;
