@@ -26,6 +26,11 @@ public class ChessboardLayout extends TableLayout {
 	ImageButton[][] mButtons;
 	boolean[][] mLegalMoves;
 	Resources mResources;
+	/**
+	 * The currently selected chesspiece.
+	 * <p>
+	 * This is the piece that will be moved if a legal move is clicked
+	 */
 	Chesspiece mSelected;
 	Context mContext;
 	int mCurrentPlayer = Chesspiece.WHITE;
@@ -48,9 +53,9 @@ public class ChessboardLayout extends TableLayout {
 		mResources = getResources();
 		mContext = context;
 		initializeDrawableArray();
-		setChessboard(new Chessboard(context));
+		mChessboard = new Chessboard(context);
 		initializeButtonArray();
-		insertPieces();
+		placePieces();
 	}
 
 	/**
@@ -82,10 +87,6 @@ public class ChessboardLayout extends TableLayout {
 		Bitmap bitmap = ((BitmapDrawable) dr).getBitmap();
 		int size = mResources.getDimensionPixelSize(R.dimen.tile_size);
 		return new BitmapDrawable(getResources(), Bitmap.createScaledBitmap(bitmap, size, size, true));
-	}
-
-	public void setChessboard(Chessboard board) {
-		mChessboard = board;
 	}
 
 	public void winTheGame(int color) {
@@ -155,7 +156,10 @@ public class ChessboardLayout extends TableLayout {
 		dialog.show();
 	}
 
-	private void insertPieces() {
+	/**
+	 * This method iterates through the {@link Chessboard} and places icons in the correct locations in this view
+	 */
+	private void placePieces() {
 		Chesspiece piece;
 		for (int i = 0; i < mChessboard.getMaxRows(); i++) {
 			for (int j = 0; j < mChessboard.getMaxColumns(); j++) {
@@ -169,6 +173,11 @@ public class ChessboardLayout extends TableLayout {
 		}
 	}
 
+	/**
+	 * Returns the appropriate icon for the provided piece
+	 * @param piece The piece whose drawable to return
+	 * @return A drawable representing the piece, scaled to fit inside a button in this view
+	 */
 	private Drawable getPieceIcon(Chesspiece piece) {
 
 		if (piece.getColor() == Chesspiece.WHITE) {
@@ -203,6 +212,9 @@ public class ChessboardLayout extends TableLayout {
 		return null;
 	}
 
+	/**
+	 * Tie the classes array of buttons together with the matching buttons in the view and sets their onclick methods
+	 */
 	private void initializeButtonArray() {
 		mButtons = new ImageButton[mChessboard.getMaxRows()][mChessboard.getMaxColumns()];
 		int id;
@@ -215,6 +227,12 @@ public class ChessboardLayout extends TableLayout {
 		}
 	}
 
+	/**
+	 * Sets the onclick method for the button in the provided location
+	 * @param button The button whose onclick method you want to set
+	 * @param row The row position the button is representing
+	 * @param column The column position the button is representing
+	 */
 	private void setButtonListener(ImageButton button, final int row, final int column) {
 		button.setOnClickListener(new View.OnClickListener() {
 			public void onClick(View v) {
@@ -228,7 +246,6 @@ public class ChessboardLayout extends TableLayout {
 					mSelected = piece;
 					mLegalMoves = mSelected.legalMoves();
 					setLegalMovesHint();
-					invalidate();
 
 				} else if (mLegalMoves[row][column]) {
 					if (mSelected instanceof Pawn) {
@@ -237,7 +254,7 @@ public class ChessboardLayout extends TableLayout {
 							return;
 						}
 					}
-					mSelected.move(row, column);
+					performMove(row, column);
 
 					mSelected = null;
 					mLegalMoves = null;
@@ -246,8 +263,6 @@ public class ChessboardLayout extends TableLayout {
 					} else {
 						mCurrentPlayer = Chesspiece.WHITE;
 					}
-					setLegalMovesHint();
-					insertPieces();
 				} else {
 					mSelected = null;
 					mLegalMoves = null;
@@ -257,6 +272,13 @@ public class ChessboardLayout extends TableLayout {
 		});
 	}
 
+	/**
+	 * Move the currently selected piece to position row, column.
+	 * <p>
+	 * Also calls methods to update the view to it's new state
+	 * @param row The row to move to
+	 * @param column The column to move to
+	 */
 	private void performMove(int row, int column) {
 		mSelected.move(row, column);
 
@@ -268,9 +290,12 @@ public class ChessboardLayout extends TableLayout {
 			mCurrentPlayer = Chesspiece.WHITE;
 		}
 		setLegalMovesHint();
-		insertPieces();
+		placePieces();
 	}
 
+	/**
+	 * Marks the tiles that are considered legal moves
+	 */
 	private void setLegalMovesHint() {
 		int id = -1;
 		for (int i = 0; i < mChessboard.getMaxRows(); i++) {
