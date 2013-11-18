@@ -6,7 +6,7 @@ public class Positions {
 
 	private Chessboard mChessboard;
 	private static final int ARRAY_INCREMENT = 100;
-	int[] hashed_positions = new int[ARRAY_INCREMENT];
+	String[] hashed_positions = new String[ARRAY_INCREMENT];
 	private int current_index = 0;
 
 	public Positions(Chessboard board) {
@@ -22,20 +22,19 @@ public class Positions {
 	public void hashPosition(int color) {
 		StringBuilder builder;
 		if (color == Chesspiece.WHITE) {
-			builder = new StringBuilder("1");
+			builder = new StringBuilder("a");
 		} else {
-			builder = new StringBuilder("2");
+			builder = new StringBuilder("b");
 		}
 		for (int i = 0; i < mChessboard.getMaxRows(); i++) {
 			for (int j = 0; j < mChessboard.getMaxColumns(); j++) {
 				builder.append(getHashValue(mChessboard.getPieceAt(i, j)));
 			}
 		}
-		int hash = Integer.parseInt(builder.toString(), 16);
 		if (current_index == hashed_positions.length) {
 			expandArray();
 		}
-		hashed_positions[current_index++] = hash;
+		hashed_positions[current_index++] = builder.toString();
 	}
 
 	/**
@@ -47,10 +46,10 @@ public class Positions {
 	 */
 	public boolean drawByRepetition() {
 		// Last entered hash
-		int hash = hashed_positions[current_index - 1];
+		String hash = hashed_positions[current_index - 1];
 		int repetition_count = 1;
-		for (int i = 0; i < current_index; i++) {
-			if (hashed_positions[i] == hash) {
+		for (int i = 0; i < current_index - 1; i++) {
+			if (hashed_positions[i].equals(hash)) {
 				repetition_count++;
 				if (repetition_count >= 3) {
 					return true;
@@ -60,50 +59,50 @@ public class Positions {
 		return false;
 	}
 
-	private int getHashValue(Chesspiece piece) {
-		if (piece == null) {
-			return 0;
+	private String getHashValue(Chesspiece piece) {
+		if (piece == null || piece instanceof EnPassant) {
+			return "c";
 		}
 		if (piece.getColor() == Chesspiece.WHITE) {
 			if (piece instanceof Pawn) {
-				return 3;
+				return "d";
 			}
 			if (piece instanceof Rook) {
-				return 4;
+				return "e";
 			}
 			if (piece instanceof Bishop) {
-				return 5;
+				return "f";
 			}
 			if (piece instanceof Knight) {
-				return 6;
+				return "g";
 			}
 			if (piece instanceof King) {
-				return 7;
+				return "h";
 			}
 			if (piece instanceof Queen) {
-				return 8;
+				return "i";
 			}
 		} else {
 			if (piece instanceof Pawn) {
-				return 9;
+				return "j";
 			}
 			if (piece instanceof Rook) {
-				return 0xA;
+				return "k";
 			}
 			if (piece instanceof Bishop) {
-				return 0xB;
+				return "l";
 			}
 			if (piece instanceof Knight) {
-				return 0xC;
+				return "m";
 			}
 			if (piece instanceof King) {
-				return 0xD;
+				return "n";
 			}
 			if (piece instanceof Queen) {
-				return 0xE;
+				return "o";
 			}
 		}
-		return -1;
+		throw new IllegalStateException("Unknown Chesspiece instance");
 	}
 
 	private void expandArray() {
