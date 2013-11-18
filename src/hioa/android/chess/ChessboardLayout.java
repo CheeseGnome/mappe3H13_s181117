@@ -38,7 +38,8 @@ public class ChessboardLayout extends TableLayout {
 	/**
 	 * Array of the icons for the various chesspieces.
 	 * <p>
-	 * This array is indexed through int constants named: BLACKPAWN, WHITEKING etc.
+	 * This array is indexed through int constants named: BLACKPAWN, WHITEKING
+	 * etc.
 	 */
 	private BitmapDrawable[] mIcons;
 	private static final int BLACKPAWN = 0, BLACKROOK = 1, BLACKKNIGHT = 2, BLACKBISHOP = 3, BLACKQUEEN = 4,
@@ -77,11 +78,16 @@ public class ChessboardLayout extends TableLayout {
 		mIcons[WHITEQUEEN] = getDrawable(R.drawable.white_queen);
 		mIcons[WHITEKING] = getDrawable(R.drawable.white_king);
 	}
-/**
- * This method returns the drawable found at id, resized to fit inside a tile.
- * @param id The image resource id
- * @return The image found by the resource id resized to fit inside an imagebutton in this view
- */
+
+	/**
+	 * This method returns the drawable found at id, resized to fit inside a
+	 * tile.
+	 * 
+	 * @param id
+	 *            The image resource id
+	 * @return The image found by the resource id resized to fit inside an
+	 *         imagebutton in this view
+	 */
 	private BitmapDrawable getDrawable(int id) {
 		Drawable dr = mResources.getDrawable(id);
 		Bitmap bitmap = ((BitmapDrawable) dr).getBitmap();
@@ -157,7 +163,8 @@ public class ChessboardLayout extends TableLayout {
 	}
 
 	/**
-	 * This method iterates through the {@link Chessboard} and places icons in the correct locations in this view
+	 * This method iterates through the {@link Chessboard} and places icons in
+	 * the correct locations in this view
 	 */
 	private void placePieces() {
 		Chesspiece piece;
@@ -175,8 +182,11 @@ public class ChessboardLayout extends TableLayout {
 
 	/**
 	 * Returns the appropriate icon for the provided piece
-	 * @param piece The piece whose drawable to return
-	 * @return A drawable representing the piece, scaled to fit inside a button in this view
+	 * 
+	 * @param piece
+	 *            The piece whose drawable to return
+	 * @return A drawable representing the piece, scaled to fit inside a button
+	 *         in this view
 	 */
 	private Drawable getPieceIcon(Chesspiece piece) {
 
@@ -213,7 +223,8 @@ public class ChessboardLayout extends TableLayout {
 	}
 
 	/**
-	 * Tie the classes array of buttons together with the matching buttons in the view and sets their onclick methods
+	 * Tie the classes array of buttons together with the matching buttons in
+	 * the view and sets their onclick methods
 	 */
 	private void initializeButtonArray() {
 		mButtons = new ImageButton[mChessboard.getMaxRows()][mChessboard.getMaxColumns()];
@@ -229,9 +240,13 @@ public class ChessboardLayout extends TableLayout {
 
 	/**
 	 * Sets the onclick method for the button in the provided location
-	 * @param button The button whose onclick method you want to set
-	 * @param row The row position the button is representing
-	 * @param column The column position the button is representing
+	 * 
+	 * @param button
+	 *            The button whose onclick method you want to set
+	 * @param row
+	 *            The row position the button is representing
+	 * @param column
+	 *            The column position the button is representing
 	 */
 	private void setButtonListener(ImageButton button, final int row, final int column) {
 		button.setOnClickListener(new View.OnClickListener() {
@@ -255,14 +270,6 @@ public class ChessboardLayout extends TableLayout {
 						}
 					}
 					performMove(row, column);
-
-					mSelected = null;
-					mLegalMoves = null;
-					if (mCurrentPlayer == Chesspiece.WHITE) {
-						mCurrentPlayer = Chesspiece.BLACK;
-					} else {
-						mCurrentPlayer = Chesspiece.WHITE;
-					}
 				} else {
 					mSelected = null;
 					mLegalMoves = null;
@@ -276,8 +283,11 @@ public class ChessboardLayout extends TableLayout {
 	 * Move the currently selected piece to position row, column.
 	 * <p>
 	 * Also calls methods to update the view to it's new state
-	 * @param row The row to move to
-	 * @param column The column to move to
+	 * 
+	 * @param row
+	 *            The row to move to
+	 * @param column
+	 *            The column to move to
 	 */
 	private void performMove(int row, int column) {
 		mSelected.move(row, column);
@@ -294,7 +304,8 @@ public class ChessboardLayout extends TableLayout {
 	}
 
 	/**
-	 * Marks the tiles that are considered legal moves
+	 * Marks the tiles that are considered legal moves for the currently
+	 * selected piece
 	 */
 	private void setLegalMovesHint() {
 		int id = -1;
@@ -318,7 +329,16 @@ public class ChessboardLayout extends TableLayout {
 
 	}
 
-	private int getTileColorId(final int row, final int column) {
+	/**
+	 * Returns the ID for the background color of the provided position
+	 * 
+	 * @param row
+	 *            The row position to get the color for
+	 * @param column
+	 *            The column position to get the color for
+	 * @return The id of the color for this tile
+	 */
+	private int getTileColorId(int row, int column) {
 		int id = -1;
 		if (row % 2 == 0) {
 			if (column % 2 == 0) {

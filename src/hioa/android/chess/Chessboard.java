@@ -19,6 +19,16 @@ public class Chessboard {
 		mChessboard = createChessboard();
 	}
 
+	/**
+	 * Let the chessboard know that there will be a promotion during the next
+	 * move.
+	 * <p>
+	 * The flags are given as constants in this class.</br> NO_PROMOTION
+	 * probably shouldn't be used outside of this class.
+	 * 
+	 * @param flag
+	 *            NO_PROMOTION, QUEEN, ROOK, BISHOP or KNIGHT
+	 */
 	public void setPromotionFlag(int flag) {
 		mPromotionFlag = flag;
 	}
@@ -180,6 +190,20 @@ public class Chessboard {
 		checkForGameEnd(piece.getColor());
 	}
 
+	/**
+	 * Returns a Chesspiece of a certain type based on the flag provided.</br>
+	 * The piece is initialized with the parameters color, row and column.
+	 * 
+	 * @param flag
+	 *            The flag which decides what piece to return
+	 * @param color
+	 *            The color of the new piece
+	 * @param row
+	 *            The row position of the new piece
+	 * @param column
+	 *            The column position of the new piece
+	 * @return A chesspiece matching the parameters
+	 */
 	private Chesspiece getPieceByFlag(int flag, int color, int row, int column) {
 		switch (flag) {
 		case QUEEN:
@@ -194,6 +218,13 @@ public class Chessboard {
 		return null;
 	}
 
+	/**
+	 * Finds the king of the provided color
+	 * 
+	 * @param color
+	 *            The color whose king you want
+	 * @return The king whose getColor() matches color
+	 */
 	private King getKing(int color) {
 		for (int i = 0; i < getMaxRows(); i++) {
 			for (int j = 0; j < getMaxColumns(); j++) {
@@ -205,6 +236,12 @@ public class Chessboard {
 		return null;
 	}
 
+	/**
+	 * Checks for various game over scenarios
+	 * 
+	 * @param color
+	 *            The color who just moved
+	 */
 	private void checkForGameEnd(int color) {
 		int enemy;
 		if (color == Chesspiece.WHITE) {
@@ -313,10 +350,20 @@ public class Chessboard {
 		return false;
 	}
 
+	/**
+	 * Gets the number of rows on this chessboard
+	 * 
+	 * @return The number of rows on this chessboard
+	 */
 	public int getMaxRows() {
 		return 1 + mContext.getResources().getInteger(R.integer.chesspiece_max_row_index);
 	}
 
+	/**
+	 * Gets the number of columns on this chessboard
+	 * 
+	 * @return The number of columns on this chessboard
+	 */
 	public int getMaxColumns() {
 		return 1 + mContext.getResources().getInteger(R.integer.chesspiece_max_column_index);
 	}
