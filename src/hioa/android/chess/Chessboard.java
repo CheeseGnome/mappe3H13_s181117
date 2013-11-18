@@ -11,12 +11,14 @@ public class Chessboard {
 	private Context mContext;
 	private EnPassant mEnPassant;
 	private int mPromotionFlag = NO_PROMOTION;
+	private Positions mPositions;
 
 	public Chessboard(Context context) {
 		mContext = context;
 		Chesspiece.context = context;
 		Chesspiece.chessboard = this;
 		mChessboard = createChessboard();
+		mPositions = new Positions(this);
 	}
 
 	/**
@@ -186,7 +188,6 @@ public class Chessboard {
 			mChessboard[row][column] = getPieceByFlag(mPromotionFlag, piece.getColor(), row, column);
 			mPromotionFlag = NO_PROMOTION;
 		}
-		createPositionHash();
 		checkForGameEnd(piece.getColor());
 	}
 
@@ -268,20 +269,14 @@ public class Chessboard {
 			}
 
 		}
+		mPositions.hashPosition(color);
+		if (mPositions.drawByRepetition()) {
+			Toast.makeText(mContext, "Draw by repetition", Toast.LENGTH_LONG).show();
+		}
 
 		/*
 		 * TODO lag denne Sjekk: Posisjonshash 50 trekk uten sjakk/fanget brikke
 		 */
-	}
-
-	/**
-	 * Creates a hash of the current boardstate and stores it in the database.
-	 * <p>
-	 * These hashes are used to draw the game if the exact same boardstate
-	 * appears 3 times in 1 game
-	 */
-	private void createPositionHash() {
-		// TODO lag denne
 	}
 
 	/**
