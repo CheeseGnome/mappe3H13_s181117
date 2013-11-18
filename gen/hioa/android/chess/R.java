@@ -13,6 +13,7 @@ public final class R {
     public static final class color {
         public static final int black_tile=0x7f040000;
         public static final int black_tile_marked=0x7f040002;
+        public static final int selected_piece_tile=0x7f040004;
         public static final int white_tile=0x7f040001;
         public static final int white_tile_marked=0x7f040003;
     }

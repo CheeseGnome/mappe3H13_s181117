@@ -68,12 +68,12 @@ public class ChessboardView extends TableLayout {
 		initializeButtonArray();
 		placePieces();
 	}
-	
-	public String getWhiteName(){
+
+	public String getWhiteName() {
 		return mWhiteName;
 	}
-	
-	public String getBlackName(){
+
+	public String getBlackName() {
 		return mBlackName;
 	}
 
@@ -368,17 +368,13 @@ public class ChessboardView extends TableLayout {
 		button.setOnClickListener(new View.OnClickListener() {
 			public void onClick(View v) {
 
-				if (mSelected == null) {
-					Chesspiece piece = mChessboard.getPieceAt(row, column);
+				Chesspiece piece = mChessboard.getPieceAt(row, column);
 
-					if (piece == null || piece.getColor() != mCurrentPlayer)
-						return;
-
+				if (piece != null && piece.getColor() == mCurrentPlayer) {
 					mSelected = piece;
 					mLegalMoves = mSelected.legalMoves();
 					setLegalMovesHint();
-
-				} else if (mLegalMoves[row][column]) {
+				} else if (mLegalMoves != null && mLegalMoves[row][column]) {
 					if (mSelected instanceof Pawn) {
 						if (row == 0 || row == mChessboard.getMaxRows() - 1) {
 							promote((Pawn) mSelected, row, column);
@@ -437,6 +433,10 @@ public class ChessboardView extends TableLayout {
 						break;
 					}
 					mButtons[i][j].setBackgroundColor(mResources.getColor(id));
+				} else if (mSelected != null && mSelected.getRow() == i
+						&& mSelected.getColumn() == j) {
+					mButtons[i][j].setBackgroundColor(mResources
+							.getColor(R.color.selected_piece_tile));
 				} else {
 					mButtons[i][j].setBackgroundColor(mResources
 							.getColor(getTileColorId(i, j)));
