@@ -59,6 +59,13 @@ public class PositionHashFactory {
 		return false;
 	}
 
+	/**
+	 * Returns the hash value used to represent a piece of this color and class
+	 * 
+	 * @param piece
+	 *            The piece to hash
+	 * @return A hash value representing a piece of this type and color
+	 */
 	private String getHashValue(Chesspiece piece) {
 		if (piece == null || piece instanceof EnPassant) {
 			return "c";
@@ -102,10 +109,14 @@ public class PositionHashFactory {
 				return "o";
 			}
 		}
-		throw new IllegalStateException("Unknown Chesspiece instance");
+		throw new IllegalStateException("Unknown Chesspiece");
 	}
 
+	/**
+	 * Expands the array by ARRAY_INCREMENT number of spaces
+	 */
 	private void expandArray() {
-		mHashedPositions = Arrays.copyOf(mHashedPositions, mHashedPositions.length + ARRAY_INCREMENT);
+		mHashedPositions = Arrays.copyOf(mHashedPositions,
+				mHashedPositions.length + ARRAY_INCREMENT);
 	}
 }
