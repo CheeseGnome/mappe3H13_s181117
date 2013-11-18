@@ -43,13 +43,13 @@ public final class R {
         public static final int white_rook=0x7f02000c;
     }
     public static final class id {
-        public static final int TableLayout1=0x7f0a004b;
-        public static final int action_settings=0x7f0a0054;
-        public static final int btn_bishop=0x7f0a0052;
-        public static final int btn_knight=0x7f0a0053;
+        public static final int action_settings=0x7f0a0057;
+        public static final int btn_bishop=0x7f0a0055;
+        public static final int btn_knight=0x7f0a0056;
+        public static final int btn_main_menu=0x7f0a004f;
         public static final int btn_new_game=0x7f0a0002;
-        public static final int btn_queen=0x7f0a004f;
-        public static final int btn_rook=0x7f0a0050;
+        public static final int btn_queen=0x7f0a0052;
+        public static final int btn_rook=0x7f0a0053;
         public static final int chessboard=0x7f0a0000;
         public static final int row0=0x7f0a0003;
         public static final int row1=0x7f0a000c;
@@ -62,8 +62,10 @@ public final class R {
         public static final int scrollView1=0x7f0a0001;
         public static final int tableRow1=0x7f0a004c;
         public static final int tableRow2=0x7f0a004e;
-        public static final int tableRow3=0x7f0a0051;
-        public static final int textView1=0x7f0a004d;
+        public static final int tableRow3=0x7f0a0054;
+        public static final int table_end_game=0x7f0a004b;
+        public static final int table_promotion=0x7f0a0050;
+        public static final int textView1=0x7f0a0051;
         public static final int tile00=0x7f0a0004;
         public static final int tile01=0x7f0a0005;
         public static final int tile02=0x7f0a0006;
@@ -128,6 +130,7 @@ public final class R {
         public static final int tile75=0x7f0a0048;
         public static final int tile76=0x7f0a0049;
         public static final int tile77=0x7f0a004a;
+        public static final int txt_endgame=0x7f0a004d;
     }
     public static final class integer {
         public static final int chessboard_tiles_count=0x7f060000;
@@ -138,7 +141,8 @@ public final class R {
         public static final int activity_game=0x7f030000;
         public static final int activity_main_menu=0x7f030001;
         public static final int chessboardlayout=0x7f030002;
-        public static final int promotiondialog=0x7f030003;
+        public static final int endgamedialog=0x7f030003;
+        public static final int promotiondialog=0x7f030004;
     }
     public static final class menu {
         public static final int game=0x7f090000;
@@ -147,15 +151,26 @@ public final class R {
     public static final class string {
         public static final int action_settings=0x7f070001;
         public static final int app_name=0x7f070000;
-        public static final int description_bishop=0x7f070009;
-        public static final int description_knight=0x7f07000a;
-        public static final int description_queen=0x7f070007;
-        public static final int description_rook=0x7f070008;
-        public static final int hello_world=0x7f070004;
-        public static final int promotion_text=0x7f070006;
-        public static final int promotion_title=0x7f070005;
+        public static final int btn_main_menu=0x7f07000b;
+        public static final int btn_new_game=0x7f07000a;
+        public static final int description_bishop=0x7f070008;
+        public static final int description_knight=0x7f070009;
+        public static final int description_queen=0x7f070006;
+        public static final int description_rook=0x7f070007;
+        public static final int promotion_text=0x7f070005;
+        public static final int promotion_title=0x7f070004;
         public static final int tile_description=0x7f070002;
         public static final int title_activity_game=0x7f070003;
+        public static final int title_draw=0x7f07000c;
+        public static final int title_win_checkmate=0x7f07000d;
+        public static final int title_win_resign=0x7f07000e;
+        public static final int txt_draw_agreed=0x7f070011;
+        public static final int txt_draw_claimed=0x7f070010;
+        public static final int txt_draw_repetition=0x7f07000f;
+        public static final int txt_draw_stalemate=0x7f070015;
+        public static final int txt_win_checkmate=0x7f070012;
+        public static final int txt_win_resign_1=0x7f070013;
+        public static final int txt_win_resign_2=0x7f070014;
     }
     public static final class style {
         /** 

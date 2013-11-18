@@ -5,12 +5,25 @@
     <string name="action_settings">Settings</string>
     <string name="tile_description">Tile</string>
     <string name="title_activity_game">GameActivity</string>
-    <string name="hello_world">Hello world!</string>
      <string name="promotion_title">Promotion!</string>
     <string name="promotion_text">Select a piece to promote to</string>
     <string name="description_queen">Queen</string>
     <string name="description_rook">Rook</string>
     <string name="description_bishop">Bishop</string>
     <string name="description_knight">Knight</string>
+    <string name="btn_new_game">New Game</string>
+    <string name="btn_main_menu">Main Menu</string>
+    
+    <string name="title_draw">Draw!</string>
+    <string name="title_win_checkmate">Checkmate!</string>
+    <string name="title_win_resign">Resignation!</string>
+    
+    <string name="txt_draw_repetition">Draw by repetition!</string>
+    <string name="txt_draw_claimed">Draw has been claimed through 50-move rule!</string>
+    <string name="txt_draw_agreed">Draw by agreement!</string>
+    <string name="txt_win_checkmate">has won by checkmate!</string>
+    <string name="txt_win_resign_1">resigned!</string>
+    <string name="txt_win_resign_2">wins!</string>
+    <string name="txt_draw_stalemate">Draw by stalemate!</string>
 
 </resources>

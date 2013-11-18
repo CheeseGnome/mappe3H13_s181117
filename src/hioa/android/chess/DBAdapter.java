@@ -32,7 +32,7 @@ public class DBAdapter {
 	static final int DB_VERSION = 1;
 
 	public static final String WHITE_WON = "white_won",
-			BLACK_WON = "black_won", DRAW = "draw";
+			BLACK_WON = "black_won", DRAW_STALEMATE = "draw_stalemate", DRAW_REPETITION = "draw_repetition", DRAW_CLAIMED = "draw_claimed", DRAW_AGREED = "draw_agreed";
 
 	private DatabaseHelper dbHelper;
 	private SQLiteDatabase database;

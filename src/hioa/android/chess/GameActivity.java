@@ -13,6 +13,9 @@ public class GameActivity extends Activity {
 		setContentView(R.layout.activity_game);
 		// Show the Up button in the action bar.
 		setupActionBar();
+		ChessboardView board = (ChessboardView) findViewById(R.id.chessboard);
+		board.setPlayerNames("Player 1", "Player 2");
+		board.setActivity(this);
 	}
 
 	/**

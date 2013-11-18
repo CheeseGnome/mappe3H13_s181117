@@ -9,8 +9,10 @@ import android.graphics.drawable.Drawable;
 import android.util.AttributeSet;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.TableLayout;
+import android.widget.TextView;
 
 /**
  * A visual representation of a chessboard based on the chessboardlayout.xml
@@ -20,12 +22,16 @@ import android.widget.TableLayout;
  * @version 2013-11-15
  */
 
-public class ChessboardLayout extends TableLayout {
+public class ChessboardView extends TableLayout {
 
-	Chessboard mChessboard;
-	ImageButton[][] mButtons;
-	boolean[][] mLegalMoves;
-	Resources mResources;
+	private Chessboard mChessboard;
+	private ImageButton[][] mButtons;
+	private GameActivity mActivity;
+	private boolean[][] mLegalMoves;
+	private Resources mResources;
+	private String mWhiteName, mBlackName;
+	public static final int DRAWREPETITION = 0, DRAWCLAIMED = 1,
+			DRAWAGREED = 2, WINCHECKMATE = 3, WINRESIGN = 4, DRAWSTALEMATE = 5;
 	/**
 	 * The currently selected chesspiece.
 	 * <p>
@@ -42,21 +48,42 @@ public class ChessboardLayout extends TableLayout {
 	 * etc.
 	 */
 	private BitmapDrawable[] mIcons;
-	private static final int BLACKPAWN = 0, BLACKROOK = 1, BLACKKNIGHT = 2, BLACKBISHOP = 3, BLACKQUEEN = 4,
-			BLACKKING = 5, WHITEPAWN = 6, WHITEROOK = 7, WHITEKNIGHT = 8, WHITEBISHOP = 9, WHITEQUEEN = 10,
+	private static final int BLACKPAWN = 0, BLACKROOK = 1, BLACKKNIGHT = 2,
+			BLACKBISHOP = 3, BLACKQUEEN = 4, BLACKKING = 5, WHITEPAWN = 6,
+			WHITEROOK = 7, WHITEKNIGHT = 8, WHITEBISHOP = 9, WHITEQUEEN = 10,
 			WHITEKING = 11;
 
-	public ChessboardLayout(Context context, AttributeSet attributes) {
+	public ChessboardView(Context context, AttributeSet attributes) {
 		super(context, attributes);
 
-		LayoutInflater layoutInflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+		LayoutInflater layoutInflater = (LayoutInflater) context
+				.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
 		layoutInflater.inflate(R.layout.chessboardlayout, this);
 		mResources = getResources();
 		mContext = context;
+
 		initializeDrawableArray();
 		mChessboard = new Chessboard(context);
+		mChessboard.setChessboardView(this);
 		initializeButtonArray();
 		placePieces();
+	}
+	
+	public String getWhiteName(){
+		return mWhiteName;
+	}
+	
+	public String getBlackName(){
+		return mBlackName;
+	}
+
+	public void setActivity(GameActivity activity) {
+		mActivity = activity;
+	}
+
+	public void setPlayerNames(String whiteName, String blackName) {
+		mWhiteName = whiteName;
+		mBlackName = blackName;
 	}
 
 	/**
@@ -92,11 +119,86 @@ public class ChessboardLayout extends TableLayout {
 		Drawable dr = mResources.getDrawable(id);
 		Bitmap bitmap = ((BitmapDrawable) dr).getBitmap();
 		int size = mResources.getDimensionPixelSize(R.dimen.tile_size);
-		return new BitmapDrawable(getResources(), Bitmap.createScaledBitmap(bitmap, size, size, true));
+		return new BitmapDrawable(getResources(), Bitmap.createScaledBitmap(
+				bitmap, size, size, true));
 	}
 
-	public void winTheGame(int color) {
+	/**
+	 * Ends the game due to the reason given in the flag.
+	 * 
+	 * @param flag
+	 *            A constant explaining why the game ended
+	 * @param color
+	 *            The color that made the last move
+	 */
+	public void endTheGame(int flag, int color) {
 		// TODO do this
+		final Dialog dialog = new Dialog(mContext);
+		TableLayout contentView = (TableLayout) View.inflate(mContext,
+				R.layout.endgamedialog, null);
+		dialog.setContentView(contentView);
+
+		((Button) contentView.findViewById(R.id.btn_main_menu))
+				.setOnClickListener(new OnClickListener() {
+					@Override
+					public void onClick(View v) {
+						dialog.dismiss();
+						mActivity.finish();
+					}
+				});
+		final ChessboardView view = this;
+		((Button) contentView.findViewById(R.id.btn_new_game))
+				.setOnClickListener(new OnClickListener() {
+					@Override
+					public void onClick(View v) {
+						mChessboard = new Chessboard(mContext);
+						mChessboard.setChessboardView(view);
+						mCurrentPlayer = Chesspiece.WHITE;
+						placePieces();
+						dialog.dismiss();
+					}
+				});
+
+		String title = "", body = "";
+		String winner = (color == Chesspiece.WHITE ? mWhiteName : mBlackName);
+		String loser = (winner.equals(mBlackName) ? mWhiteName : mBlackName);
+
+		switch (flag) {
+		case DRAWREPETITION:
+			title = mResources.getString(R.string.title_draw);
+			body = mResources.getString(R.string.txt_draw_repetition);
+			break;
+		case DRAWAGREED:
+			title = mResources.getString(R.string.title_draw);
+			body = mResources.getString(R.string.txt_draw_agreed);
+			break;
+		case DRAWCLAIMED:
+			title = mResources.getString(R.string.title_draw);
+			body = mResources.getString(R.string.txt_draw_claimed);
+			break;
+		case WINCHECKMATE:
+			// TODO navn
+			title = mResources.getString(R.string.title_win_checkmate);
+			body = winner + " "
+					+ mResources.getString(R.string.txt_win_checkmate);
+			break;
+		case WINRESIGN:
+			title = mResources.getString(R.string.title_win_resign);
+			body = loser + " "
+					+ mResources.getString(R.string.txt_win_resign_1) + " "
+					+ winner + " "
+					+ mResources.getString(R.string.txt_win_resign_2);
+			break;
+		case DRAWSTALEMATE:
+			title = mResources.getString(R.string.title_draw);
+			body = mResources.getString(R.string.txt_draw_stalemate);
+			break;
+		}
+		dialog.setTitle(title);
+		((TextView) contentView.findViewById(R.id.txt_endgame)).setText(body);
+		dialog.setCancelable(false);
+		dialog.setCanceledOnTouchOutside(false);
+		dialog.show();
 	}
 
 	/**
@@ -108,18 +210,26 @@ public class ChessboardLayout extends TableLayout {
 	 */
 	public void promote(Pawn pawn, final int row, final int column) {
 		final Dialog dialog = new Dialog(mContext);
-		TableLayout contentView = (TableLayout) View.inflate(mContext, R.layout.promotiondialog, null);
+		TableLayout contentView = (TableLayout) View.inflate(mContext,
+				R.layout.promotiondialog, null);
 		dialog.setContentView(contentView);
 
-		Queen queen = new Queen(pawn.getColor(), pawn.getRow(), pawn.getColumn());
+		Queen queen = new Queen(pawn.getColor(), pawn.getRow(),
+				pawn.getColumn());
 		Rook rook = new Rook(pawn.getColor(), pawn.getRow(), pawn.getColumn());
-		Bishop bishop = new Bishop(pawn.getColor(), pawn.getRow(), pawn.getColumn());
-		Knight knight = new Knight(pawn.getColor(), pawn.getRow(), pawn.getColumn());
+		Bishop bishop = new Bishop(pawn.getColor(), pawn.getRow(),
+				pawn.getColumn());
+		Knight knight = new Knight(pawn.getColor(), pawn.getRow(),
+				pawn.getColumn());
 
-		ImageButton btn_queen = (ImageButton) contentView.findViewById(R.id.btn_queen);
-		ImageButton btn_rook = (ImageButton) contentView.findViewById(R.id.btn_rook);
-		ImageButton btn_bishop = (ImageButton) contentView.findViewById(R.id.btn_bishop);
-		ImageButton btn_knight = (ImageButton) contentView.findViewById(R.id.btn_knight);
+		ImageButton btn_queen = (ImageButton) contentView
+				.findViewById(R.id.btn_queen);
+		ImageButton btn_rook = (ImageButton) contentView
+				.findViewById(R.id.btn_rook);
+		ImageButton btn_bishop = (ImageButton) contentView
+				.findViewById(R.id.btn_bishop);
+		ImageButton btn_knight = (ImageButton) contentView
+				.findViewById(R.id.btn_knight);
 
 		btn_queen.setImageDrawable(getPieceIcon(queen));
 		btn_rook.setImageDrawable(getPieceIcon(rook));
@@ -159,6 +269,8 @@ public class ChessboardLayout extends TableLayout {
 			}
 		});
 		dialog.setTitle(mResources.getString(R.string.promotion_title));
+		dialog.setCancelable(false);
+		dialog.setCanceledOnTouchOutside(false);
 		dialog.show();
 	}
 
@@ -172,7 +284,8 @@ public class ChessboardLayout extends TableLayout {
 			for (int j = 0; j < mChessboard.getMaxColumns(); j++) {
 				piece = mChessboard.getPieceAt(i, j);
 				if (piece == null || piece.getColor() == Chesspiece.EN_PASSANT) {
-					mButtons[i][j].setImageResource(android.R.color.transparent);
+					mButtons[i][j]
+							.setImageResource(android.R.color.transparent);
 				} else {
 					mButtons[i][j].setImageDrawable(getPieceIcon(piece));
 				}
@@ -227,11 +340,13 @@ public class ChessboardLayout extends TableLayout {
 	 * the view and sets their onclick methods
 	 */
 	private void initializeButtonArray() {
-		mButtons = new ImageButton[mChessboard.getMaxRows()][mChessboard.getMaxColumns()];
+		mButtons = new ImageButton[mChessboard.getMaxRows()][mChessboard
+				.getMaxColumns()];
 		int id;
 		for (int i = 0; i < mChessboard.getMaxRows(); i++) {
 			for (int j = 0; j < mChessboard.getMaxColumns(); j++) {
-				id = mResources.getIdentifier("tile" + i + j, "id", "hioa.android.chess");
+				id = mResources.getIdentifier("tile" + i + j, "id",
+						"hioa.android.chess");
 				mButtons[i][j] = (ImageButton) findViewById(id);
 				setButtonListener(mButtons[i][j], i, j);
 			}
@@ -248,7 +363,8 @@ public class ChessboardLayout extends TableLayout {
 	 * @param column
 	 *            The column position the button is representing
 	 */
-	private void setButtonListener(ImageButton button, final int row, final int column) {
+	private void setButtonListener(ImageButton button, final int row,
+			final int column) {
 		button.setOnClickListener(new View.OnClickListener() {
 			public void onClick(View v) {
 
@@ -322,7 +438,8 @@ public class ChessboardLayout extends TableLayout {
 					}
 					mButtons[i][j].setBackgroundColor(mResources.getColor(id));
 				} else {
-					mButtons[i][j].setBackgroundColor(mResources.getColor(getTileColorId(i, j)));
+					mButtons[i][j].setBackgroundColor(mResources
+							.getColor(getTileColorId(i, j)));
 				}
 			}
 		}

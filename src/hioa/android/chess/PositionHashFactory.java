@@ -12,6 +12,10 @@ public class PositionHashFactory {
 	public PositionHashFactory(Chessboard board) {
 		mChessboard = board;
 	}
+	
+	public String getMoves(){
+		return "a";//TODO
+	}
 
 	/**
 	 * Creates a hash of the current boardstate and stores it in the database.
