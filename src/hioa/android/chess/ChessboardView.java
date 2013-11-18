@@ -7,6 +7,7 @@ import android.graphics.Bitmap;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.util.AttributeSet;
+import android.util.DisplayMetrics;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.Button;
@@ -132,7 +133,6 @@ public class ChessboardView extends TableLayout {
 	 *            The color that made the last move
 	 */
 	public void endTheGame(int flag, int color) {
-		// TODO do this
 		final Dialog dialog = new Dialog(mContext);
 		TableLayout contentView = (TableLayout) View.inflate(mContext,
 				R.layout.endgamedialog, null);
@@ -177,7 +177,6 @@ public class ChessboardView extends TableLayout {
 			body = mResources.getString(R.string.txt_draw_claimed);
 			break;
 		case WINCHECKMATE:
-			// TODO navn
 			title = mResources.getString(R.string.title_win_checkmate);
 			body = winner + " "
 					+ mResources.getString(R.string.txt_win_checkmate);
