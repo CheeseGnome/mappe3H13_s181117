@@ -4,7 +4,6 @@ import android.app.Dialog;
 import android.content.Context;
 import android.content.res.Resources;
 import android.graphics.Bitmap;
-import android.graphics.Canvas;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.util.AttributeSet;
@@ -31,6 +30,16 @@ public class ChessboardLayout extends TableLayout {
 	Context mContext;
 	int mCurrentPlayer = Chesspiece.WHITE;
 
+	/**
+	 * Array of the icons for the various chesspieces.
+	 * <p>
+	 * This array is indexed through int constants named: BLACKPAWN, WHITEKING etc.
+	 */
+	private BitmapDrawable[] mIcons;
+	private static final int BLACKPAWN = 0, BLACKROOK = 1, BLACKKNIGHT = 2, BLACKBISHOP = 3, BLACKQUEEN = 4,
+			BLACKKING = 5, WHITEPAWN = 6, WHITEROOK = 7, WHITEKNIGHT = 8, WHITEBISHOP = 9, WHITEQUEEN = 10,
+			WHITEKING = 11;
+
 	public ChessboardLayout(Context context, AttributeSet attributes) {
 		super(context, attributes);
 
@@ -38,15 +47,41 @@ public class ChessboardLayout extends TableLayout {
 		layoutInflater.inflate(R.layout.chessboardlayout, this);
 		mResources = getResources();
 		mContext = context;
+		initializeDrawableArray();
 		setChessboard(new Chessboard(context));
 		initializeButtonArray();
 		insertPieces();
-		setWillNotDraw(false);
 	}
 
-	@Override
-	protected void onDraw(Canvas canvas) {
-		super.onDraw(canvas);
+	/**
+	 * Loads the chesspiece icons
+	 */
+	private void initializeDrawableArray() {
+		mIcons = new BitmapDrawable[12];
+		mIcons[BLACKPAWN] = getDrawable(R.drawable.black_pawn);
+		mIcons[BLACKROOK] = getDrawable(R.drawable.black_rook);
+		mIcons[BLACKKNIGHT] = getDrawable(R.drawable.black_knight);
+		mIcons[BLACKBISHOP] = getDrawable(R.drawable.black_bishop);
+		mIcons[BLACKQUEEN] = getDrawable(R.drawable.black_queen);
+		mIcons[BLACKKING] = getDrawable(R.drawable.black_king);
+
+		mIcons[WHITEPAWN] = getDrawable(R.drawable.white_pawn);
+		mIcons[WHITEROOK] = getDrawable(R.drawable.white_rook);
+		mIcons[WHITEKNIGHT] = getDrawable(R.drawable.white_knight);
+		mIcons[WHITEBISHOP] = getDrawable(R.drawable.white_bishop);
+		mIcons[WHITEQUEEN] = getDrawable(R.drawable.white_queen);
+		mIcons[WHITEKING] = getDrawable(R.drawable.white_king);
+	}
+/**
+ * This method returns the drawable found at id, resized to fit inside a tile.
+ * @param id The image resource id
+ * @return The image found by the resource id resized to fit inside an imagebutton in this view
+ */
+	private BitmapDrawable getDrawable(int id) {
+		Drawable dr = mResources.getDrawable(id);
+		Bitmap bitmap = ((BitmapDrawable) dr).getBitmap();
+		int size = mResources.getDimensionPixelSize(R.dimen.tile_size);
+		return new BitmapDrawable(getResources(), Bitmap.createScaledBitmap(bitmap, size, size, true));
 	}
 
 	public void setChessboard(Chessboard board) {
@@ -54,10 +89,17 @@ public class ChessboardLayout extends TableLayout {
 	}
 
 	public void winTheGame(int color) {
-
+		// TODO do this
 	}
 
-	public void promote(Pawn pawn,final int row, final int column) {
+	/**
+	 * Calls a dialog enabling the player to select a piece to promote to.
+	 * 
+	 * @param pawn
+	 * @param row
+	 * @param column
+	 */
+	public void promote(Pawn pawn, final int row, final int column) {
 		final Dialog dialog = new Dialog(mContext);
 		TableLayout contentView = (TableLayout) View.inflate(mContext, R.layout.promotiondialog, null);
 		dialog.setContentView(contentView);
@@ -81,7 +123,7 @@ public class ChessboardLayout extends TableLayout {
 			@Override
 			public void onClick(View v) {
 				mChessboard.setPromotionFlag(Chessboard.QUEEN);
-				performMove(row,column);
+				performMove(row, column);
 				dialog.dismiss();
 			}
 		});
@@ -89,7 +131,7 @@ public class ChessboardLayout extends TableLayout {
 			@Override
 			public void onClick(View v) {
 				mChessboard.setPromotionFlag(Chessboard.ROOK);
-				performMove(row,column);
+				performMove(row, column);
 				dialog.dismiss();
 			}
 		});
@@ -97,7 +139,7 @@ public class ChessboardLayout extends TableLayout {
 			@Override
 			public void onClick(View v) {
 				mChessboard.setPromotionFlag(Chessboard.BISHOP);
-				performMove(row,column);
+				performMove(row, column);
 				dialog.dismiss();
 			}
 		});
@@ -105,7 +147,7 @@ public class ChessboardLayout extends TableLayout {
 			@Override
 			public void onClick(View v) {
 				mChessboard.setPromotionFlag(Chessboard.KNIGHT);
-				performMove(row,column);
+				performMove(row, column);
 				dialog.dismiss();
 			}
 		});
@@ -128,41 +170,37 @@ public class ChessboardLayout extends TableLayout {
 	}
 
 	private Drawable getPieceIcon(Chesspiece piece) {
-		int id = -1;
 
 		if (piece.getColor() == Chesspiece.WHITE) {
 			if (piece instanceof Pawn) {
-				id = R.drawable.white_pawn;
+				return mIcons[WHITEPAWN];
 			} else if (piece instanceof Rook) {
-				id = R.drawable.white_rook;
+				return mIcons[WHITEROOK];
 			} else if (piece instanceof Knight) {
-				id = R.drawable.white_knight;
+				return mIcons[WHITEKNIGHT];
 			} else if (piece instanceof Bishop) {
-				id = R.drawable.white_bishop;
+				return mIcons[WHITEBISHOP];
 			} else if (piece instanceof Queen) {
-				id = R.drawable.white_queen;
+				return mIcons[WHITEQUEEN];
 			} else if (piece instanceof King) {
-				id = R.drawable.white_king;
+				return mIcons[WHITEKING];
 			}
 		} else {
 			if (piece instanceof Pawn) {
-				id = R.drawable.black_pawn;
+				return mIcons[BLACKPAWN];
 			} else if (piece instanceof Rook) {
-				id = R.drawable.black_rook;
+				return mIcons[BLACKROOK];
 			} else if (piece instanceof Knight) {
-				id = R.drawable.black_knight;
+				return mIcons[BLACKKNIGHT];
 			} else if (piece instanceof Bishop) {
-				id = R.drawable.black_bishop;
+				return mIcons[BLACKBISHOP];
 			} else if (piece instanceof Queen) {
-				id = R.drawable.black_queen;
+				return mIcons[BLACKQUEEN];
 			} else if (piece instanceof King) {
-				id = R.drawable.black_king;
+				return mIcons[BLACKKING];
 			}
 		}
-		Drawable dr = mResources.getDrawable(id);
-		Bitmap bitmap = ((BitmapDrawable) dr).getBitmap();
-		int size = mResources.getDimensionPixelSize(R.dimen.tile_size);
-		return new BitmapDrawable(getResources(), Bitmap.createScaledBitmap(bitmap, size, size, true));
+		return null;
 	}
 
 	private void initializeButtonArray() {
@@ -218,8 +256,8 @@ public class ChessboardLayout extends TableLayout {
 			}
 		});
 	}
-	
-	private void performMove(int row, int column){
+
+	private void performMove(int row, int column) {
 		mSelected.move(row, column);
 
 		mSelected = null;
