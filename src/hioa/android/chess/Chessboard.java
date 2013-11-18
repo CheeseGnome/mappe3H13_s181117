@@ -1,7 +1,6 @@
 package hioa.android.chess;
 
 import android.content.Context;
-import android.util.Log;
 import android.widget.Toast;
 
 public class Chessboard {
@@ -288,7 +287,6 @@ public class Chessboard {
 			for (int j = 0; j < getMaxColumns(); j++) {
 				if (mChessboard[i][j] != null && mChessboard[i][j].getColor() == color) {
 					if (containsTrue(mChessboard[i][j].legalMoves())) {
-						Log.d("ZZZ", "Legal moves found at " + i + " " + j);
 						return true;
 					}
 				}
