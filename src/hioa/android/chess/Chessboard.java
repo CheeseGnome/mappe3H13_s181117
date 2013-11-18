@@ -11,14 +11,14 @@ public class Chessboard {
 	private Context mContext;
 	private EnPassant mEnPassant;
 	private int mPromotionFlag = NO_PROMOTION;
-	private Positions mPositions;
+	private PositionHashFactory mPositions;
 
 	public Chessboard(Context context) {
 		mContext = context;
 		Chesspiece.context = context;
 		Chesspiece.chessboard = this;
 		mChessboard = createChessboard();
-		mPositions = new Positions(this);
+		mPositions = new PositionHashFactory(this);
 	}
 
 	/**

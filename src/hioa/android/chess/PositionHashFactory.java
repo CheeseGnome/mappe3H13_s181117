@@ -2,14 +2,14 @@ package hioa.android.chess;
 
 import java.util.Arrays;
 
-public class Positions {
+public class PositionHashFactory {
 
 	private Chessboard mChessboard;
 	private static final int ARRAY_INCREMENT = 100;
-	String[] hashed_positions = new String[ARRAY_INCREMENT];
-	private int current_index = 0;
+	String[] mHashedPositions = new String[ARRAY_INCREMENT];
+	private int mCurrentIndex = 0;
 
-	public Positions(Chessboard board) {
+	public PositionHashFactory(Chessboard board) {
 		mChessboard = board;
 	}
 
@@ -31,10 +31,10 @@ public class Positions {
 				builder.append(getHashValue(mChessboard.getPieceAt(i, j)));
 			}
 		}
-		if (current_index == hashed_positions.length) {
+		if (mCurrentIndex == mHashedPositions.length) {
 			expandArray();
 		}
-		hashed_positions[current_index++] = builder.toString();
+		mHashedPositions[mCurrentIndex++] = builder.toString();
 	}
 
 	/**
@@ -46,10 +46,10 @@ public class Positions {
 	 */
 	public boolean drawByRepetition() {
 		// Last entered hash
-		String hash = hashed_positions[current_index - 1];
+		String hash = mHashedPositions[mCurrentIndex - 1];
 		int repetition_count = 1;
-		for (int i = 0; i < current_index - 1; i++) {
-			if (hashed_positions[i].equals(hash)) {
+		for (int i = 0; i < mCurrentIndex - 1; i++) {
+			if (mHashedPositions[i].equals(hash)) {
 				repetition_count++;
 				if (repetition_count >= 3) {
 					return true;
@@ -106,6 +106,6 @@ public class Positions {
 	}
 
 	private void expandArray() {
-		hashed_positions = Arrays.copyOf(hashed_positions, hashed_positions.length + ARRAY_INCREMENT);
+		mHashedPositions = Arrays.copyOf(mHashedPositions, mHashedPositions.length + ARRAY_INCREMENT);
 	}
 }
