@@ -18,9 +18,11 @@ public class Bishop extends Chesspiece {
 	@Override
 	public boolean move(int row, int column) {
 		if (legalMoves()[row][column] == true) {
-			chessboard.move(this, row, column);
+			int oldRow = getRow();
+			int oldColumn = getColumn();
 			setRow(row);
 			setColumn(column);
+			chessboard.move(this, row, column, oldRow, oldColumn);
 			return true;
 		} else
 			return false;
@@ -207,7 +209,7 @@ public class Bishop extends Chesspiece {
 				break;
 			}
 			// Friendly piece blocking
-			else if (chessboard.tileContains(row, column, false) == getColor()){
+			else if (chessboard.tileContains(row, column, false) == getColor()) {
 				break;
 			}
 			row -= 1;
@@ -242,7 +244,7 @@ public class Bishop extends Chesspiece {
 				break;
 			}
 			// Friendly piece blocking
-			else  if (chessboard.tileContains(row, column, false) == getColor()){
+			else if (chessboard.tileContains(row, column, false) == getColor()) {
 				break;
 			}
 			row -= 1;
@@ -277,7 +279,7 @@ public class Bishop extends Chesspiece {
 				break;
 			}
 			// Friendly piece blocking
-			else  if (chessboard.tileContains(row, column, false) == getColor()){
+			else if (chessboard.tileContains(row, column, false) == getColor()) {
 				break;
 			}
 			row += 1;
@@ -313,7 +315,7 @@ public class Bishop extends Chesspiece {
 				break;
 			}
 			// Friendly piece blocking
-			else  if (chessboard.tileContains(row, column, false) == getColor()){
+			else if (chessboard.tileContains(row, column, false) == getColor()) {
 				break;
 			}
 			row += 1;

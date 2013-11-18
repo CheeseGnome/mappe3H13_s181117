@@ -1,6 +1,5 @@
 package hioa.android.chess;
 
-import android.util.Log;
 
 /**
  * Represents a pawn
@@ -25,10 +24,12 @@ public class Pawn extends Chesspiece {
 	@Override
 	public boolean move(int row, int column) {
 		if (legalMoves()[row][column] == true) {
-			chessboard.move(this, row, column);
 			boolean placeEnPassant = Math.abs(row - getRow()) == 2;
+			int oldRow = getRow();
+			int oldColumn = getColumn();
 			setRow(row);
 			setColumn(column);
+			chessboard.move(this, row, column, oldRow, oldColumn);
 			if (placeEnPassant) {
 				chessboard.placeEnPassant(new EnPassant(this));
 			}

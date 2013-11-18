@@ -1,6 +1,8 @@
 package hioa.android.chess;
 
 import android.content.Context;
+import android.util.Log;
+import android.widget.Toast;
 
 public class Chessboard {
 
@@ -74,14 +76,21 @@ public class Chessboard {
 
 		// Temporary move
 		Chesspiece oldPiece = getPieceAt(row, column);
+		if (oldPiece instanceof King && oldPiece.getColor() == piece.getColor()) {
+			return false;
+		}
 		mChessboard[oldRow][oldColumn] = null;
 		mChessboard[row][column] = piece;
+		piece.setRow(row);
+		piece.setColumn(column);
 
 		boolean result = isInCheck(piece.getColor());
 
 		// revert the move
 		mChessboard[oldRow][oldColumn] = piece;
 		mChessboard[row][column] = oldPiece;
+		piece.setRow(oldRow);
+		piece.setColumn(oldColumn);
 
 		return result;
 	}
@@ -145,8 +154,12 @@ public class Chessboard {
 	 *            The piece's new row position
 	 * @param column
 	 *            The piece's new column position
+	 * @param oldRow
+	 *            The piece's old row position
+	 * @param oldColumn
+	 *            The piece's old column position
 	 */
-	public void move(Chesspiece piece, int row, int column) {
+	public void move(Chesspiece piece, int row, int column, int oldRow, int oldColumn) {
 		// Kill En-Passant
 		if (mChessboard[row][column] != null && mChessboard[row][column].getColor() == Chesspiece.EN_PASSANT) {
 			mChessboard[mEnPassant.getPawn().getRow()][mEnPassant.getPawn().getColumn()] = null;
@@ -157,14 +170,13 @@ public class Chessboard {
 			mEnPassant = null;
 		}
 
-		mChessboard[piece.getRow()][piece.getColumn()] = null;
+		mChessboard[oldRow][oldColumn] = null;
 		mChessboard[row][column] = piece;
 
 		if (mPromotionFlag != NO_PROMOTION) {
 			mChessboard[row][column] = getPieceByFlag(mPromotionFlag, piece.getColor(), row, column);
 			mPromotionFlag = NO_PROMOTION;
 		}
-
 		createPositionHash();
 		checkForGameEnd(piece.getColor());
 	}
@@ -188,7 +200,7 @@ public class Chessboard {
 			for (int j = 0; j < getMaxColumns(); j++) {
 				if (mChessboard[i][j] instanceof King && mChessboard[i][j].getColor() == color) {
 					return (King) mChessboard[i][j];
-				}//TODO denne funker ikke
+				}
 			}
 		}
 		return null;
@@ -201,14 +213,21 @@ public class Chessboard {
 		} else {
 			enemy = Chesspiece.WHITE;
 		}
-		
+
 		boolean inCheck = isInCheck(enemy);
 		getKing(color).setInCheck(inCheck);
-		
+
+		if (inCheck) {
+			Toast.makeText(mContext, "Check", Toast.LENGTH_LONG).show();
+		}
+
 		if (!hasLegalMoves(enemy)) {
+			Toast.makeText(mContext, "No moves", Toast.LENGTH_LONG).show();
 			if (inCheck) {
-				// TODO win the game
+				Toast.makeText(mContext, "Checkmate", Toast.LENGTH_LONG).show();
+				// TODO Win the game
 			} else {
+				Toast.makeText(mContext, "Stalemate", Toast.LENGTH_LONG).show();
 				// TODO draw
 			}
 
@@ -269,6 +288,7 @@ public class Chessboard {
 			for (int j = 0; j < getMaxColumns(); j++) {
 				if (mChessboard[i][j] != null && mChessboard[i][j].getColor() == color) {
 					if (containsTrue(mChessboard[i][j].legalMoves())) {
+						Log.d("ZZZ", "Legal moves found at " + i + " " + j);
 						return true;
 					}
 				}
@@ -287,7 +307,7 @@ public class Chessboard {
 	private boolean containsTrue(boolean[][] board) {
 		for (int i = 0; i < getMaxRows(); i++) {
 			for (int j = 0; j < getMaxColumns(); j++) {
-				if (board[i][j] == true) {
+				if (board[i][j]) {
 					return true;
 				}
 			}

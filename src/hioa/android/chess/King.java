@@ -30,9 +30,11 @@ public class King extends Chesspiece {
 					chessboard.getPieceAt(row, column - 2).move(row, column + 1);
 				}
 			}
-			chessboard.move(this, row, column);
+			int oldRow = getRow();
+			int oldColumn = getColumn();
 			setRow(row);
 			setColumn(column);
+			chessboard.move(this, row, column, oldRow, oldColumn);
 			mHasMoved = true;
 			return true;
 		} else
