@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.Toast;
 
 public class GameActivity extends Activity {
 
@@ -15,6 +16,7 @@ public class GameActivity extends Activity {
 		setupActionBar();
 		ChessboardView board = (ChessboardView) findViewById(R.id.chessboard);
 		board.setPlayerNames("Player 1", "Player 2");
+		board.setStartTime(10 * 1000);
 		board.setActivity(this);
 	}
 
@@ -49,6 +51,16 @@ public class GameActivity extends Activity {
 			return true;
 		}
 		return super.onOptionsItemSelected(item);
+	}
+	
+	public void updateClock(int colot, long time){
+		runOnUiThread(new Runnable(){
+			public void run(){
+				//TODO
+				Toast.makeText(getApplicationContext(), "Time's up",
+						Toast.LENGTH_LONG).show();
+			}
+		});
 	}
 
 }
