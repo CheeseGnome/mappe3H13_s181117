@@ -16,6 +16,7 @@
     
     <string name="title_draw">Draw!</string>
     <string name="title_win_checkmate">Checkmate!</string>
+    <string name="title_win_timeout">Out of time!</string>
     <string name="title_win_resign">Resignation!</string>
     
     <string name="txt_draw_repetition">Draw by repetition!</string>
@@ -24,6 +25,8 @@
     <string name="txt_win_checkmate">has won by checkmate!</string>
     <string name="txt_win_resign_1">resigned!</string>
     <string name="txt_win_resign_2">wins!</string>
+    <string name="txt_win_timeout_1">is out of time!</string>
+    <string name="txt_win_timeout_2">wins!</string>
     <string name="txt_draw_stalemate">Draw by stalemate!</string>
 
 </resources>

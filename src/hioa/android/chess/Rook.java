@@ -40,12 +40,16 @@ public class Rook extends Chesspiece {
 
 	@Override
 	public boolean move(int row, int column) {
+		return move(row, column, false);
+	}
+
+	public boolean move(int row, int column, boolean castle) {
 		if (legalMoves()[row][column] == true) {
 			int oldRow = getRow();
 			int oldColumn = getColumn();
 			setRow(row);
 			setColumn(column);
-			chessboard.move(this, row, column, oldRow, oldColumn);
+			chessboard.move(this, row, column, oldRow, oldColumn, castle);
 			mHasMoved = true;
 			return true;
 		} else

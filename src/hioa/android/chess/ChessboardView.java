@@ -32,7 +32,7 @@ public class ChessboardView extends TableLayout {
 	private Resources mResources;
 	private String mWhiteName, mBlackName;
 	public static final int DRAWREPETITION = 0, DRAWCLAIMED = 1, DRAWAGREED = 2, WINCHECKMATE = 3, WINRESIGN = 4,
-			DRAWSTALEMATE = 5;
+			DRAWSTALEMATE = 5, WINTIMEOUT = 6;
 	/**
 	 * The currently selected chesspiece.
 	 * <p>
@@ -66,6 +66,14 @@ public class ChessboardView extends TableLayout {
 		mChessboard.setChessboardView(this);
 		initializeButtonArray();
 		placePieces();
+	}
+	
+	public void timeOut(final int color){
+		mActivity.runOnUiThread(new Runnable(){
+			public void run(){
+				endTheGame(ChessboardView.WINTIMEOUT, color);
+			}
+		});
 	}
 
 	public void setStartTime(long startTime) {
@@ -158,6 +166,8 @@ public class ChessboardView extends TableLayout {
 				mChessboard.setStartTime(startTime);
 				mChessboard.setChessboardView(view);
 				mCurrentPlayer = Chesspiece.WHITE;
+				mActivity.updateClock(Chesspiece.WHITE, mChessboard.getStartTime());
+				mActivity.updateClock(Chesspiece.BLACK, mChessboard.getStartTime());
 				placePieces();
 				dialog.dismiss();
 			}
@@ -193,6 +203,11 @@ public class ChessboardView extends TableLayout {
 			title = mResources.getString(R.string.title_draw);
 			body = mResources.getString(R.string.txt_draw_stalemate);
 			break;
+		case WINTIMEOUT:
+			title = mResources.getString(R.string.title_win_timeout);
+			body = loser + " " + mResources.getString(R.string.txt_win_timeout_1) + " " + winner + " "
+					+ mResources.getString(R.string.txt_win_timeout_2);
+			
 		}
 		dialog.setTitle(title);
 		((TextView) contentView.findViewById(R.id.txt_endgame)).setText(body);

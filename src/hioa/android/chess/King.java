@@ -25,11 +25,11 @@ public class King extends Chesspiece {
 			// Castle
 			if (Math.abs(getColumn() - column) == 2) {
 				if (column > getColumn()) {
-					chessboard.getPieceAt(row, column + 1)
-							.move(row, column - 1);
+					((Rook) chessboard.getPieceAt(row, column + 1)).move(row,
+							column - 1, true);
 				} else {
-					chessboard.getPieceAt(row, column - 2)
-							.move(row, column + 1);
+					((Rook) chessboard.getPieceAt(row, column - 2)).move(row,
+							column + 1, true);
 				}
 			}
 			int oldRow = getRow();
