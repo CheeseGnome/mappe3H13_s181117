@@ -30,6 +30,14 @@
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="hioa.android.chess.MainMenuActivity" />
         </activity>
+        <activity
+            android:name="hioa.android.chess.GameSettingsActivity"
+            android:label="@string/title_activity_game_settings"
+            android:parentActivityName="hioa.android.chess.MainMenuActivity" >
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="hioa.android.chess.MainMenuActivity" />
+        </activity>
     </application>
 
 </manifest>
