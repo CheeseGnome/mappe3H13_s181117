@@ -7,7 +7,6 @@ import android.graphics.Bitmap;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.util.AttributeSet;
-import android.util.DisplayMetrics;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.Button;
@@ -38,10 +37,10 @@ public class ChessboardView extends TableLayout {
 	 * <p>
 	 * This is the piece that will be moved if a legal move is clicked
 	 */
-	Chesspiece mSelected;
-	Context mContext;
-	int mCurrentPlayer = Chesspiece.WHITE;
-
+	private Chesspiece mSelected;
+	private Context mContext;
+	private int mCurrentPlayer = Chesspiece.WHITE;
+	
 	/**
 	 * Array of the icons for the various chesspieces.
 	 * <p>
@@ -370,10 +369,12 @@ public class ChessboardView extends TableLayout {
 	private void setButtonListener(ImageButton button, final int row, final int column) {
 		button.setOnClickListener(new View.OnClickListener() {
 			public void onClick(View v) {
-
+				//We want this as early as possible
+				mChessboard.setMoving(true);
 				Chesspiece piece = mChessboard.getPieceAt(row, column);
 
 				if (piece != null && piece.getColor() == mCurrentPlayer) {
+					mChessboard.setMoving(false);
 					mSelected = piece;
 					mLegalMoves = mSelected.legalMoves();
 					setLegalMovesHint();
@@ -386,6 +387,7 @@ public class ChessboardView extends TableLayout {
 					}
 					performMove(row, column);
 				} else {
+					mChessboard.setMoving(false);
 					mSelected = null;
 					mLegalMoves = null;
 					setLegalMovesHint();

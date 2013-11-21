@@ -3,7 +3,6 @@ package hioa.android.chess;
 import java.util.Date;
 
 import android.content.Context;
-import android.util.Log;
 
 public class Chessboard {
 
@@ -26,6 +25,10 @@ public class Chessboard {
 	 * The thread will unset this after changing color automatically
 	 */
 	private volatile boolean mChangeClockColor = false;
+
+	private volatile boolean mStopClock = false;
+	// TODO javadoc
+	private volatile boolean mMoving = false;
 
 	public Chessboard(Context context) {
 		mContext = context;
@@ -69,6 +72,12 @@ public class Chessboard {
 				int color = Chesspiece.WHITE;
 
 				while (whiteTime > 0 && blackTime > 0) {
+					if (mStopClock) {
+						mStopClock = false;
+						// If we break here then a draw by time out will be
+						// given
+						return;
+					}
 					if (mChangeClockColor) {
 						mChangeClockColor = false;
 						if (color == Chesspiece.WHITE) {
@@ -89,6 +98,14 @@ public class Chessboard {
 						blackTime -= difference;
 						diff1 = diff2;
 						mView.updateClock(color, blackTime);
+					}
+				}
+				// This prevents a player from losing by timeout while making a
+				// winning move
+				while (mMoving) {
+					if (mStopClock) {
+						mStopClock = false;
+						return;
 					}
 				}
 				mView.timeOut(color);
@@ -232,6 +249,10 @@ public class Chessboard {
 	public void setChessboardView(ChessboardView view) {
 		mView = view;
 	}
+	
+	public void setMoving(boolean moving){
+		mMoving = moving;
+	}
 
 	public void move(Chesspiece piece, int row, int column, int oldRow,
 			int oldColumn) {
@@ -281,13 +302,12 @@ public class Chessboard {
 		}
 		getKing(piece.getColor()).setInCheck(false);
 		checkForGameEnd(piece.getColor());
-
-		if (firstMove) {
+		mMoving = false;
+		if (!firstMove && !castle) {
+			mChangeClockColor = true;
+		} else if (firstMove) {
 			firstMove = false;
 			startClock(mStartTime);
-		} else if (!castle) {
-			// TODO Denne switches to ganger ved rokade
-			mChangeClockColor = true;
 		}
 	}
 
@@ -356,6 +376,7 @@ public class Chessboard {
 		getKing(enemy).setInCheck(inCheck);
 
 		if (!hasLegalMoves(enemy)) {
+			mStopClock = true;
 			DBAdapter database = new DBAdapter(mContext);
 			database.open();
 			if (inCheck) {
@@ -379,6 +400,7 @@ public class Chessboard {
 		}
 		mPositionHashFactory.hashPosition(color);
 		if (mPositionHashFactory.drawByRepetition()) {
+			mStopClock = true;
 			DBAdapter database = new DBAdapter(mContext);
 			database.open();
 			database.insertGameResult(mView.getWhiteName(),

@@ -5,12 +5,11 @@ import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.TextView;
-import android.widget.Toast;
 
 public class GameActivity extends Activity {
 
 	private TextView whiteClock, blackClock;
-	private long startTime =  24 * 60 * 60 * 1000;
+	private long startTime = /* 2 * 60 */10 * 1000;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -67,21 +66,19 @@ public class GameActivity extends Activity {
 
 		int hundreds = (int) time / 10 % 100;
 		int seconds = (int) time / 1000 % 60;
-		int minutes = (int) time / 1000 / 60 % 60;
-		int hours = (int) time / 1000 / 60 / 60;
+		int minutes = (int) time / 1000 / 60;
 
-		addTimeString(clockBuilder, hours);
 		addTimeString(clockBuilder, minutes);
 		addTimeString(clockBuilder, seconds);
 		addTimeString(clockBuilder, hundreds);
-		//Delete last instance of :
+		// Delete last instance of :
 		clockBuilder.deleteCharAt(clockBuilder.length() - 1);
 
 		runOnUiThread(new Runnable() {
 			public void run() {
-				if(color == Chesspiece.WHITE){
+				if (color == Chesspiece.WHITE) {
 					whiteClock.setText(clockBuilder.toString());
-				}else{
+				} else {
 					blackClock.setText(clockBuilder.toString());
 				}
 			}
