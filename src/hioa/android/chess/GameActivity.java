@@ -10,6 +10,8 @@ import android.widget.TextView;
 public class GameActivity extends Activity {
 
 	private TextView mWhiteClock, mBlackClock;
+	private PlayerFrame mWhiteFrame, mBlackFrame;
+	private String mWhiteName, mBlackName;
 	private Chessboard mChessboard;
 	private long mStartTime;
 	private long mBonusTime;
@@ -22,11 +24,34 @@ public class GameActivity extends Activity {
 
 		mWhiteClock = (TextView) findViewById(R.id.txt_white_clock);
 		mBlackClock = (TextView) findViewById(R.id.txt_black_clock);
+		
 		ChessboardView board = (ChessboardView) findViewById(R.id.chessboard);
 		setupBundleItems(board);
+		
+		mWhiteFrame = (PlayerFrame) findViewById(R.id.whiteFrame);
+		mBlackFrame = (PlayerFrame) findViewById(R.id.blackFrame);
+		mWhiteFrame.setName(mWhiteName);
+		mBlackFrame.setName(mBlackName);
+		
+		mWhiteFrame.loadIcons(Chesspiece.BLACK);
+		mBlackFrame.loadIcons(Chesspiece.WHITE);
+		
 		mChessboard = board.getChessboard();
 		updateClock(Chesspiece.WHITE, mStartTime);
 		updateClock(Chesspiece.BLACK, mStartTime);
+	}
+	
+	public void capturePiece(Chesspiece piece){
+		if(piece.getColor() == Chesspiece.WHITE){
+			mBlackFrame.addPiece(piece);
+		}else{
+			mWhiteFrame.addPiece(piece);
+		}
+	}
+	
+	public void resetPlayerFrames(){
+		mWhiteFrame.resetPieces();
+		mBlackFrame.resetPieces();
 	}
 
 	private void setupBundleItems(ChessboardView view) {
@@ -34,8 +59,9 @@ public class GameActivity extends Activity {
 		mStartTime = bundle.getLong(GameSettingsActivity.TIME);
 		mBonusTime = bundle.getLong(GameSettingsActivity.BONUS);
 		view.setTime(mStartTime, mBonusTime);
-		view.setPlayerNames(bundle.getString(GameSettingsActivity.WHITENAME),
-				bundle.getString(GameSettingsActivity.BLACKNAME));
+		mWhiteName = bundle.getString(GameSettingsActivity.WHITENAME);
+		mBlackName = bundle.getString(GameSettingsActivity.BLACKNAME);
+		view.setPlayerNames(mWhiteName, mBlackName);
 		view.setActivity(this);
 	}
 
@@ -44,8 +70,8 @@ public class GameActivity extends Activity {
 		mChessboard.stopClock();
 		finish();
 	}
-	
-	public long getBonusTime(){
+
+	public long getBonusTime() {
 		return mBonusTime;
 	}
 
