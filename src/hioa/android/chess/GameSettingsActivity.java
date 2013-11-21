@@ -1,27 +1,120 @@
 package hioa.android.chess;
 
 import android.app.Activity;
+import android.app.AlertDialog;
+import android.content.DialogInterface;
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
+import android.view.Window;
+import android.widget.Button;
+import android.widget.EditText;
 
 public class GameSettingsActivity extends Activity {
 
+	private static final int INVALIDTIME = 0, INVALIDNAME = 1;
+
+	public static final String TIME = "time", BONUS = "bonus",
+			WHITENAME = "white_name", BLACKNAME = "black_name";
+
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
+		requestWindowFeature(Window.FEATURE_NO_TITLE);
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_game_settings);
-		// Show the Up button in the action bar.
-		setupActionBar();
+
+		Button start = (Button) findViewById(R.id.btn_start);
+		final Intent gameIntent = new Intent(this, GameActivity.class);
+		start.setOnClickListener(new View.OnClickListener() {
+			public void onClick(View v) {
+				long time = getTime();
+				long bonus = getBonus();
+				if (time == -1 || bonus == -1) {
+					invalidInput(INVALIDTIME);
+					return;
+				}
+				String white = getWhiteName();
+				String black = getBlackName();
+				if (white.equals("") || black.equals("")) {
+					invalidInput(INVALIDNAME);
+					return;
+				}
+				gameIntent.putExtra(WHITENAME, getWhiteName());
+				gameIntent.putExtra(BLACKNAME, getBlackName());
+				gameIntent.putExtra(TIME, time);
+				gameIntent.putExtra(BONUS, getBonus());
+				startActivity(gameIntent);
+				finish();
+			}
+		});
+
+		Button cancel = (Button) findViewById(R.id.btn_cancel);
+		cancel.setOnClickListener(new View.OnClickListener() {
+			public void onClick(View v) {
+				finish();
+			}
+		});
 	}
 
-	/**
-	 * Set up the {@link android.app.ActionBar}.
-	 */
-	private void setupActionBar() {
+	private void invalidInput(int flag) {
+		AlertDialog dialog = new AlertDialog.Builder(this).create();
+		dialog.setTitle(getString(R.string.title_invalid_input));
+		if (flag == INVALIDTIME) {
+			dialog.setMessage(getString(R.string.txt_invalid_time));
+		} else {
+			dialog.setMessage(getString(R.string.txt_invalid_name));
+		}
+		dialog.setIconAttribute(android.R.attr.alertDialogIcon);
+		dialog.setButton(AlertDialog.BUTTON_POSITIVE,
+				getString(R.string.btn_ok),
+				new DialogInterface.OnClickListener() {
+					public void onClick(DialogInterface dialog, int which) {
+						dialog.dismiss();
+					}
+				});
+		dialog.show();
+	}
 
-		getActionBar().setDisplayHomeAsUpEnabled(true);
+	private String getWhiteName() {
+		return ((EditText) findViewById(R.id.etxt_white_name)).getText()
+				.toString();
+	}
 
+	private String getBlackName() {
+		return ((EditText) findViewById(R.id.etxt_black_name)).getText()
+				.toString();
+	}
+
+	private long getTime() {
+		String minutes = ((EditText) findViewById(R.id.etxt_minutes)).getText()
+				.toString();
+		String seconds = ((EditText) findViewById(R.id.etxt_seconds)).getText()
+				.toString();
+
+		long time;
+		try {
+			time = Long.parseLong(minutes) * 60 + Long.parseLong(seconds);
+		} catch (NumberFormatException nfe) {
+			return -1;
+		}
+		return time * 1000;
+	}
+
+	private long getBonus() {
+		String minutes = ((EditText) findViewById(R.id.etxt_minutes_2))
+				.getText().toString();
+		String seconds = ((EditText) findViewById(R.id.etxt_seconds_2))
+				.getText().toString();
+
+		long time;
+		try {
+			time = Long.parseLong(minutes) * 60 + Long.parseLong(seconds);
+		} catch (NumberFormatException nfe) {
+			return -1;
+		}
+		return time * 1000;
 	}
 
 	@Override
@@ -42,7 +135,7 @@ public class GameSettingsActivity extends Activity {
 			//
 			// http://developer.android.com/design/patterns/navigation.html#up-vs-back
 			//
-//			NavUtils.navigateUpFromSameTask(this);
+			// NavUtils.navigateUpFromSameTask(this);
 			return true;
 		}
 		return super.onOptionsItemSelected(item);

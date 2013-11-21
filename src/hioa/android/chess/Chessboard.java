@@ -16,7 +16,7 @@ public class Chessboard {
 	private PositionHashFactory mPositionHashFactory;
 	private ChessboardView mView;
 	private boolean firstMove = true;
-	private long mStartTime;
+	private long mStartTime, mBonusTime;
 
 	/**
 	 * Used by the clock-thread to determine whether or not the clock should
@@ -62,8 +62,9 @@ public class Chessboard {
 		mPromotionFlag = flag;
 	}
 
-	public void setStartTime(long startTime) {
+	public void setTime(long startTime, long bonusTime) {
 		mStartTime = startTime;
+		mBonusTime = bonusTime;
 	}
 	
 	public void stopClock(){
@@ -96,8 +97,12 @@ public class Chessboard {
 					if (mChangeClockColor) {
 						mChangeClockColor = false;
 						if (color == Chesspiece.WHITE) {
+							whiteTime += mBonusTime;
+							mView.updateClock(color, whiteTime);
 							color = Chesspiece.BLACK;
 						} else {
+							blackTime += mBonusTime;
+							mView.updateClock(color, blackTime);
 							color = Chesspiece.WHITE;
 						}
 						diff1 = new Date().getTime();

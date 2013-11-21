@@ -78,8 +78,8 @@ public class ChessboardView extends TableLayout {
 		});
 	}
 
-	public void setStartTime(long startTime) {
-		mChessboard.setStartTime(startTime);
+	public void setTime(long startTime, long bonusTime) {
+		mChessboard.setTime(startTime, bonusTime);
 	}
 
 	public void updateClock(final int color, final long time) {
@@ -172,7 +172,7 @@ public class ChessboardView extends TableLayout {
 					@Override
 					public void onClick(View v) {
 						mChessboard = new Chessboard(mContext);
-						mChessboard.setStartTime(mActivity.getStartTime());
+						mChessboard.setTime(mActivity.getStartTime(), mActivity.getBonusTime());
 						mChessboard.setChessboardView(view);
 						mCurrentPlayer = Chesspiece.WHITE;
 						mActivity.updateClock(Chesspiece.WHITE,
@@ -186,17 +186,6 @@ public class ChessboardView extends TableLayout {
 				});
 
 		String title = "", body = "";
-		setGameOverStrings(flag, color, title, body);
-
-		dialog.setTitle(title);
-		((TextView) contentView.findViewById(R.id.txt_endgame)).setText(body);
-		dialog.setCancelable(false);
-		dialog.setCanceledOnTouchOutside(false);
-		dialog.show();
-	}
-
-	private void setGameOverStrings(int flag, int color, String title,
-			String body) {
 		String winner = (color == Chesspiece.WHITE ? mWhiteName : mBlackName);
 		String loser = (winner.equals(mBlackName) ? mWhiteName : mBlackName);
 		switch (flag) {
@@ -236,6 +225,12 @@ public class ChessboardView extends TableLayout {
 					+ mResources.getString(R.string.txt_win_timeout_2);
 
 		}
+
+		dialog.setTitle(title);
+		((TextView) contentView.findViewById(R.id.txt_endgame)).setText(body);
+		dialog.setCancelable(false);
+		dialog.setCanceledOnTouchOutside(false);
+		dialog.show();
 	}
 
 	/**

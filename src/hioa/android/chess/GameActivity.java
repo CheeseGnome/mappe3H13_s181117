@@ -4,53 +4,57 @@ import android.app.Activity;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.Window;
 import android.widget.TextView;
 
 public class GameActivity extends Activity {
 
 	private TextView mWhiteClock, mBlackClock;
 	private Chessboard mChessboard;
-	private long mStartTime =  2 * 60 * 60 * 1000;
+	private long mStartTime;
+	private long mBonusTime;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
+		requestWindowFeature(Window.FEATURE_NO_TITLE);
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_game);
-		// Show the Up button in the action bar.
-		setupActionBar();
 
 		mWhiteClock = (TextView) findViewById(R.id.txt_white_clock);
 		mBlackClock = (TextView) findViewById(R.id.txt_black_clock);
 		ChessboardView board = (ChessboardView) findViewById(R.id.chessboard);
+		setupBundleItems(board);
 		mChessboard = board.getChessboard();
-		board.setPlayerNames("Player 1", "Player 2");
-		board.setStartTime(mStartTime);
-		board.setActivity(this);
 		updateClock(Chesspiece.WHITE, mStartTime);
 		updateClock(Chesspiece.BLACK, mStartTime);
 	}
-	
+
+	private void setupBundleItems(ChessboardView view) {
+		Bundle bundle = getIntent().getExtras();
+		mStartTime = bundle.getLong(GameSettingsActivity.TIME);
+		mBonusTime = bundle.getLong(GameSettingsActivity.BONUS);
+		view.setTime(mStartTime, mBonusTime);
+		view.setPlayerNames(bundle.getString(GameSettingsActivity.WHITENAME),
+				bundle.getString(GameSettingsActivity.BLACKNAME));
+		view.setActivity(this);
+	}
+
 	@Override
-	public void onBackPressed(){
+	public void onBackPressed() {
 		mChessboard.stopClock();
 		finish();
 	}
 	
-	public long getStartTime(){
+	public long getBonusTime(){
+		return mBonusTime;
+	}
+
+	public long getStartTime() {
 		return mStartTime;
 	}
-	
-	public void setChessboard(Chessboard board){
+
+	public void setChessboard(Chessboard board) {
 		mChessboard = board;
-	}
-
-	/**
-	 * Set up the {@link android.app.ActionBar}.
-	 */
-	private void setupActionBar() {
-
-		getActionBar().setDisplayHomeAsUpEnabled(true);
-
 	}
 
 	@Override

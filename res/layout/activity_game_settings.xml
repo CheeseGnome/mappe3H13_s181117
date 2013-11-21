@@ -93,6 +93,69 @@
         </EditText>
         
         
+        
+        
+        
+        
+        <TextView
+            android:id="@+id/txt_bonus"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:layout_below="@+id/etxt_minutes"
+            android:text="@string/txt_bonus" />
+
+        <TextView
+            android:id="@+id/txt_minutes_2"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/txt_bonus"
+            android:text="@string/txt_minutes" />
+
+        <TextView
+            android:id="@+id/txt_seconds_2"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_above="@+id/etxt_seconds_2"
+            android:layout_alignLeft="@+id/etxt_seconds_2"
+            android:text="@string/txt_seconds" />
+        
+        <EditText
+            android:id="@+id/etxt_minutes_2"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/txt_minutes_2"
+            android:ems="5"
+            android:inputType="number"
+            android:text="@string/etxt_default_bonus_minutes" >
+        </EditText>
+        
+        <EditText
+            android:id="@+id/etxt_seconds_2"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_toRightOf="@+id/etxt_minutes_2"
+            android:layout_alignTop="@+id/etxt_minutes_2"
+            android:ems="5"
+            android:inputType="number"
+            android:text="@string/etxt_default_bonus_seconds" >
+        </EditText>
+
+        <Button
+            android:id="@+id/btn_start"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/etxt_minutes_2"
+            android:text="@string/btn_start" />
+        
+        <Button
+            android:id="@+id/btn_cancel"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/etxt_minutes_2"
+            android:layout_toRightOf="@+id/btn_start"
+            android:text="@string/btn_cancel" />
+        
     </RelativeLayout>
 
 </ScrollView>
