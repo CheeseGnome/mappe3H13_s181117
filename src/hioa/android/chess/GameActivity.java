@@ -8,8 +8,9 @@ import android.widget.TextView;
 
 public class GameActivity extends Activity {
 
-	private TextView whiteClock, blackClock;
-	private long startTime = /* 2 * 60 */10 * 1000;
+	private TextView mWhiteClock, mBlackClock;
+	private Chessboard mChessboard;
+	private long mStartTime =  2 * 60 * 60 * 1000;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -18,14 +19,29 @@ public class GameActivity extends Activity {
 		// Show the Up button in the action bar.
 		setupActionBar();
 
-		whiteClock = (TextView) findViewById(R.id.txt_white_clock);
-		blackClock = (TextView) findViewById(R.id.txt_black_clock);
+		mWhiteClock = (TextView) findViewById(R.id.txt_white_clock);
+		mBlackClock = (TextView) findViewById(R.id.txt_black_clock);
 		ChessboardView board = (ChessboardView) findViewById(R.id.chessboard);
+		mChessboard = board.getChessboard();
 		board.setPlayerNames("Player 1", "Player 2");
-		board.setStartTime(startTime);
+		board.setStartTime(mStartTime);
 		board.setActivity(this);
-		updateClock(Chesspiece.WHITE, startTime);
-		updateClock(Chesspiece.BLACK, startTime);
+		updateClock(Chesspiece.WHITE, mStartTime);
+		updateClock(Chesspiece.BLACK, mStartTime);
+	}
+	
+	@Override
+	public void onBackPressed(){
+		mChessboard.stopClock();
+		finish();
+	}
+	
+	public long getStartTime(){
+		return mStartTime;
+	}
+	
+	public void setChessboard(Chessboard board){
+		mChessboard = board;
 	}
 
 	/**
@@ -77,9 +93,9 @@ public class GameActivity extends Activity {
 		runOnUiThread(new Runnable() {
 			public void run() {
 				if (color == Chesspiece.WHITE) {
-					whiteClock.setText(clockBuilder.toString());
+					mWhiteClock.setText(clockBuilder.toString());
 				} else {
-					blackClock.setText(clockBuilder.toString());
+					mBlackClock.setText(clockBuilder.toString());
 				}
 			}
 		});

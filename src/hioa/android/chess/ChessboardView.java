@@ -82,6 +82,10 @@ public class ChessboardView extends TableLayout {
 	public void updateClock(final int color, final long time) {
 		mActivity.updateClock(color, time);
 	}
+	
+	public Chessboard getChessboard(){
+		return mChessboard;
+	}
 
 	public String getWhiteName() {
 		return mWhiteName;
@@ -160,13 +164,13 @@ public class ChessboardView extends TableLayout {
 		((Button) contentView.findViewById(R.id.btn_new_game)).setOnClickListener(new OnClickListener() {
 			@Override
 			public void onClick(View v) {
-				long startTime = mChessboard.getStartTime();
 				mChessboard = new Chessboard(mContext);
-				mChessboard.setStartTime(startTime);
+				mChessboard.setStartTime(mActivity.getStartTime());
 				mChessboard.setChessboardView(view);
 				mCurrentPlayer = Chesspiece.WHITE;
-				mActivity.updateClock(Chesspiece.WHITE, mChessboard.getStartTime());
-				mActivity.updateClock(Chesspiece.BLACK, mChessboard.getStartTime());
+				mActivity.updateClock(Chesspiece.WHITE, mActivity.getStartTime());
+				mActivity.updateClock(Chesspiece.BLACK, mActivity.getStartTime());
+				mActivity.setChessboard(mChessboard);
 				placePieces();
 				dialog.dismiss();
 			}

@@ -26,8 +26,18 @@ public class Chessboard {
 	 */
 	private volatile boolean mChangeClockColor = false;
 
+	/**
+	 * Used to stop the clock from running without triggering a win by timeout.
+	 * <p>
+	 * This is used when the game should end by some other means.
+	 */
 	private volatile boolean mStopClock = false;
-	// TODO javadoc
+	/**
+	 * The game will not end in a win by timeout while this is true.
+	 * <p>
+	 * Used to prevent players from losing by timeout while the program is
+	 * performing a decisive move.
+	 */
 	private volatile boolean mMoving = false;
 
 	public Chessboard(Context context) {
@@ -55,9 +65,9 @@ public class Chessboard {
 	public void setStartTime(long startTime) {
 		mStartTime = startTime;
 	}
-
-	public long getStartTime() {
-		return mStartTime;
+	
+	public void stopClock(){
+		mStopClock = true;
 	}
 
 	private void startClock(final long startTime) {
@@ -80,8 +90,7 @@ public class Chessboard {
 					}
 					if (mStopClock) {
 						mStopClock = false;
-						// If we break here then a draw by time out will be
-						// given
+						// Return to avoid draw by timeout
 						return;
 					}
 					if (mChangeClockColor) {
@@ -255,8 +264,8 @@ public class Chessboard {
 	public void setChessboardView(ChessboardView view) {
 		mView = view;
 	}
-	
-	public void setMoving(boolean moving){
+
+	public void setMoving(boolean moving) {
 		mMoving = moving;
 	}
 
