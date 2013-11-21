@@ -103,9 +103,9 @@ public class GameSettingsActivity extends Activity {
 	}
 
 	private long getBonus() {
-		String minutes = ((EditText) findViewById(R.id.etxt_minutes_2))
+		String minutes = ((EditText) findViewById(R.id.etxt_bonus_minutes))
 				.getText().toString();
-		String seconds = ((EditText) findViewById(R.id.etxt_seconds_2))
+		String seconds = ((EditText) findViewById(R.id.etxt_bonus_seconds))
 				.getText().toString();
 
 		long time;

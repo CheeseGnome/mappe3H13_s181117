@@ -56,10 +56,10 @@ public final class R {
         public static final int btn_start=0x7f0a0012;
         public static final int chessboard=0x7f0a0000;
         public static final int etxt_black_name=0x7f0a0007;
+        public static final int etxt_bonus_minutes=0x7f0a0011;
+        public static final int etxt_bonus_seconds=0x7f0a0010;
         public static final int etxt_minutes=0x7f0a000c;
-        public static final int etxt_minutes_2=0x7f0a0011;
         public static final int etxt_seconds=0x7f0a000b;
-        public static final int etxt_seconds_2=0x7f0a0010;
         public static final int etxt_white_name=0x7f0a0005;
         public static final int row0=0x7f0a0016;
         public static final int row1=0x7f0a001f;
@@ -142,11 +142,11 @@ public final class R {
         public static final int txt_black_clock=0x7f0a0002;
         public static final int txt_black_name=0x7f0a0006;
         public static final int txt_bonus=0x7f0a000d;
+        public static final int txt_bonus_minutes=0x7f0a000e;
+        public static final int txt_bonus_seconds=0x7f0a000f;
         public static final int txt_endgame=0x7f0a0060;
         public static final int txt_minutes=0x7f0a0009;
-        public static final int txt_minutes_2=0x7f0a000e;
         public static final int txt_seconds=0x7f0a000a;
-        public static final int txt_seconds_2=0x7f0a000f;
         public static final int txt_time=0x7f0a0008;
         public static final int txt_white_clock=0x7f0a0001;
         public static final int txt_white_name=0x7f0a0004;
