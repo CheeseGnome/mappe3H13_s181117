@@ -11,7 +11,7 @@
     <string name="description_rook">Rook</string>
     <string name="description_bishop">Bishop</string>
     <string name="description_knight">Knight</string>
-    <string name="btn_new_game">New Game</string>
+    <string name="btn_new_game">Rematch</string>
     <string name="btn_main_menu">Main Menu</string>
     <string name="title_draw">Draw!</string>
     <string name="title_win_checkmate">Checkmate!</string>
