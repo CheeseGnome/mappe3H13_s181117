@@ -72,6 +72,12 @@ public class Chessboard {
 				int color = Chesspiece.WHITE;
 
 				while (whiteTime > 0 && blackTime > 0) {
+					while (mMoving) {
+						if (mStopClock) {
+							mStopClock = false;
+							return;
+						}
+					}
 					if (mStopClock) {
 						mStopClock = false;
 						// If we break here then a draw by time out will be
