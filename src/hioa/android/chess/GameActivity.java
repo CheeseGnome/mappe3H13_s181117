@@ -131,6 +131,15 @@ public class GameActivity extends Activity {
 		});
 	}
 	
+	public void newGame(Chessboard board){
+		updateClock(Chesspiece.WHITE, mStartTime);
+		updateClock(Chesspiece.BLACK, mStartTime);
+		setChessboard(mChessboard);
+		setInCheck(Chesspiece.WHITE, false);
+		setInCheck(Chesspiece.BLACK, false);
+		resetPlayerFrames();
+	}
+	
 	public void setInCheck(int color, boolean inCheck){
 		if(color == Chesspiece.WHITE){
 			mWhiteFrame.setInCheck(inCheck);

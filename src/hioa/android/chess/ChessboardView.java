@@ -169,11 +169,7 @@ public class ChessboardView extends TableLayout {
 				mChessboard.setTime(mActivity.getStartTime(), mActivity.getBonusTime());
 				mChessboard.setChessboardView(view);
 				mCurrentPlayer = Chesspiece.WHITE;
-				mActivity.updateClock(Chesspiece.WHITE, mActivity.getStartTime());
-				mActivity.updateClock(Chesspiece.BLACK, mActivity.getStartTime());
-				mActivity.setChessboard(mChessboard);
-				mActivity.setInCheck(Chesspiece.WHITE, false);
-				mActivity.setInCheck(Chesspiece.BLACK, false);
+				mActivity.newGame(mChessboard);
 				placePieces();
 				dialog.dismiss();
 			}
