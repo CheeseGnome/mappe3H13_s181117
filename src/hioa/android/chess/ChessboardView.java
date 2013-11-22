@@ -172,6 +172,8 @@ public class ChessboardView extends TableLayout {
 				mActivity.updateClock(Chesspiece.WHITE, mActivity.getStartTime());
 				mActivity.updateClock(Chesspiece.BLACK, mActivity.getStartTime());
 				mActivity.setChessboard(mChessboard);
+				mActivity.setInCheck(Chesspiece.WHITE, false);
+				mActivity.setInCheck(Chesspiece.BLACK, false);
 				placePieces();
 				dialog.dismiss();
 			}
