@@ -318,7 +318,7 @@ public class Chessboard {
 	 *            True if this is a castle(clock should not switch colors)
 	 */
 	public void move(Chesspiece piece, int row, int column, int oldRow, int oldColumn, boolean castle) {
-		if(!castle){
+		if (!castle) {
 			mActivity.rotate();
 		}
 		// Kill En-Passant
@@ -347,7 +347,7 @@ public class Chessboard {
 		}
 		getKing(piece.getColor()).setInCheck(false);
 		mActivity.setCheckText(piece.getColor(), PlayerFrame.NO_CHECK);
-		checkForGameEnd(piece.getColor());
+		boolean gameOver = checkForGameEnd(piece.getColor());
 
 		if (!firstMove && !castle) {
 			mChangeClockColor = true;
@@ -356,6 +356,9 @@ public class Chessboard {
 			startClock(mStartTime);
 		}
 		mMoving = false;
+		if (!gameOver) {
+			mActivity.switchPlayer();
+		}
 	}
 
 	/**
@@ -410,7 +413,8 @@ public class Chessboard {
 	 * @param color
 	 *            The color who just moved
 	 */
-	private void checkForGameEnd(int color) {
+	private boolean checkForGameEnd(int color) {
+		boolean gameOver = false;
 		int enemy;
 		if (color == Chesspiece.WHITE) {
 			enemy = Chesspiece.BLACK;
@@ -422,11 +426,12 @@ public class Chessboard {
 		getKing(enemy).setInCheck(inCheck);
 		if (inCheck) {
 			mActivity.setCheckText(enemy, PlayerFrame.CHECK);
-		}else{
+		} else {
 			mActivity.setCheckText(enemy, PlayerFrame.NO_CHECK);
 		}
 
 		if (!hasLegalMoves(enemy)) {
+			gameOver = true;
 			mStopClock = true;
 			DBAdapter database = new DBAdapter(mContext);
 			database.open();
@@ -454,6 +459,7 @@ public class Chessboard {
 		mPositionHashFactory.hashPosition(color);
 		if (mPositionHashFactory.drawByRepetition()) {
 			mStopClock = true;
+			gameOver = true;
 			DBAdapter database = new DBAdapter(mContext);
 			database.open();
 			database.insertGameResult(mView.getWhiteName(), mView.getBlackName(), mPositionHashFactory.getMoves(),
@@ -463,6 +469,7 @@ public class Chessboard {
 			mActivity.setCheckText(enemy, PlayerFrame.DRAW);
 		}
 
+		return gameOver;
 		/*
 		 * TODO lag denne Sjekk: 50 trekk uten sjakk/fanget brikke
 		 */

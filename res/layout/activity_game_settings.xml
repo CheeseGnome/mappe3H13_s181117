@@ -25,10 +25,9 @@
             android:layout_height="wrap_content"
             android:layout_below="@+id/txt_white_name"
             android:ems="10"
-            android:inputType="textCapSentences|textPersonName"
+            android:inputType="textCapSentences|textVisiblePassword"
             android:selectAllOnFocus="true"
             android:text="@string/etxt_default_white_name" >
-
         </EditText>
 
         <TextView
@@ -44,7 +43,7 @@
             android:layout_height="wrap_content"
             android:layout_below="@+id/txt_black_name"
             android:ems="10"
-            android:inputType="textCapSentences|textPersonName"
+            android:inputType="textCapSentences|textVisiblePassword"
             android:selectAllOnFocus="true"
             android:text="@string/etxt_default_black_name" >
         </EditText>
@@ -53,8 +52,8 @@
             android:id="@+id/txt_time"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="10dp"
             android:layout_below="@+id/etxt_black_name"
+            android:layout_marginTop="10dp"
             android:text="@string/txt_time" />
 
         <TextView
@@ -71,7 +70,7 @@
             android:layout_above="@+id/etxt_seconds"
             android:layout_alignLeft="@+id/etxt_seconds"
             android:text="@string/txt_seconds" />
-        
+
         <EditText
             android:id="@+id/etxt_minutes"
             android:layout_width="wrap_content"
@@ -79,33 +78,30 @@
             android:layout_below="@+id/txt_minutes"
             android:ems="5"
             android:inputType="number"
+            android:nextFocusDown="@id/etxt_seconds"
             android:selectAllOnFocus="true"
             android:text="@string/etxt_default_minutes" >
         </EditText>
-        
+
         <EditText
             android:id="@+id/etxt_seconds"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_toRightOf="@+id/etxt_minutes"
             android:layout_alignTop="@+id/etxt_minutes"
+            android:layout_toRightOf="@+id/etxt_minutes"
             android:ems="5"
             android:inputType="number"
+            android:nextFocusDown="@+id/etxt_bonus_minutes"
             android:selectAllOnFocus="true"
             android:text="@string/etxt_default_seconds" >
         </EditText>
-        
-        
-        
-        
-        
-        
+
         <TextView
             android:id="@+id/txt_bonus"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="10dp"
             android:layout_below="@+id/etxt_minutes"
+            android:layout_marginTop="10dp"
             android:text="@string/txt_bonus" />
 
         <TextView
@@ -122,7 +118,7 @@
             android:layout_above="@+id/etxt_bonus_seconds"
             android:layout_alignLeft="@+id/etxt_bonus_seconds"
             android:text="@string/txt_seconds" />
-        
+
         <EditText
             android:id="@+id/etxt_bonus_minutes"
             android:layout_width="wrap_content"
@@ -130,10 +126,11 @@
             android:layout_below="@+id/txt_bonus_minutes"
             android:ems="5"
             android:inputType="number"
+            android:nextFocusDown="@id/etxt_bonus_seconds"
             android:selectAllOnFocus="true"
             android:text="@string/etxt_default_bonus_minutes" >
         </EditText>
-        
+
         <EditText
             android:id="@+id/etxt_bonus_seconds"
             android:layout_width="wrap_content"
@@ -144,7 +141,6 @@
             android:inputType="number"
             android:selectAllOnFocus="true"
             android:text="@string/etxt_default_bonus_seconds" >
-
         </EditText>
 
         <Button
@@ -152,10 +148,9 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_below="@+id/etxt_bonus_minutes"
-            android:text="@string/btn_start"     
-            >
+            android:text="@string/btn_start" >
         </Button>
-        
+
         <Button
             android:id="@+id/btn_cancel"
             android:layout_width="wrap_content"
@@ -163,7 +158,6 @@
             android:layout_below="@+id/etxt_bonus_minutes"
             android:layout_toRightOf="@+id/btn_start"
             android:text="@string/btn_cancel" />
-        
     </RelativeLayout>
 
 </ScrollView>

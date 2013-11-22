@@ -51,5 +51,9 @@
     <string name="txt_draw">Draw</string>
     <string name="txt_resign">Resigned</string>
     <string name="txt_timeout">Out of time</string>
+    
+    <string name="txt_white_move">White to move</string>
+    <string name="txt_black_move">Black to move</string>
+    <string name="txt_game_over">Game Over</string>
 
 </resources>

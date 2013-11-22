@@ -32,6 +32,16 @@
         android:layout_centerHorizontal="true"
         android:gravity="center"
         android:textAppearance="?android:attr/textAppearanceLarge" />
+    
+    <ImageView
+        android:id="@+id/img_king"
+        android:layout_width="@dimen/img_king_size"
+        android:layout_height="@dimen/img_king_size"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentTop="true"
+        android:layout_marginRight="10dp"
+         android:layout_marginTop="5dp"
+        android:layout_below="@+id/txt_check" />
 
     <ImageView
         android:id="@+id/imageView1"

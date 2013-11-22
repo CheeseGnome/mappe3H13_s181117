@@ -38,6 +38,16 @@ public class PlayerFrame extends RelativeLayout {
 		((TextView) findViewById(R.id.txt_player_name)).setText(name);
 	}
 
+	public void setKingIcon(int color) {
+		ImageView image = (ImageView) findViewById(R.id.img_king);
+		if (color == Chesspiece.WHITE) {
+			image.setImageDrawable(getDrawable(R.drawable.white_king, R.dimen.img_king_size));
+		} else {
+
+			image.setImageDrawable(getDrawable(R.drawable.black_king, R.dimen.img_king_size));
+		}
+	}
+
 	public void resetPieces() {
 		pieces.clear();
 		drawPieces();
@@ -81,33 +91,41 @@ public class PlayerFrame extends RelativeLayout {
 
 	public void setCheckText(int flag) {
 		TextView check = (TextView) findViewById(R.id.txt_check);
-		if (flag == NO_CHECK) {
+		switch (flag) {
+		case NO_CHECK:
 			check.setText("");
 			check.setShadowLayer(0, 0, 0, getResources().getColor(android.R.color.transparent));
-		} else if (flag == CHECK) {
+			break;
+		case CHECK:
 			check.setTextColor(getResources().getColor(R.color.txt_check_color));
 			check.setText(getResources().getString(R.string.txt_check));
 			check.setShadowLayer(SHADOWRADIUS, 0, 0, getResources().getColor(R.color.txt_check_shadow));
-		} else if (flag == CHECKMATE) {
+			break;
+		case CHECKMATE:
 			check.setTextColor(getResources().getColor(R.color.txt_check_color));
 			check.setText(getResources().getString(R.string.txt_checkmate));
 			check.setShadowLayer(SHADOWRADIUS, 0, 0, getResources().getColor(R.color.txt_check_shadow));
-		} else if (flag == WINNER) {
+			break;
+		case WINNER:
 			check.setTextColor(getResources().getColor(R.color.txt_winner_color));
 			check.setText(getResources().getString(R.string.txt_winner));
 			check.setShadowLayer(SHADOWRADIUS, 0, 0, getResources().getColor(R.color.txt_check_shadow));
-		} else if (flag == DRAW) {
+			break;
+		case DRAW:
 			check.setTextColor(getResources().getColor(R.color.txt_draw_color));
 			check.setText(getResources().getString(R.string.txt_draw));
 			check.setShadowLayer(SHADOWRADIUS, 0, 0, getResources().getColor(R.color.txt_check_shadow));
-		} else if (flag == RESIGNED) {
+			break;
+		case RESIGNED:
 			check.setTextColor(getResources().getColor(R.color.txt_check_color));
 			check.setText(getResources().getString(R.string.txt_resign));
 			check.setShadowLayer(SHADOWRADIUS, 0, 0, getResources().getColor(R.color.txt_check_shadow));
-		} else if (flag == TIMEOUT) {
+			break;
+		case TIMEOUT:
 			check.setTextColor(getResources().getColor(R.color.txt_check_color));
 			check.setText(getResources().getString(R.string.txt_timeout));
 			check.setShadowLayer(SHADOWRADIUS, 0, 0, getResources().getColor(R.color.txt_check_shadow));
+			break;
 		}
 	}
 
@@ -162,17 +180,17 @@ public class PlayerFrame extends RelativeLayout {
 	public void loadIcons(int color) {
 		mIcons = new BitmapDrawable[5];
 		if (color == Chesspiece.BLACK) {
-			mIcons[PAWN] = getDrawable(R.drawable.black_pawn);
-			mIcons[ROOK] = getDrawable(R.drawable.black_rook);
-			mIcons[KNIGHT] = getDrawable(R.drawable.black_knight);
-			mIcons[BISHOP] = getDrawable(R.drawable.black_bishop);
-			mIcons[QUEEN] = getDrawable(R.drawable.black_queen);
+			mIcons[PAWN] = getDrawable(R.drawable.black_pawn, R.dimen.captured_size);
+			mIcons[ROOK] = getDrawable(R.drawable.black_rook, R.dimen.captured_size);
+			mIcons[KNIGHT] = getDrawable(R.drawable.black_knight, R.dimen.captured_size);
+			mIcons[BISHOP] = getDrawable(R.drawable.black_bishop, R.dimen.captured_size);
+			mIcons[QUEEN] = getDrawable(R.drawable.black_queen, R.dimen.captured_size);
 		} else {
-			mIcons[PAWN] = getDrawable(R.drawable.white_pawn);
-			mIcons[ROOK] = getDrawable(R.drawable.white_rook);
-			mIcons[KNIGHT] = getDrawable(R.drawable.white_knight);
-			mIcons[BISHOP] = getDrawable(R.drawable.white_bishop);
-			mIcons[QUEEN] = getDrawable(R.drawable.white_queen);
+			mIcons[PAWN] = getDrawable(R.drawable.white_pawn, R.dimen.captured_size);
+			mIcons[ROOK] = getDrawable(R.drawable.white_rook, R.dimen.captured_size);
+			mIcons[KNIGHT] = getDrawable(R.drawable.white_knight, R.dimen.captured_size);
+			mIcons[BISHOP] = getDrawable(R.drawable.white_bishop, R.dimen.captured_size);
+			mIcons[QUEEN] = getDrawable(R.drawable.white_queen, R.dimen.captured_size);
 		}
 	}
 
@@ -185,10 +203,10 @@ public class PlayerFrame extends RelativeLayout {
 	 * @return The image found by the resource id resized to fit inside an
 	 *         imagebutton in this view
 	 */
-	private BitmapDrawable getDrawable(int id) {
+	private BitmapDrawable getDrawable(int id, int sizeId) {
 		Drawable dr = mContext.getResources().getDrawable(id);
 		Bitmap bitmap = ((BitmapDrawable) dr).getBitmap();
-		int size = mContext.getResources().getDimensionPixelSize(R.dimen.captured_size);
+		int size = mContext.getResources().getDimensionPixelSize(sizeId);
 		return new BitmapDrawable(getResources(), Bitmap.createScaledBitmap(bitmap, size, size, true));
 	}
 

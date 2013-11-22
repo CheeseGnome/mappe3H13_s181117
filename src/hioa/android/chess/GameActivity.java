@@ -10,6 +10,7 @@ import android.view.MenuItem;
 import android.view.ViewPropertyAnimator;
 import android.view.Window;
 import android.widget.RelativeLayout;
+import android.widget.TextView;
 
 public class GameActivity extends Activity {
 
@@ -36,6 +37,8 @@ public class GameActivity extends Activity {
 		mBlackFrame = (PlayerFrame) findViewById(R.id.blackFrame);
 		mWhiteFrame.setName(mWhiteName);
 		mBlackFrame.setName(mBlackName);
+		mWhiteFrame.setKingIcon(Chesspiece.WHITE);
+		mBlackFrame.setKingIcon(Chesspiece.BLACK);
 
 		mWhiteFrame.loadIcons(Chesspiece.BLACK);
 		mBlackFrame.loadIcons(Chesspiece.WHITE);
@@ -50,10 +53,19 @@ public class GameActivity extends Activity {
 		loadPreferences();
 		super.onResume();
 	}
-	
-	public void unrotate(){
-		if(mCurrentRotation != 0){
+
+	public void unrotate() {
+		if (mCurrentRotation != 0) {
 			rotate();
+		}
+	}
+
+	public void switchPlayer() {
+		TextView header = (TextView) findViewById(R.id.txt_move);
+		if (header.getText().toString().equals(getResources().getString(R.string.txt_black_move))) {
+			header.setText(R.string.txt_white_move);
+		} else {
+			header.setText(R.string.txt_black_move);
 		}
 	}
 
@@ -189,6 +201,13 @@ public class GameActivity extends Activity {
 		});
 	}
 
+	private void resetMoveString() {
+		TextView header = (TextView) findViewById(R.id.txt_move);
+		if (!header.getText().equals(getResources().getString(R.string.txt_white_move))) {
+			header.setText(R.string.txt_white_move);
+		}
+	}
+
 	public void newGame(Chessboard board) {
 		updateClock(Chesspiece.WHITE, mStartTime);
 		updateClock(Chesspiece.BLACK, mStartTime);
@@ -197,9 +216,13 @@ public class GameActivity extends Activity {
 		setCheckText(Chesspiece.BLACK, PlayerFrame.NO_CHECK);
 		resetPlayerFrames();
 		loadPreferences();
+		resetMoveString();
 	}
 
 	public void setCheckText(int color, int flag) {
+		if (flag != PlayerFrame.NO_CHECK && flag != PlayerFrame.CHECK) {
+			((TextView) findViewById(R.id.txt_move)).setText(R.string.txt_game_over);
+		}
 		if (color == Chesspiece.WHITE) {
 			mWhiteFrame.setCheckText(flag);
 		} else {
