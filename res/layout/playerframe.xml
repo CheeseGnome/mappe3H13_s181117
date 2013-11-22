@@ -5,16 +5,30 @@
     android:background="@drawable/rectangle" >
 
     <TextView
+        android:id="@+id/txt_check"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/txt_player_name"
+        android:layout_centerHorizontal="true"
+        android:gravity="center"
+        android:layout_marginTop="-15dp"
+        android:layout_marginBottom="-15dp"
+        android:textColor="@color/txt_check_color"
+        android:textSize="@dimen/txt_check_size" />
+
+    <TextView
         android:id="@+id/txt_player_name"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_centerHorizontal="true" />
+        android:layout_centerHorizontal="true"
+        android:gravity="center"
+        android:textAppearance="?android:attr/textAppearanceLarge" />
 
     <ImageView
         android:id="@+id/imageView1"
         android:layout_width="@dimen/captured_size"
         android:layout_height="@dimen/captured_size"
-        android:layout_below="@+id/txt_player_name" />
+        android:layout_below="@+id/txt_check" />
 
     <ImageView
         android:id="@+id/imageView2"

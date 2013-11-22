@@ -14,6 +14,8 @@ public final class R {
         public static final int black_tile=0x7f040000;
         public static final int black_tile_marked=0x7f040002;
         public static final int selected_piece_tile=0x7f040004;
+        public static final int txt_check_color=0x7f040005;
+        public static final int txt_check_shadow=0x7f040006;
         public static final int white_tile=0x7f040001;
         public static final int white_tile_marked=0x7f040003;
     }
@@ -28,6 +30,7 @@ public final class R {
         public static final int activity_vertical_margin=0x7f050001;
         public static final int captured_size=0x7f050003;
         public static final int tile_size=0x7f050002;
+        public static final int txt_check_size=0x7f050004;
     }
     public static final class drawable {
         public static final int black_bishop=0x7f020000;
@@ -47,15 +50,15 @@ public final class R {
     }
     public static final class id {
         public static final int ScrollView1=0x7f0a0005;
-        public static final int action_settings=0x7f0a007b;
+        public static final int action_settings=0x7f0a007c;
         public static final int blackFrame=0x7f0a0000;
-        public static final int btn_bishop=0x7f0a0079;
+        public static final int btn_bishop=0x7f0a007a;
         public static final int btn_cancel=0x7f0a0015;
-        public static final int btn_knight=0x7f0a007a;
+        public static final int btn_knight=0x7f0a007b;
         public static final int btn_main_menu=0x7f0a0064;
         public static final int btn_new_game=0x7f0a0017;
-        public static final int btn_queen=0x7f0a0076;
-        public static final int btn_rook=0x7f0a0077;
+        public static final int btn_queen=0x7f0a0077;
+        public static final int btn_rook=0x7f0a0078;
         public static final int btn_start=0x7f0a0014;
         public static final int chessboard=0x7f0a0002;
         public static final int etxt_black_name=0x7f0a0009;
@@ -64,21 +67,21 @@ public final class R {
         public static final int etxt_minutes=0x7f0a000e;
         public static final int etxt_seconds=0x7f0a000d;
         public static final int etxt_white_name=0x7f0a0007;
-        public static final int imageView1=0x7f0a0066;
-        public static final int imageView10=0x7f0a006f;
-        public static final int imageView11=0x7f0a0070;
-        public static final int imageView12=0x7f0a0071;
-        public static final int imageView13=0x7f0a0072;
-        public static final int imageView14=0x7f0a0073;
-        public static final int imageView15=0x7f0a0074;
-        public static final int imageView2=0x7f0a0067;
-        public static final int imageView3=0x7f0a0068;
-        public static final int imageView4=0x7f0a0069;
-        public static final int imageView5=0x7f0a006a;
-        public static final int imageView6=0x7f0a006b;
-        public static final int imageView7=0x7f0a006c;
-        public static final int imageView8=0x7f0a006d;
-        public static final int imageView9=0x7f0a006e;
+        public static final int imageView1=0x7f0a0067;
+        public static final int imageView10=0x7f0a0070;
+        public static final int imageView11=0x7f0a0071;
+        public static final int imageView12=0x7f0a0072;
+        public static final int imageView13=0x7f0a0073;
+        public static final int imageView14=0x7f0a0074;
+        public static final int imageView15=0x7f0a0075;
+        public static final int imageView2=0x7f0a0068;
+        public static final int imageView3=0x7f0a0069;
+        public static final int imageView4=0x7f0a006a;
+        public static final int imageView5=0x7f0a006b;
+        public static final int imageView6=0x7f0a006c;
+        public static final int imageView7=0x7f0a006d;
+        public static final int imageView8=0x7f0a006e;
+        public static final int imageView9=0x7f0a006f;
         public static final int row0=0x7f0a0018;
         public static final int row1=0x7f0a0021;
         public static final int row2=0x7f0a002a;
@@ -90,9 +93,9 @@ public final class R {
         public static final int scrollView1=0x7f0a0016;
         public static final int tableRow1=0x7f0a0061;
         public static final int tableRow2=0x7f0a0063;
-        public static final int tableRow3=0x7f0a0078;
+        public static final int tableRow3=0x7f0a0079;
         public static final int table_end_game=0x7f0a0060;
-        public static final int table_promotion=0x7f0a0075;
+        public static final int table_promotion=0x7f0a0076;
         public static final int tile00=0x7f0a0019;
         public static final int tile01=0x7f0a001a;
         public static final int tile02=0x7f0a001b;
@@ -162,9 +165,10 @@ public final class R {
         public static final int txt_bonus=0x7f0a000f;
         public static final int txt_bonus_minutes=0x7f0a0010;
         public static final int txt_bonus_seconds=0x7f0a0011;
+        public static final int txt_check=0x7f0a0065;
         public static final int txt_endgame=0x7f0a0062;
         public static final int txt_minutes=0x7f0a000b;
-        public static final int txt_player_name=0x7f0a0065;
+        public static final int txt_player_name=0x7f0a0066;
         public static final int txt_seconds=0x7f0a000c;
         public static final int txt_time=0x7f0a000a;
         public static final int txt_white_clock=0x7f0a0003;
@@ -220,6 +224,7 @@ public final class R {
         public static final int title_win_timeout=0x7f07000e;
         public static final int txt_black_name=0x7f07001b;
         public static final int txt_bonus=0x7f070023;
+        public static final int txt_check=0x7f07002c;
         public static final int txt_draw_agreed=0x7f070012;
         public static final int txt_draw_claimed=0x7f070011;
         public static final int txt_draw_repetition=0x7f070010;

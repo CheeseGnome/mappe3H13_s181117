@@ -17,6 +17,7 @@ public class PlayerFrame extends RelativeLayout {
 
 	private BitmapDrawable[] mIcons;
 	private static final int PAWN = 0, ROOK = 1, KNIGHT = 2, BISHOP = 3, QUEEN = 4;
+	private static final float SHADOWRADIUS = 20;
 
 	private LinkedList<Chesspiece> pieces = new LinkedList<Chesspiece>();
 
@@ -69,6 +70,17 @@ public class PlayerFrame extends RelativeLayout {
 			pieces.addLast(piece);
 		}
 		drawPieces();
+	}
+	
+	public void setInCheck(boolean inCheck){
+		TextView check = (TextView) findViewById(R.id.txt_check);
+		if(inCheck){
+			check.setText(getResources().getString(R.string.txt_check));
+			check.setShadowLayer(SHADOWRADIUS, 0, 0, getResources().getColor(R.color.txt_check_shadow));
+		}else{
+			check.setText("");
+			check.setShadowLayer(0, 0, 0, getResources().getColor(android.R.color.transparent));
+		}
 	}
 
 	private boolean addBefore(Chesspiece piece, Chesspiece currentPiece) {

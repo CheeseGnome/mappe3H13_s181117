@@ -130,6 +130,14 @@ public class GameActivity extends Activity {
 			}
 		});
 	}
+	
+	public void setInCheck(int color, boolean inCheck){
+		if(color == Chesspiece.WHITE){
+			mWhiteFrame.setInCheck(inCheck);
+		}else{
+			mBlackFrame.setInCheck(inCheck);
+		}
+	}
 
 	public void addTimeString(StringBuilder clockBuilder, int time) {
 		if (time == 0) {

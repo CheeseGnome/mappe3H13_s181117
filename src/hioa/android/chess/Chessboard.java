@@ -314,7 +314,7 @@ public class Chessboard {
 
 		Chesspiece captured = getPieceAt(row, column);
 		if (captured != null) {
-			Log.d("ZZZ","Capture");
+			Log.d("ZZZ", "Capture");
 			mActivity.capturePiece(captured);
 		}
 		mChessboard[row][column] = piece;
@@ -324,6 +324,7 @@ public class Chessboard {
 			mPromotionFlag = NO_PROMOTION;
 		}
 		getKing(piece.getColor()).setInCheck(false);
+		mActivity.setInCheck(piece.getColor(), false);
 		checkForGameEnd(piece.getColor());
 		mMoving = false;
 		if (!firstMove && !castle) {
@@ -396,6 +397,7 @@ public class Chessboard {
 
 		boolean inCheck = isInCheck(enemy);
 		getKing(enemy).setInCheck(inCheck);
+		mActivity.setInCheck(enemy, inCheck);
 
 		if (!hasLegalMoves(enemy)) {
 			mStopClock = true;
