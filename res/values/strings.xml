@@ -34,7 +34,7 @@
     <string name="txt_time">Time</string>
     <string name="txt_minutes">Minutes</string>
     <string name="txt_seconds">Seconds</string>
-    <string name="etxt_default_minutes">20</string>
+    <string name="etxt_default_minutes">0</string>
     <string name="etxt_default_seconds">0</string>
     <string name="txt_bonus">Bonus</string>
     <string name="etxt_default_bonus_minutes">0</string>

@@ -9,7 +9,6 @@ import android.widget.TextView;
 
 public class GameActivity extends Activity {
 
-	private TextView mWhiteClock, mBlackClock;
 	private PlayerFrame mWhiteFrame, mBlackFrame;
 	private String mWhiteName, mBlackName;
 	private Chessboard mChessboard;
@@ -21,9 +20,6 @@ public class GameActivity extends Activity {
 		requestWindowFeature(Window.FEATURE_NO_TITLE);
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_game);
-
-		mWhiteClock = (TextView) findViewById(R.id.txt_white_clock);
-		mBlackClock = (TextView) findViewById(R.id.txt_black_clock);
 		
 		ChessboardView board = (ChessboardView) findViewById(R.id.chessboard);
 		setupBundleItems(board);
@@ -110,22 +106,22 @@ public class GameActivity extends Activity {
 	public void updateClock(final int color, long time) {
 		final StringBuilder clockBuilder = new StringBuilder();
 
-		int hundreds = (int) time / 10 % 100;
+//		int hundreds = (int) time / 10 % 100;
 		int seconds = (int) time / 1000 % 60;
 		int minutes = (int) time / 1000 / 60;
 
 		addTimeString(clockBuilder, minutes);
 		addTimeString(clockBuilder, seconds);
-		addTimeString(clockBuilder, hundreds);
+//		addTimeString(clockBuilder, hundreds);
 		// Delete last instance of :
 		clockBuilder.deleteCharAt(clockBuilder.length() - 1);
 
 		runOnUiThread(new Runnable() {
 			public void run() {
 				if (color == Chesspiece.WHITE) {
-					mWhiteClock.setText(clockBuilder.toString());
+					mWhiteFrame.setTime(clockBuilder.toString());
 				} else {
-					mBlackClock.setText(clockBuilder.toString());
+					mBlackFrame.setTime(clockBuilder.toString());
 				}
 			}
 		});

@@ -20,6 +20,7 @@ public class PlayerFrame extends RelativeLayout {
 	private static final float SHADOWRADIUS = 20;
 
 	private LinkedList<Chesspiece> pieces = new LinkedList<Chesspiece>();
+	private TextView mClock;
 
 	private Context mContext;
 
@@ -28,15 +29,20 @@ public class PlayerFrame extends RelativeLayout {
 		LayoutInflater layoutInflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
 		layoutInflater.inflate(R.layout.playerframe, this);
 		mContext = context;
+		mClock = (TextView) findViewById(R.id.txt_clock);
 	}
 
 	public void setName(String name) {
 		((TextView) findViewById(R.id.txt_player_name)).setText(name);
 	}
-	
-	public void resetPieces(){
+
+	public void resetPieces() {
 		pieces.clear();
 		drawPieces();
+	}
+
+	public void setTime(String time) {
+		mClock.setText(time);
 	}
 
 	public void addPiece(Chesspiece piece) {
@@ -44,8 +50,7 @@ public class PlayerFrame extends RelativeLayout {
 			pieces.addFirst(piece);
 			drawPieces();
 			return;
-		}
-		else if (piece instanceof Queen) {
+		} else if (piece instanceof Queen) {
 			pieces.addLast(piece);
 			drawPieces();
 			return;
@@ -56,7 +61,7 @@ public class PlayerFrame extends RelativeLayout {
 		int index = -1;
 
 		boolean added = false;
-		
+
 		while (iterator.hasNext()) {
 			index++;
 			currentPiece = iterator.next();
@@ -66,18 +71,18 @@ public class PlayerFrame extends RelativeLayout {
 				break;
 			}
 		}
-		if(!added){
+		if (!added) {
 			pieces.addLast(piece);
 		}
 		drawPieces();
 	}
-	
-	public void setInCheck(boolean inCheck){
+
+	public void setInCheck(boolean inCheck) {
 		TextView check = (TextView) findViewById(R.id.txt_check);
-		if(inCheck){
+		if (inCheck) {
 			check.setText(getResources().getString(R.string.txt_check));
 			check.setShadowLayer(SHADOWRADIUS, 0, 0, getResources().getColor(R.color.txt_check_shadow));
-		}else{
+		} else {
 			check.setText("");
 			check.setShadowLayer(0, 0, 0, getResources().getColor(android.R.color.transparent));
 		}
@@ -88,7 +93,7 @@ public class PlayerFrame extends RelativeLayout {
 			return (currentPiece instanceof Bishop || currentPiece instanceof Rook || currentPiece instanceof Queen);
 		}
 		if (piece instanceof Bishop) {
-			return (currentPiece instanceof Rook  || currentPiece instanceof Queen);
+			return (currentPiece instanceof Rook || currentPiece instanceof Queen);
 		}
 		if (piece instanceof Rook) {
 			return (currentPiece instanceof Queen);
@@ -99,27 +104,33 @@ public class PlayerFrame extends RelativeLayout {
 	private void drawPieces() {
 		Iterator<Chesspiece> iterator = pieces.iterator();
 		int id;
-		for(int i = 1; i < 16 && iterator.hasNext(); i++){
+		for (int i = 1; i < 16; i++) {
 			id = mContext.getResources().getIdentifier("imageView" + i, "id", "hioa.android.chess");
-			((ImageView) findViewById(id)).setImageDrawable(getIcon(iterator.next()));
+			if (iterator.hasNext()) {
+				((ImageView) findViewById(id)).setImageDrawable(getIcon(iterator.next()));
+			} else {
+				// Used when resetting the frame
+				((ImageView) findViewById(id))
+						.setImageDrawable(getResources().getDrawable(android.R.color.transparent));
+			}
 		}
 		invalidate();
 	}
-	
-	private Drawable getIcon(Chesspiece piece){
-		if(piece instanceof Pawn){
+
+	private Drawable getIcon(Chesspiece piece) {
+		if (piece instanceof Pawn) {
 			return mIcons[PAWN];
 		}
-		if(piece instanceof Knight){
+		if (piece instanceof Knight) {
 			return mIcons[KNIGHT];
 		}
-		if(piece instanceof Bishop){
+		if (piece instanceof Bishop) {
 			return mIcons[BISHOP];
 		}
-		if(piece instanceof Rook){
+		if (piece instanceof Rook) {
 			return mIcons[ROOK];
 		}
-		if(piece instanceof Queen){
+		if (piece instanceof Queen) {
 			return mIcons[QUEEN];
 		}
 		return null;

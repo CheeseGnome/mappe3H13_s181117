@@ -15,6 +15,15 @@
         android:layout_marginBottom="-15dp"
         android:textColor="@color/txt_check_color"
         android:textSize="@dimen/txt_check_size" />
+    
+    <TextView
+        android:id="@+id/txt_clock"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentTop="true"
+        android:layout_marginLeft="5dp"
+        android:textAppearance="?android:attr/textAppearanceLarge" />
 
     <TextView
         android:id="@+id/txt_player_name"

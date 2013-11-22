@@ -75,6 +75,9 @@ public class Chessboard {
 	private void startClock(final long startTime) {
 		new Thread(new Runnable() {
 			public void run() {
+				if (startTime == 0) {
+					return;
+				}
 				long diff1 = new Date().getTime();
 				long diff2 = diff1;
 				long difference;
@@ -119,6 +122,11 @@ public class Chessboard {
 						blackTime -= difference;
 						diff1 = diff2;
 						mView.updateClock(color, blackTime);
+					}
+					try {
+						// Performance
+						Thread.sleep(50);
+					} catch (InterruptedException e) {
 					}
 				}
 				// This prevents a player from losing by timeout while making a

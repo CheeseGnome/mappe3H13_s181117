@@ -168,6 +168,7 @@ public class ChessboardView extends TableLayout {
 				mChessboard = new Chessboard(mContext);
 				mChessboard.setTime(mActivity.getStartTime(), mActivity.getBonusTime());
 				mChessboard.setChessboardView(view);
+				mChessboard.setActivity(mActivity);
 				mCurrentPlayer = Chesspiece.WHITE;
 				mActivity.newGame(mChessboard);
 				placePieces();
