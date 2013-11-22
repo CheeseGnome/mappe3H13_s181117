@@ -326,13 +326,14 @@ public class Chessboard {
 		getKing(piece.getColor()).setInCheck(false);
 		mActivity.setInCheck(piece.getColor(), false);
 		checkForGameEnd(piece.getColor());
-		mMoving = false;
+
 		if (!firstMove && !castle) {
 			mChangeClockColor = true;
 		} else if (firstMove) {
 			firstMove = false;
 			startClock(mStartTime);
 		}
+		mMoving = false;
 	}
 
 	/**
