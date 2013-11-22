@@ -48,5 +48,8 @@
     <string name="txt_check">Check</string>
     <string name="txt_checkmate">Checkmate</string>
     <string name="txt_winner">Winner</string>
+    <string name="txt_draw">Draw</string>
+    <string name="txt_resign">Resigned</string>
+    <string name="txt_timeout">Out of time</string>
 
 </resources>

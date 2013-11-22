@@ -50,14 +50,20 @@ public class GameActivity extends Activity {
 		loadPreferences();
 		super.onResume();
 	}
+	
+	public void unrotate(){
+		if(mCurrentRotation != 0){
+			rotate();
+		}
+	}
 
 	private void loadPreferences() {
 		mPreferences = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
 		mRotate = mPreferences.getBoolean("rotate", false);
 		if (!mRotate && mCurrentRotation != 0) {
-			mRotate = false;
-			rotate();
 			mRotate = true;
+			rotate();
+			mRotate = false;
 		} else if (mRotate) {
 			if (((ChessboardView) findViewById(R.id.chessboard)).getCurrentPlayer() == Chesspiece.WHITE) {
 				if (mCurrentRotation != 0) {
@@ -190,6 +196,7 @@ public class GameActivity extends Activity {
 		setCheckText(Chesspiece.WHITE, PlayerFrame.NO_CHECK);
 		setCheckText(Chesspiece.BLACK, PlayerFrame.NO_CHECK);
 		resetPlayerFrames();
+		loadPreferences();
 	}
 
 	public void setCheckText(int color, int flag) {

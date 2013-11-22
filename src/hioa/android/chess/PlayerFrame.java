@@ -19,7 +19,7 @@ public class PlayerFrame extends RelativeLayout {
 	private static final int PAWN = 0, ROOK = 1, KNIGHT = 2, BISHOP = 3, QUEEN = 4;
 	private static final float SHADOWRADIUS = 20;
 
-	public static final int NO_CHECK = 0, CHECK = 1, CHECKMATE = 2, WINNER = 3;
+	public static final int NO_CHECK = 0, CHECK = 1, CHECKMATE = 2, WINNER = 3, DRAW = 4, RESIGNED = 5, TIMEOUT = 6;
 
 	private LinkedList<Chesspiece> pieces = new LinkedList<Chesspiece>();
 	private TextView mClock;
@@ -95,6 +95,18 @@ public class PlayerFrame extends RelativeLayout {
 		} else if (flag == WINNER) {
 			check.setTextColor(getResources().getColor(R.color.txt_winner_color));
 			check.setText(getResources().getString(R.string.txt_winner));
+			check.setShadowLayer(SHADOWRADIUS, 0, 0, getResources().getColor(R.color.txt_check_shadow));
+		} else if (flag == DRAW) {
+			check.setTextColor(getResources().getColor(R.color.txt_draw_color));
+			check.setText(getResources().getString(R.string.txt_draw));
+			check.setShadowLayer(SHADOWRADIUS, 0, 0, getResources().getColor(R.color.txt_check_shadow));
+		} else if (flag == RESIGNED) {
+			check.setTextColor(getResources().getColor(R.color.txt_check_color));
+			check.setText(getResources().getString(R.string.txt_resign));
+			check.setShadowLayer(SHADOWRADIUS, 0, 0, getResources().getColor(R.color.txt_check_shadow));
+		} else if (flag == TIMEOUT) {
+			check.setTextColor(getResources().getColor(R.color.txt_check_color));
+			check.setText(getResources().getString(R.string.txt_timeout));
 			check.setShadowLayer(SHADOWRADIUS, 0, 0, getResources().getColor(R.color.txt_check_shadow));
 		}
 	}

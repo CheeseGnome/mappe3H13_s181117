@@ -16,6 +16,7 @@ public final class R {
         public static final int selected_piece_tile=0x7f050004;
         public static final int txt_check_color=0x7f050005;
         public static final int txt_check_shadow=0x7f050006;
+        public static final int txt_draw_color=0x7f050008;
         public static final int txt_winner_color=0x7f050007;
         public static final int white_tile=0x7f050001;
         public static final int white_tile_marked=0x7f050003;
@@ -228,6 +229,7 @@ public final class R {
         public static final int txt_bonus=0x7f080023;
         public static final int txt_check=0x7f08002c;
         public static final int txt_checkmate=0x7f08002d;
+        public static final int txt_draw=0x7f08002f;
         public static final int txt_draw_agreed=0x7f080012;
         public static final int txt_draw_claimed=0x7f080011;
         public static final int txt_draw_repetition=0x7f080010;
@@ -235,8 +237,10 @@ public final class R {
         public static final int txt_invalid_name=0x7f08002b;
         public static final int txt_invalid_time=0x7f08002a;
         public static final int txt_minutes=0x7f08001f;
+        public static final int txt_resign=0x7f080030;
         public static final int txt_seconds=0x7f080020;
         public static final int txt_time=0x7f08001e;
+        public static final int txt_timeout=0x7f080031;
         public static final int txt_white_name=0x7f08001a;
         public static final int txt_win_checkmate=0x7f080013;
         public static final int txt_win_resign_1=0x7f080014;

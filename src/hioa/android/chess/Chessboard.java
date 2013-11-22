@@ -142,13 +142,14 @@ public class Chessboard {
 						return;
 					}
 				}
+				int enemy;
 				if (color == Chesspiece.WHITE) {
-					color = Chesspiece.BLACK;
+					enemy = Chesspiece.BLACK;
 				} else {
-					color = Chesspiece.WHITE;
+					enemy = Chesspiece.WHITE;
 				}
 
-				mView.timeOut(color);
+				mView.timeOut(enemy);
 				DBAdapter database = new DBAdapter(mContext);
 				database.open();
 				// TODO
@@ -445,6 +446,8 @@ public class Chessboard {
 				database.insertGameResult(mView.getWhiteName(), mView.getBlackName(), mPositionHashFactory.getMoves(),
 						DBAdapter.DRAW_STALEMATE, new Date());
 				mView.endTheGame(ChessboardView.DRAWSTALEMATE, color);
+				mActivity.setCheckText(color, PlayerFrame.DRAW);
+				mActivity.setCheckText(enemy, PlayerFrame.DRAW);
 			}
 
 		}
@@ -456,6 +459,8 @@ public class Chessboard {
 			database.insertGameResult(mView.getWhiteName(), mView.getBlackName(), mPositionHashFactory.getMoves(),
 					DBAdapter.DRAW_REPETITION, new Date());
 			mView.endTheGame(ChessboardView.DRAWREPETITION, color);
+			mActivity.setCheckText(color, PlayerFrame.DRAW);
+			mActivity.setCheckText(enemy, PlayerFrame.DRAW);
 		}
 
 		/*

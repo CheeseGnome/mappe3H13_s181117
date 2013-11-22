@@ -68,14 +68,22 @@ public class ChessboardView extends TableLayout {
 	}
 
 	public void timeOut(final int color) {
+		final int enemy;
+		if (color == Chesspiece.WHITE) {
+			enemy = Chesspiece.BLACK;
+		} else {
+			enemy = Chesspiece.WHITE;
+		}
 		mActivity.runOnUiThread(new Runnable() {
 			public void run() {
 				endTheGame(ChessboardView.WINTIMEOUT, color);
+				mActivity.setCheckText(enemy, PlayerFrame.TIMEOUT);
+				mActivity.setCheckText(color, PlayerFrame.WINNER);
 			}
 		});
 	}
-	
-	public int getCurrentPlayer(){
+
+	public int getCurrentPlayer() {
 		return mCurrentPlayer;
 	}
 
@@ -221,6 +229,7 @@ public class ChessboardView extends TableLayout {
 		dialog.setCancelable(false);
 		dialog.setCanceledOnTouchOutside(false);
 		dialog.show();
+		mActivity.unrotate();
 	}
 
 	/**
