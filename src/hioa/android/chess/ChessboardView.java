@@ -74,6 +74,10 @@ public class ChessboardView extends TableLayout {
 			}
 		});
 	}
+	
+	public int getCurrentPlayer(){
+		return mCurrentPlayer;
+	}
 
 	public void setTime(long startTime, long bonusTime) {
 		mChessboard.setTime(startTime, bonusTime);

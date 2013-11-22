@@ -46,5 +46,7 @@
     <string name="txt_invalid_time">Time fields must only contain numbers.</string>
     <string name="txt_invalid_name">Name fields must be filled out.</string>
     <string name="txt_check">Check</string>
+    <string name="txt_checkmate">Checkmate</string>
+    <string name="txt_winner">Winner</string>
 
 </resources>

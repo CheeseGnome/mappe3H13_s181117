@@ -1,11 +1,15 @@
 package hioa.android.chess;
 
 import android.app.Activity;
+import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.ViewPropertyAnimator;
 import android.view.Window;
-import android.widget.TextView;
+import android.widget.RelativeLayout;
 
 public class GameActivity extends Activity {
 
@@ -14,38 +18,81 @@ public class GameActivity extends Activity {
 	private Chessboard mChessboard;
 	private long mStartTime;
 	private long mBonusTime;
+	private float mCurrentRotation = 0;
+	private float ROTATION = 180;
+	private SharedPreferences mPreferences;
+	private boolean mRotate;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		requestWindowFeature(Window.FEATURE_NO_TITLE);
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_game);
-		
+
 		ChessboardView board = (ChessboardView) findViewById(R.id.chessboard);
 		setupBundleItems(board);
-		
+
 		mWhiteFrame = (PlayerFrame) findViewById(R.id.whiteFrame);
 		mBlackFrame = (PlayerFrame) findViewById(R.id.blackFrame);
 		mWhiteFrame.setName(mWhiteName);
 		mBlackFrame.setName(mBlackName);
-		
+
 		mWhiteFrame.loadIcons(Chesspiece.BLACK);
 		mBlackFrame.loadIcons(Chesspiece.WHITE);
-		
+
 		mChessboard = board.getChessboard();
 		updateClock(Chesspiece.WHITE, mStartTime);
 		updateClock(Chesspiece.BLACK, mStartTime);
 	}
-	
-	public void capturePiece(Chesspiece piece){
-		if(piece.getColor() == Chesspiece.WHITE){
+
+	@Override
+	protected void onResume() {
+		loadPreferences();
+		super.onResume();
+	}
+
+	private void loadPreferences() {
+		mPreferences = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
+		mRotate = mPreferences.getBoolean("rotate", false);
+		if (!mRotate && mCurrentRotation != 0) {
+			mRotate = false;
+			rotate();
+			mRotate = true;
+		} else if (mRotate) {
+			if (((ChessboardView) findViewById(R.id.chessboard)).getCurrentPlayer() == Chesspiece.WHITE) {
+				if (mCurrentRotation != 0) {
+					rotate();
+				}
+			} else {
+				if (mCurrentRotation == 0) {
+					rotate();
+				}
+			}
+		}
+	}
+
+	public void rotate() {
+		if (!mRotate) {
+			return;
+		}
+		ViewPropertyAnimator animator = ((RelativeLayout) this.findViewById(R.id.view)).animate();
+		if (mCurrentRotation == 0) {
+			mCurrentRotation += ROTATION;
+		} else {
+			mCurrentRotation -= ROTATION;
+		}
+		animator.rotation(mCurrentRotation);
+	}
+
+	public void capturePiece(Chesspiece piece) {
+		if (piece.getColor() == Chesspiece.WHITE) {
 			mBlackFrame.addPiece(piece);
-		}else{
+		} else {
 			mWhiteFrame.addPiece(piece);
 		}
 	}
-	
-	public void resetPlayerFrames(){
+
+	public void resetPlayerFrames() {
 		mWhiteFrame.resetPieces();
 		mBlackFrame.resetPieces();
 	}
@@ -62,9 +109,13 @@ public class GameActivity extends Activity {
 	}
 
 	@Override
-	public void onBackPressed() {
+	protected void onDestroy() {
+		// Kill the clock thread
 		mChessboard.stopClock();
-		finish();
+		// Wait for the clock thread to exit(up to 50 millis delay)
+		while (mChessboard.clockRunning()) {
+		}
+		super.onDestroy();
 	}
 
 	public long getBonusTime() {
@@ -99,6 +150,10 @@ public class GameActivity extends Activity {
 			//
 			// NavUtils.navigateUpFromSameTask(this);
 			return true;
+		case R.id.action_settings:
+			Intent settings = new Intent(this, Preferences.class);
+			startActivity(settings);
+			return true;
 		}
 		return super.onOptionsItemSelected(item);
 	}
@@ -106,13 +161,14 @@ public class GameActivity extends Activity {
 	public void updateClock(final int color, long time) {
 		final StringBuilder clockBuilder = new StringBuilder();
 
-//		int hundreds = (int) time / 10 % 100;
 		int seconds = (int) time / 1000 % 60;
-		int minutes = (int) time / 1000 / 60;
+		int minutes = (int) time / 1000 / 60 % 60;
+		int hours = (int) time / 1000 / 60 / 60;
 
+		addTimeString(clockBuilder, hours);
 		addTimeString(clockBuilder, minutes);
 		addTimeString(clockBuilder, seconds);
-//		addTimeString(clockBuilder, hundreds);
+
 		// Delete last instance of :
 		clockBuilder.deleteCharAt(clockBuilder.length() - 1);
 
@@ -126,21 +182,21 @@ public class GameActivity extends Activity {
 			}
 		});
 	}
-	
-	public void newGame(Chessboard board){
+
+	public void newGame(Chessboard board) {
 		updateClock(Chesspiece.WHITE, mStartTime);
 		updateClock(Chesspiece.BLACK, mStartTime);
 		setChessboard(mChessboard);
-		setInCheck(Chesspiece.WHITE, false);
-		setInCheck(Chesspiece.BLACK, false);
+		setCheckText(Chesspiece.WHITE, PlayerFrame.NO_CHECK);
+		setCheckText(Chesspiece.BLACK, PlayerFrame.NO_CHECK);
 		resetPlayerFrames();
 	}
-	
-	public void setInCheck(int color, boolean inCheck){
-		if(color == Chesspiece.WHITE){
-			mWhiteFrame.setInCheck(inCheck);
-		}else{
-			mBlackFrame.setInCheck(inCheck);
+
+	public void setCheckText(int color, int flag) {
+		if (color == Chesspiece.WHITE) {
+			mWhiteFrame.setCheckText(flag);
+		} else {
+			mBlackFrame.setCheckText(flag);
 		}
 	}
 

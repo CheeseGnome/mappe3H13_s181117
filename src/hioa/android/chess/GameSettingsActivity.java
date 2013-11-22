@@ -16,8 +16,7 @@ public class GameSettingsActivity extends Activity {
 
 	private static final int INVALIDTIME = 0, INVALIDNAME = 1;
 
-	public static final String TIME = "time", BONUS = "bonus",
-			WHITENAME = "white_name", BLACKNAME = "black_name";
+	public static final String TIME = "time", BONUS = "bonus", WHITENAME = "white_name", BLACKNAME = "black_name";
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -67,8 +66,7 @@ public class GameSettingsActivity extends Activity {
 			dialog.setMessage(getString(R.string.txt_invalid_name));
 		}
 		dialog.setIconAttribute(android.R.attr.alertDialogIcon);
-		dialog.setButton(AlertDialog.BUTTON_POSITIVE,
-				getString(R.string.btn_ok),
+		dialog.setButton(AlertDialog.BUTTON_POSITIVE, getString(R.string.btn_ok),
 				new DialogInterface.OnClickListener() {
 					public void onClick(DialogInterface dialog, int which) {
 						dialog.dismiss();
@@ -78,20 +76,16 @@ public class GameSettingsActivity extends Activity {
 	}
 
 	private String getWhiteName() {
-		return ((EditText) findViewById(R.id.etxt_white_name)).getText()
-				.toString();
+		return ((EditText) findViewById(R.id.etxt_white_name)).getText().toString();
 	}
 
 	private String getBlackName() {
-		return ((EditText) findViewById(R.id.etxt_black_name)).getText()
-				.toString();
+		return ((EditText) findViewById(R.id.etxt_black_name)).getText().toString();
 	}
 
 	private long getTime() {
-		String minutes = ((EditText) findViewById(R.id.etxt_minutes)).getText()
-				.toString();
-		String seconds = ((EditText) findViewById(R.id.etxt_seconds)).getText()
-				.toString();
+		String minutes = ((EditText) findViewById(R.id.etxt_minutes)).getText().toString();
+		String seconds = ((EditText) findViewById(R.id.etxt_seconds)).getText().toString();
 
 		long time;
 		try {
@@ -103,10 +97,8 @@ public class GameSettingsActivity extends Activity {
 	}
 
 	private long getBonus() {
-		String minutes = ((EditText) findViewById(R.id.etxt_bonus_minutes))
-				.getText().toString();
-		String seconds = ((EditText) findViewById(R.id.etxt_bonus_seconds))
-				.getText().toString();
+		String minutes = ((EditText) findViewById(R.id.etxt_bonus_minutes)).getText().toString();
+		String seconds = ((EditText) findViewById(R.id.etxt_bonus_seconds)).getText().toString();
 
 		long time;
 		try {
@@ -136,6 +128,10 @@ public class GameSettingsActivity extends Activity {
 			// http://developer.android.com/design/patterns/navigation.html#up-vs-back
 			//
 			// NavUtils.navigateUpFromSameTask(this);
+			return true;
+		case R.id.action_settings:
+			Intent settings = new Intent(this, Preferences.class);
+			startActivity(settings);
 			return true;
 		}
 		return super.onOptionsItemSelected(item);

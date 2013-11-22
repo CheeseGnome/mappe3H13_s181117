@@ -18,6 +18,7 @@ public class Chessboard {
 	private boolean firstMove = true;
 	private long mStartTime, mBonusTime;
 	private GameActivity mActivity;
+	private volatile boolean mClockRunning = false;
 
 	/**
 	 * Used by the clock-thread to determine whether or not the clock should
@@ -78,6 +79,7 @@ public class Chessboard {
 				if (startTime == 0) {
 					return;
 				}
+				mClockRunning = true;
 				long diff1 = new Date().getTime();
 				long diff2 = diff1;
 				long difference;
@@ -90,11 +92,13 @@ public class Chessboard {
 					while (mMoving) {
 						if (mStopClock) {
 							mStopClock = false;
+							mClockRunning = false;
 							return;
 						}
 					}
 					if (mStopClock) {
 						mStopClock = false;
+						mClockRunning = false;
 						// Return to avoid draw by timeout
 						return;
 					}
@@ -134,6 +138,7 @@ public class Chessboard {
 				while (mMoving) {
 					if (mStopClock) {
 						mStopClock = false;
+						mClockRunning = false;
 						return;
 					}
 				}
@@ -149,8 +154,13 @@ public class Chessboard {
 				// TODO
 				// database.insertGameResult(white_name, black_name, moves,
 				// result, date);
+				mClockRunning = false;
 			}
 		}).start();
+	}
+
+	public boolean clockRunning() {
+		return mClockRunning;
 	}
 
 	/**
@@ -307,6 +317,9 @@ public class Chessboard {
 	 *            True if this is a castle(clock should not switch colors)
 	 */
 	public void move(Chesspiece piece, int row, int column, int oldRow, int oldColumn, boolean castle) {
+		if(!castle){
+			mActivity.rotate();
+		}
 		// Kill En-Passant
 		if (mChessboard[row][column] != null && mChessboard[row][column].getColor() == Chesspiece.EN_PASSANT) {
 			mChessboard[mEnPassant.getPawn().getRow()][mEnPassant.getPawn().getColumn()] = null;
@@ -332,7 +345,7 @@ public class Chessboard {
 			mPromotionFlag = NO_PROMOTION;
 		}
 		getKing(piece.getColor()).setInCheck(false);
-		mActivity.setInCheck(piece.getColor(), false);
+		mActivity.setCheckText(piece.getColor(), PlayerFrame.NO_CHECK);
 		checkForGameEnd(piece.getColor());
 
 		if (!firstMove && !castle) {
@@ -406,13 +419,19 @@ public class Chessboard {
 
 		boolean inCheck = isInCheck(enemy);
 		getKing(enemy).setInCheck(inCheck);
-		mActivity.setInCheck(enemy, inCheck);
+		if (inCheck) {
+			mActivity.setCheckText(enemy, PlayerFrame.CHECK);
+		}else{
+			mActivity.setCheckText(enemy, PlayerFrame.NO_CHECK);
+		}
 
 		if (!hasLegalMoves(enemy)) {
 			mStopClock = true;
 			DBAdapter database = new DBAdapter(mContext);
 			database.open();
 			if (inCheck) {
+				mActivity.setCheckText(enemy, PlayerFrame.CHECKMATE);
+				mActivity.setCheckText(color, PlayerFrame.WINNER);
 				String won;
 				if (color == Chesspiece.WHITE) {
 					won = DBAdapter.WHITE_WON;

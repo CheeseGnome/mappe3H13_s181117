@@ -19,6 +19,8 @@ public class PlayerFrame extends RelativeLayout {
 	private static final int PAWN = 0, ROOK = 1, KNIGHT = 2, BISHOP = 3, QUEEN = 4;
 	private static final float SHADOWRADIUS = 20;
 
+	public static final int NO_CHECK = 0, CHECK = 1, CHECKMATE = 2, WINNER = 3;
+
 	private LinkedList<Chesspiece> pieces = new LinkedList<Chesspiece>();
 	private TextView mClock;
 
@@ -77,14 +79,23 @@ public class PlayerFrame extends RelativeLayout {
 		drawPieces();
 	}
 
-	public void setInCheck(boolean inCheck) {
+	public void setCheckText(int flag) {
 		TextView check = (TextView) findViewById(R.id.txt_check);
-		if (inCheck) {
-			check.setText(getResources().getString(R.string.txt_check));
-			check.setShadowLayer(SHADOWRADIUS, 0, 0, getResources().getColor(R.color.txt_check_shadow));
-		} else {
+		if (flag == NO_CHECK) {
 			check.setText("");
 			check.setShadowLayer(0, 0, 0, getResources().getColor(android.R.color.transparent));
+		} else if (flag == CHECK) {
+			check.setTextColor(getResources().getColor(R.color.txt_check_color));
+			check.setText(getResources().getString(R.string.txt_check));
+			check.setShadowLayer(SHADOWRADIUS, 0, 0, getResources().getColor(R.color.txt_check_shadow));
+		} else if (flag == CHECKMATE) {
+			check.setTextColor(getResources().getColor(R.color.txt_check_color));
+			check.setText(getResources().getString(R.string.txt_checkmate));
+			check.setShadowLayer(SHADOWRADIUS, 0, 0, getResources().getColor(R.color.txt_check_shadow));
+		} else if (flag == WINNER) {
+			check.setTextColor(getResources().getColor(R.color.txt_winner_color));
+			check.setText(getResources().getString(R.string.txt_winner));
+			check.setShadowLayer(SHADOWRADIUS, 0, 0, getResources().getColor(R.color.txt_check_shadow));
 		}
 	}
 
