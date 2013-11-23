@@ -1,5 +1,7 @@
 package hioa.android.chess;
 
+import java.util.Date;
+
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
@@ -16,6 +18,13 @@ import android.view.Window;
 import android.widget.Button;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+
+/**
+ * The activity that displays the game
+ * 
+ * @author Lars Sætaberget
+ * @version 2013-11-23
+ */
 
 public class GameActivity extends Activity {
 
@@ -70,7 +79,16 @@ public class GameActivity extends Activity {
 				mChessboard.mView.endTheGame(ChessboardView.WINRESIGN, color);
 				setCheckText(mChessboard.mView.getCurrentPlayer(), PlayerFrame.RESIGNED);
 				setCheckText(color, PlayerFrame.WINNER);
-				// TODO DB
+				DBAdapter database = new DBAdapter(GameActivity.this);
+				database.open();
+				String winner;
+				if (color == Chesspiece.WHITE) {
+					winner = DBAdapter.WHITE_WON;
+				} else {
+					winner = DBAdapter.BLACK_WON;
+				}
+				database.insertGameResult(mWhiteName, mBlackName, mChessboard.mPositionHashFactory.getMoves(), winner,
+						new Date());
 			}
 
 		});
@@ -85,6 +103,14 @@ public class GameActivity extends Activity {
 		});
 
 	}
+
+	/**
+	 * Sets the draw button to either offer draw or claim draw by the 50-move
+	 * rule
+	 * 
+	 * @param flag
+	 *            OFFERDRAW or CLAIMDRAW
+	 */
 
 	public void setDrawButtonMode(int flag) {
 		Button button = (Button) findViewById(R.id.btn_draw);
@@ -110,6 +136,11 @@ public class GameActivity extends Activity {
 											mChessboard.mView.getCurrentPlayer());
 									setCheckText(Chesspiece.WHITE, PlayerFrame.DRAW);
 									setCheckText(Chesspiece.BLACK, PlayerFrame.DRAW);
+									DBAdapter database = new DBAdapter(GameActivity.this);
+									database.open();
+									database.insertGameResult(mWhiteName, mBlackName,
+											mChessboard.mPositionHashFactory.getMoves(), DBAdapter.DRAW_AGREED,
+											new Date());
 									mDialog.dismiss();
 									mDialog = null;
 								}
@@ -136,6 +167,10 @@ public class GameActivity extends Activity {
 					mChessboard.mView.endTheGame(ChessboardView.DRAWCLAIMED, mChessboard.mView.getCurrentPlayer());
 					setCheckText(Chesspiece.WHITE, PlayerFrame.DRAW);
 					setCheckText(Chesspiece.BLACK, PlayerFrame.DRAW);
+					DBAdapter database = new DBAdapter(GameActivity.this);
+					database.open();
+					database.insertGameResult(mWhiteName, mBlackName, mChessboard.mPositionHashFactory.getMoves(),
+							DBAdapter.DRAW_CLAIMED, new Date());
 				}
 			});
 		}
@@ -147,12 +182,18 @@ public class GameActivity extends Activity {
 		super.onResume();
 	}
 
+	/**
+	 * Reverts the view back to 0 degrees rotation
+	 */
 	public void unrotate() {
 		if (mCurrentRotation != 0) {
 			rotate();
 		}
 	}
 
+	/**
+	 * Sets the header text to indicate whose move it is
+	 */
 	public void switchPlayer() {
 		TextView header = (TextView) findViewById(R.id.txt_move);
 		if (header.getText().toString().equals(getResources().getString(R.string.txt_black_move))) {
@@ -162,6 +203,10 @@ public class GameActivity extends Activity {
 		}
 	}
 
+	/**
+	 * Loads the preferences from xml and rotates the screen if it should be
+	 * done as per the current state and loaded preferences
+	 */
 	private void loadPreferences() {
 		mPreferences = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
 		mRotate = mPreferences.getBoolean("rotate", false);
@@ -182,6 +227,10 @@ public class GameActivity extends Activity {
 		}
 	}
 
+	/**
+	 * Rotates the screen if the preferences specified it. Otherwise does
+	 * nothing
+	 */
 	public void rotate() {
 		if (!mRotate) {
 			return;
@@ -195,6 +244,12 @@ public class GameActivity extends Activity {
 		animator.rotation(mCurrentRotation);
 	}
 
+	/**
+	 * Adds the piece to the opposing player's frame
+	 * 
+	 * @param piece
+	 *            The piece that was captured
+	 */
 	public void capturePiece(Chesspiece piece) {
 		if (piece.getColor() == Chesspiece.WHITE) {
 			mBlackFrame.addPiece(piece);
@@ -203,11 +258,21 @@ public class GameActivity extends Activity {
 		}
 	}
 
+	/**
+	 * Prepares the player frames for a new game
+	 */
 	public void resetPlayerFrames() {
 		mWhiteFrame.resetPieces();
 		mBlackFrame.resetPieces();
 	}
 
+	/**
+	 * Gets the game settings from the {@link GameSettingsActivity}
+	 * 
+	 * @param view
+	 *            The {@link ChessboardView} to set up with start time and
+	 *            player names
+	 */
 	private void setupBundleItems(ChessboardView view) {
 		Bundle bundle = getIntent().getExtras();
 		mStartTime = bundle.getLong(GameSettingsActivity.TIME);
@@ -269,6 +334,15 @@ public class GameActivity extends Activity {
 		return super.onOptionsItemSelected(item);
 	}
 
+	/**
+	 * Sets the clock for the provided color to a time-formatted string taken
+	 * from the time parameter
+	 * 
+	 * @param color
+	 *            The color who's clock should be updated
+	 * @param time
+	 *            The new time in millis
+	 */
 	public void updateClock(final int color, long time) {
 		final StringBuilder clockBuilder = new StringBuilder();
 
@@ -294,6 +368,9 @@ public class GameActivity extends Activity {
 		});
 	}
 
+	/**
+	 * Prepares the header for a new game
+	 */
 	private void resetMoveString() {
 		TextView header = (TextView) findViewById(R.id.txt_move);
 		if (!header.getText().equals(getResources().getString(R.string.txt_white_move))) {
@@ -301,6 +378,11 @@ public class GameActivity extends Activity {
 		}
 	}
 
+	/**
+	 * Sets all values to what they should be for the beginning of a game
+	 * 
+	 * @param board
+	 */
 	public void newGame(Chessboard board) {
 		updateClock(Chesspiece.WHITE, mStartTime);
 		updateClock(Chesspiece.BLACK, mStartTime);
@@ -310,13 +392,21 @@ public class GameActivity extends Activity {
 		resetPlayerFrames();
 		loadPreferences();
 		resetMoveString();
-		if(mDialog != null){
+		if (mDialog != null) {
 			mDialog.dismiss();
 			mDialog = null;
 		}
 		setDrawButtonMode(OFFERDRAW);
 	}
 
+	/**
+	 * Sets the info text in the player frame based on the flag provided
+	 * 
+	 * @param color
+	 *            The color who's frame should be updated
+	 * @param flag
+	 *            A constant from PlayerFrame
+	 */
 	public void setCheckText(int color, int flag) {
 		if (flag != PlayerFrame.NO_CHECK && flag != PlayerFrame.CHECK) {
 			((TextView) findViewById(R.id.txt_move)).setText(R.string.txt_game_over);
@@ -328,7 +418,27 @@ public class GameActivity extends Activity {
 		}
 	}
 
-	public void addTimeString(StringBuilder clockBuilder, int time) {
+	/**
+	 * Help method for the updateClock() method
+	 * <p>
+	 * Call this method in most significant to least significant order to get a
+	 * properly formatted string.
+	 * <p>
+	 * For example:</br> addTimeString(builder, hours);</br>
+	 * addTimeString(builder, minutes);</br> addTimeString(builder,
+	 * seconds);</br>
+	 * <p>
+	 * Where time is the number you want to display.</br> (If you want to
+	 * display 123 minutes as 2:03:00 you would need:</br>
+	 * addTimeString(builder, 2);</br> addTimeString(builder, 3);</br>
+	 * addTimeString(builder, 0);</br>
+	 * 
+	 * @param clockBuilder
+	 *            The stringbuilder to write to
+	 * @param time
+	 *            The time to add
+	 */
+	private void addTimeString(StringBuilder clockBuilder, int time) {
 		if (time == 0) {
 			clockBuilder.append("00:");
 		} else if (time > 0 && time < 10) {

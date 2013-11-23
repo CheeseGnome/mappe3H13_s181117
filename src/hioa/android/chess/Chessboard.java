@@ -13,7 +13,7 @@ public class Chessboard {
 	private Context mContext;
 	private EnPassant mEnPassant;
 	private int mPromotionFlag = NO_PROMOTION;
-	private PositionHashFactory mPositionHashFactory;
+	protected PositionHashFactory mPositionHashFactory;
 	protected ChessboardView mView;
 	private boolean firstMove = true;
 	private long mStartTime, mBonusTime;
