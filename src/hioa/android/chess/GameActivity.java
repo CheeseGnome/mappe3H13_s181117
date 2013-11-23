@@ -51,8 +51,7 @@ public class GameActivity extends Activity {
 
 		mWhiteFrame = (PlayerFrame) findViewById(R.id.whiteFrame);
 		mBlackFrame = (PlayerFrame) findViewById(R.id.blackFrame);
-		mWhiteFrame.setName(mWhiteName);
-		mBlackFrame.setName(mBlackName);
+
 		mWhiteFrame.setKingIcon(Chesspiece.WHITE);
 		mBlackFrame.setKingIcon(Chesspiece.BLACK);
 
@@ -61,6 +60,8 @@ public class GameActivity extends Activity {
 
 		mChessboard = board.getChessboard();
 		setupBundleItems(board);
+		mWhiteFrame.setName(mWhiteName);
+		mBlackFrame.setName(mBlackName);
 		updateClock(Chesspiece.WHITE, mStartTime);
 		updateClock(Chesspiece.BLACK, mStartTime);
 

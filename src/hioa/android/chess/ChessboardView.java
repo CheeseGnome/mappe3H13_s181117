@@ -30,6 +30,7 @@ public class ChessboardView extends TableLayout {
 	private boolean[][] mLegalMoves;
 	private Resources mResources;
 	private String mWhiteName, mBlackName;
+	private int mOldRow = -1, mOldColumn = -1, mRow = -1, mColumn = -1;
 	public static final int DRAWREPETITION = 0, DRAWCLAIMED = 1, DRAWAGREED = 2, WINCHECKMATE = 3, WINRESIGN = 4,
 			DRAWSTALEMATE = 5, WINTIMEOUT = 6;
 	/**
@@ -444,6 +445,10 @@ public class ChessboardView extends TableLayout {
 	 *            The column to move to
 	 */
 	private void performMove(int row, int column) {
+		mOldRow = mSelected.getRow();
+		mOldColumn = mSelected.getColumn();
+		mRow = row;
+		mColumn = column;
 		mSelected.move(row, column);
 
 		mSelected = null;
@@ -463,9 +468,13 @@ public class ChessboardView extends TableLayout {
 	 */
 	private void setLegalMovesHint() {
 		int id = -1;
+		//Performance
+		boolean legal;
 		for (int i = 0; i < mChessboard.getMaxRows(); i++) {
 			for (int j = 0; j < mChessboard.getMaxColumns(); j++) {
+				legal = false;
 				if (mLegalMoves != null && mLegalMoves[i][j]) {
+					legal = true;
 					switch (getTileColorId(i, j)) {
 					case R.color.white_tile:
 						id = R.color.white_tile_marked;
@@ -475,10 +484,17 @@ public class ChessboardView extends TableLayout {
 						break;
 					}
 					mButtons[i][j].setBackgroundColor(mResources.getColor(id));
-				} else if (mSelected != null && mSelected.getRow() == i && mSelected.getColumn() == j) {
+				}
+
+				if (!legal && mSelected != null && mSelected.getRow() == i && mSelected.getColumn() == j) {
 					mButtons[i][j].setBackgroundColor(mResources.getColor(R.color.selected_piece_tile));
-				} else {
+				} else if (!legal) {
 					mButtons[i][j].setBackgroundColor(mResources.getColor(getTileColorId(i, j)));
+				}
+				if (!legal && i == mOldRow && j == mOldColumn) {
+					mButtons[i][j].setBackgroundColor(mResources.getColor(R.color.previous_move_tile));
+				} else if (!legal && i == mRow && j == mColumn) {
+					mButtons[i][j].setBackgroundColor(mResources.getColor(R.color.previous_move_tile));
 				}
 			}
 		}

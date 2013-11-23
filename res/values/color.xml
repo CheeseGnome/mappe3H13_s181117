@@ -10,5 +10,6 @@
     <color name="txt_check_shadow">#000000</color>
     <color name="txt_winner_color">#00FF00</color>
     <color name="txt_draw_color">#0099FF</color>
+    <color name="previous_move_tile">#FACA25</color>
 
 </resources>

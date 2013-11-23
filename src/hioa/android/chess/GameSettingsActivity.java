@@ -40,10 +40,10 @@ public class GameSettingsActivity extends Activity {
 					invalidInput(INVALIDNAME);
 					return;
 				}
-				gameIntent.putExtra(WHITENAME, getWhiteName());
-				gameIntent.putExtra(BLACKNAME, getBlackName());
+				gameIntent.putExtra(WHITENAME, white);
+				gameIntent.putExtra(BLACKNAME, black);
 				gameIntent.putExtra(TIME, time);
-				gameIntent.putExtra(BONUS, getBonus());
+				gameIntent.putExtra(BONUS, bonus);
 				startActivity(gameIntent);
 				finish();
 			}
