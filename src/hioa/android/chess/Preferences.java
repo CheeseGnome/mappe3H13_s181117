@@ -40,6 +40,9 @@ public class Preferences extends PreferenceActivity {
 		}
 
 		public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key) {
+			if(!key.equals("whiteName") && !key.equals("blackName")){
+				return;
+			}
 			EditTextPreference preference = (EditTextPreference) findPreference(key);
 			preference.setSummary(sharedPreferences.getString(key, ""));
 		}
