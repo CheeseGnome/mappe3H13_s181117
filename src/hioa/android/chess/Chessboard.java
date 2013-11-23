@@ -3,7 +3,6 @@ package hioa.android.chess;
 import java.util.Date;
 
 import android.content.Context;
-import android.util.Log;
 
 /**
  * The backend representation of the chessboard
@@ -24,6 +23,11 @@ public class Chessboard {
 	private boolean firstMove = true;
 	private long mStartTime, mBonusTime;
 	private GameActivity mActivity;
+	
+	/**
+	 * Used to count towards the 50-move rule
+	 */
+	private int mMoveCount = 0;
 
 	/**
 	 * This is used to confirm that the clock thread is not running
@@ -383,6 +387,7 @@ public class Chessboard {
 		if (!castle) {
 			mActivity.rotate();
 		}
+		boolean incrementCount = !(piece instanceof Pawn);
 		// Kill En-Passant
 		if (mChessboard[row][column] != null && mChessboard[row][column].getColor() == Chesspiece.EN_PASSANT) {
 			mChessboard[mEnPassant.getPawn().getRow()][mEnPassant.getPawn().getColumn()] = null;
@@ -398,11 +403,11 @@ public class Chessboard {
 
 		Chesspiece captured = getPieceAt(row, column);
 		if (captured != null) {
-			Log.d("ZZZ", "Capture");
+			incrementCount = true;
 			mActivity.capturePiece(captured);
 		}
 		mChessboard[row][column] = piece;
-
+		
 		if (mPromotionFlag != NO_PROMOTION) {
 			mChessboard[row][column] = getPieceByFlag(mPromotionFlag, piece.getColor(), row, column);
 			mPromotionFlag = NO_PROMOTION;
@@ -420,6 +425,15 @@ public class Chessboard {
 		mMoving = false;
 		if (!gameOver) {
 			mActivity.switchPlayer();
+			if(incrementCount){
+				mMoveCount++;
+				if(mMoveCount >= 2 * 50){
+					mActivity.setDrawButtonMode(GameActivity.CLAIMDRAW);
+				}
+			}else{
+				mMoveCount = 0;
+				mActivity.setDrawButtonMode(GameActivity.OFFERDRAW);
+			}
 		}
 	}
 

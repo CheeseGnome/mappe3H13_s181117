@@ -54,8 +54,8 @@
     <string name="txt_white_move">White to move</string>
     <string name="txt_black_move">Black to move</string>
     <string name="txt_game_over">Game Over</string>
-    <string name="btn_offer_draw">Offer draw</string>
-    <string name="btn_claim_draw">Claim draw</string>
+    <string name="btn_offer_draw">Offer Draw</string>
+    <string name="btn_claim_draw">Claim Draw</string>
     <string name="btn_resign">Resign</string>
     <string name="btn_quit">Save &amp; Quit</string>
     <string name="title_draw_offer">Draw offered</string>
