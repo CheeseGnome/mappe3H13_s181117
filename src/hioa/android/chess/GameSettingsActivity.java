@@ -4,7 +4,9 @@ import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -61,6 +63,14 @@ public class GameSettingsActivity extends Activity {
 				finish();
 			}
 		});
+	}
+
+	@Override
+	protected void onResume() {
+		SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
+		((EditText) findViewById(R.id.etxt_white_name)).setText(preferences.getString("whiteName", "White"));
+		((EditText) findViewById(R.id.etxt_black_name)).setText(preferences.getString("blackName", "Black"));
+		super.onResume();
 	}
 
 	private boolean containsNonLetter(String name) {

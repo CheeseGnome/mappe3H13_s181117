@@ -2,6 +2,18 @@
 <PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android" >
 
     <PreferenceCategory
+        android:key="game_settings"
+        android:title="Game Settings" >
+        <EditTextPreference
+            android:defaultValue="White"
+            android:key="whiteName"
+            android:title="Default white name" />
+        <EditTextPreference
+            android:defaultValue="Black"
+            android:key="blackName"
+            android:title="Default black name" />
+    </PreferenceCategory>
+    <PreferenceCategory
         android:key="display_settings"
         android:title="Display Settings" >
         <CheckBoxPreference
@@ -9,7 +21,6 @@
             android:key="rotate"
             android:summary="Rotate screen after each move"
             android:title="Rotate" />
-        
         <CheckBoxPreference
             android:defaultValue="false"
             android:key="screenAlwaysOn"
