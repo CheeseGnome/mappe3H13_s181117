@@ -4,12 +4,22 @@
     <PreferenceCategory
         android:key="game_settings"
         android:title="Game Settings" >
-        
         <CheckBoxPreference
             android:defaultValue="false"
             android:key="rotate"
             android:summary="Rotate screen after each move"
             android:title="Rotate" />
+    </PreferenceCategory>
+    
+    <PreferenceCategory
+        android:key="other_settings"
+        android:title="Other Settings" >
+        
+        <CheckBoxPreference
+            android:defaultValue="false"
+            android:key="screenAlwaysOn"
+            android:summary="Screen always on while playing"
+            android:title="Screen always on" />
     </PreferenceCategory>
 
 </PreferenceScreen>

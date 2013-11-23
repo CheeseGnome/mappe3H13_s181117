@@ -181,6 +181,7 @@ public class ChessboardView extends TableLayout {
 		mSelected = null;
 		mLegalMoves = null;
 		mChessboard.stopClock();
+		mRow = mColumn = mOldRow = mOldColumn = -1;
 		setLegalMovesHint();
 
 		final Dialog dialog = new Dialog(mContext);

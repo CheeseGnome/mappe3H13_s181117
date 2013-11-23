@@ -14,7 +14,7 @@ import android.widget.EditText;
 
 public class GameSettingsActivity extends Activity {
 
-	private static final int INVALIDTIME = 0, INVALIDNAME = 1;
+	private static final int INVALIDTIME = 0, INVALIDNAME = 1, SAMENAME = 2, ILLEGALCHAR = 3;
 
 	public static final String TIME = "time", BONUS = "bonus", WHITENAME = "white_name", BLACKNAME = "black_name";
 
@@ -39,6 +39,12 @@ public class GameSettingsActivity extends Activity {
 				if (white.equals("") || black.equals("")) {
 					invalidInput(INVALIDNAME);
 					return;
+				} else if (white.equalsIgnoreCase(black)) {
+					invalidInput(SAMENAME);
+					return;
+				} else if (containsNonLetter(white) || containsNonLetter(black)) {
+					invalidInput(ILLEGALCHAR);
+					return;
 				}
 				gameIntent.putExtra(WHITENAME, white);
 				gameIntent.putExtra(BLACKNAME, black);
@@ -57,6 +63,15 @@ public class GameSettingsActivity extends Activity {
 		});
 	}
 
+	private boolean containsNonLetter(String name) {
+		for (int i = 0; i < name.length(); i++) {
+			if (!Character.isLetter(name.charAt(i))) {
+				return true;
+			}
+		}
+		return false;
+	}
+
 	/**
 	 * Creates a warning dialog based on the provided flag
 	 * 
@@ -67,10 +82,19 @@ public class GameSettingsActivity extends Activity {
 	private void invalidInput(int flag) {
 		AlertDialog dialog = new AlertDialog.Builder(this).create();
 		dialog.setTitle(getString(R.string.title_invalid_input));
-		if (flag == INVALIDTIME) {
+		switch (flag) {
+		case INVALIDTIME:
 			dialog.setMessage(getString(R.string.txt_invalid_time));
-		} else {
+			break;
+		case INVALIDNAME:
 			dialog.setMessage(getString(R.string.txt_invalid_name));
+			break;
+		case SAMENAME:
+			dialog.setMessage(getString(R.string.txt_same_name));
+			break;
+		case ILLEGALCHAR:
+			dialog.setMessage(getString(R.string.txt_illegal_char));
+			break;
 		}
 		dialog.setIconAttribute(android.R.attr.alertDialogIcon);
 		dialog.setButton(AlertDialog.BUTTON_POSITIVE, getString(R.string.btn_ok),

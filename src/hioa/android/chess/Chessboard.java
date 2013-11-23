@@ -6,6 +6,7 @@ import android.content.Context;
 
 /**
  * The backend representation of the chessboard
+ * 
  * @author Lars Sætaberget
  * @version 2013-11-23
  */
@@ -23,7 +24,7 @@ public class Chessboard {
 	private boolean firstMove = true;
 	private long mStartTime, mBonusTime;
 	private GameActivity mActivity;
-	
+
 	/**
 	 * Used to count towards the 50-move rule
 	 */
@@ -407,7 +408,7 @@ public class Chessboard {
 			mActivity.capturePiece(captured);
 		}
 		mChessboard[row][column] = piece;
-		
+
 		if (mPromotionFlag != NO_PROMOTION) {
 			mChessboard[row][column] = getPieceByFlag(mPromotionFlag, piece.getColor(), row, column);
 			mPromotionFlag = NO_PROMOTION;
@@ -423,18 +424,21 @@ public class Chessboard {
 			startClock(mStartTime);
 		}
 		mMoving = false;
-		if (!gameOver) {
+		if (!gameOver && !castle) {
 			mActivity.switchPlayer();
-			if(incrementCount){
+			if (incrementCount) {
 				mMoveCount++;
-				if(mMoveCount >= 2 * 50){
+				if (mMoveCount >= 2 * 50) {
 					mActivity.setDrawButtonMode(GameActivity.CLAIMDRAW);
 				}
-			}else{
+			} else {
+				if (mMoveCount >= 2 * 50) {
+					mActivity.setDrawButtonMode(GameActivity.OFFERDRAW);
+				}
 				mMoveCount = 0;
-				mActivity.setDrawButtonMode(GameActivity.OFFERDRAW);
 			}
 		}
+		mActivity.setDrawButtonEnabled(true);
 	}
 
 	/**

@@ -2,6 +2,7 @@ package hioa.android.chess;
 
 import java.util.Date;
 
+import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
@@ -15,6 +16,7 @@ import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewPropertyAnimator;
 import android.view.Window;
+import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
@@ -38,6 +40,7 @@ public class GameActivity extends Activity {
 	private SharedPreferences mPreferences;
 	private boolean mRotate;
 	private AlertDialog mDialog;
+	private boolean mAlwaysOn;
 
 	public static final int CLAIMDRAW = 0, OFFERDRAW = 1;
 
@@ -106,6 +109,16 @@ public class GameActivity extends Activity {
 	}
 
 	/**
+	 * Set the enabled state of the offer draw/claim draw button
+	 * 
+	 * @param enabled
+	 *            True if the button should be enabled
+	 */
+	public void setDrawButtonEnabled(boolean enabled) {
+		((Button) findViewById(R.id.btn_draw)).setEnabled(enabled);
+	}
+
+	/**
 	 * Sets the draw button to either offer draw or claim draw by the 50-move
 	 * rule
 	 * 
@@ -114,13 +127,14 @@ public class GameActivity extends Activity {
 	 */
 
 	public void setDrawButtonMode(int flag) {
-		Button button = (Button) findViewById(R.id.btn_draw);
+		final Button button = (Button) findViewById(R.id.btn_draw);
 
 		if (flag == OFFERDRAW) {
 			button.setText(R.string.btn_offer_draw);
 			button.setOnClickListener(new OnClickListener() {
 				@Override
 				public void onClick(View v) {
+					button.setEnabled(false);
 					mDialog = new AlertDialog.Builder(GameActivity.this).create();
 					mDialog.setTitle(getResources().getString(R.string.title_draw_offer));
 					String player;
@@ -208,8 +222,18 @@ public class GameActivity extends Activity {
 	 * Loads the preferences from xml and rotates the screen if it should be
 	 * done as per the current state and loaded preferences
 	 */
+	@SuppressLint("Wakelock")
 	private void loadPreferences() {
 		mPreferences = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
+
+		if (mPreferences.getBoolean("screenAlwaysOn", false)) {
+			mAlwaysOn = true;
+			getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
+		}else if(mAlwaysOn){
+			mAlwaysOn = false;
+			getWindow().clearFlags(android.view.WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
+		}
+
 		mRotate = mPreferences.getBoolean("rotate", false);
 		if (!mRotate && mCurrentRotation != 0) {
 			mRotate = true;
@@ -398,6 +422,7 @@ public class GameActivity extends Activity {
 			mDialog = null;
 		}
 		setDrawButtonMode(OFFERDRAW);
+		setDrawButtonEnabled(true);
 	}
 
 	/**

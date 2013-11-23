@@ -43,8 +43,10 @@
     <string name="btn_cancel">Cancel</string>
     <string name="btn_ok">OK</string>
     <string name="title_invalid_input">Invalid input!</string>
-    <string name="txt_invalid_time">Time fields must only contain numbers.</string>
-    <string name="txt_invalid_name">Name fields must be filled out.</string>
+    <string name="txt_invalid_time">Time fields must only contain numbers</string>
+    <string name="txt_invalid_name">Name fields must be filled out</string>
+    <string name="txt_same_name">Both players cannot have the same name</string>
+    <string name="txt_illegal_char">Name fields must only contain letters</string>
     <string name="txt_check">Check</string>
     <string name="txt_checkmate">Checkmate</string>
     <string name="txt_winner">Winner</string>
