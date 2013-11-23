@@ -161,7 +161,12 @@ public class ChessboardView extends TableLayout {
 	 * @param color
 	 *            The color that made the last move
 	 */
-	public void endTheGame(int flag, int color) {
+	public void endTheGame(int flag, int color) {	
+		mSelected = null;
+		mLegalMoves = null;
+		mChessboard.stopClock();
+		setLegalMovesHint();
+		
 		final Dialog dialog = new Dialog(mContext);
 		TableLayout contentView = (TableLayout) View.inflate(mContext, R.layout.endgamedialog, null);
 		dialog.setContentView(contentView);

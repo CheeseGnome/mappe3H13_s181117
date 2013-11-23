@@ -1,14 +1,19 @@
 package hioa.android.chess;
 
 import android.app.Activity;
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
+import android.view.View.OnClickListener;
 import android.view.ViewPropertyAnimator;
 import android.view.Window;
+import android.widget.Button;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
@@ -23,6 +28,9 @@ public class GameActivity extends Activity {
 	private float ROTATION = 180;
 	private SharedPreferences mPreferences;
 	private boolean mRotate;
+	private AlertDialog mDialog;
+
+	public static final int CLAIMDRAW = 0, OFFERDRAW = 1;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -46,6 +54,91 @@ public class GameActivity extends Activity {
 		mChessboard = board.getChessboard();
 		updateClock(Chesspiece.WHITE, mStartTime);
 		updateClock(Chesspiece.BLACK, mStartTime);
+
+		setDrawButtonMode(OFFERDRAW);
+
+		((Button) findViewById(R.id.btn_resign)).setOnClickListener(new OnClickListener() {
+			@Override
+			public void onClick(View v) {
+				mChessboard.stopClock();
+				int color;
+				if (mChessboard.mView.getCurrentPlayer() == Chesspiece.WHITE) {
+					color = Chesspiece.BLACK;
+				} else {
+					color = Chesspiece.WHITE;
+				}
+				mChessboard.mView.endTheGame(ChessboardView.WINRESIGN, color);
+				setCheckText(mChessboard.mView.getCurrentPlayer(), PlayerFrame.RESIGNED);
+				setCheckText(color, PlayerFrame.WINNER);
+				// TODO DB
+			}
+
+		});
+
+		((Button) findViewById(R.id.btn_quit)).setOnClickListener(new OnClickListener() {
+			@Override
+			public void onClick(View v) {
+				// TODO Save
+				finish();
+			}
+
+		});
+
+	}
+
+	public void setDrawButtonMode(int flag) {
+		Button button = (Button) findViewById(R.id.btn_draw);
+
+		if (flag == OFFERDRAW) {
+			button.setText(R.string.btn_offer_draw);
+			button.setOnClickListener(new OnClickListener() {
+				@Override
+				public void onClick(View v) {
+					mDialog = new AlertDialog.Builder(GameActivity.this).create();
+					mDialog.setTitle(getResources().getString(R.string.title_draw_offer));
+					String player;
+					if (mChessboard.mView.getCurrentPlayer() == Chesspiece.WHITE) {
+						player = mWhiteName;
+					} else {
+						player = mBlackName;
+					}
+					mDialog.setMessage(player + " " + getResources().getString(R.string.txt_draw_offer));
+					mDialog.setButton(AlertDialog.BUTTON_POSITIVE, getString(R.string.btn_accept),
+							new DialogInterface.OnClickListener() {
+								public void onClick(DialogInterface dialog, int which) {
+									mChessboard.mView.endTheGame(ChessboardView.DRAWAGREED,
+											mChessboard.mView.getCurrentPlayer());
+									setCheckText(Chesspiece.WHITE, PlayerFrame.DRAW);
+									setCheckText(Chesspiece.BLACK, PlayerFrame.DRAW);
+									mDialog.dismiss();
+									mDialog = null;
+								}
+							});
+					mDialog.setButton(AlertDialog.BUTTON_NEGATIVE, getString(R.string.btn_decline),
+							new DialogInterface.OnClickListener() {
+								public void onClick(DialogInterface dialog, int which) {
+									mDialog.dismiss();
+									mDialog = null;
+								}
+							});
+					mDialog.show();
+					if (mRotate && mCurrentRotation == 0) {
+						ViewPropertyAnimator animator = mDialog.findViewById(android.R.id.content).animate();
+						animator.rotation(ROTATION);
+					}
+				}
+			});
+		} else if (flag == CLAIMDRAW) {
+			button.setText(R.string.btn_claim_draw);
+			button.setOnClickListener(new OnClickListener() {
+				@Override
+				public void onClick(View v) {
+					mChessboard.mView.endTheGame(ChessboardView.DRAWCLAIMED, mChessboard.mView.getCurrentPlayer());
+					setCheckText(Chesspiece.WHITE, PlayerFrame.DRAW);
+					setCheckText(Chesspiece.BLACK, PlayerFrame.DRAW);
+				}
+			});
+		}
 	}
 
 	@Override
@@ -77,7 +170,7 @@ public class GameActivity extends Activity {
 			rotate();
 			mRotate = false;
 		} else if (mRotate) {
-			if (((ChessboardView) findViewById(R.id.chessboard)).getCurrentPlayer() == Chesspiece.WHITE) {
+			if (mChessboard.mView.getCurrentPlayer() == Chesspiece.WHITE) {
 				if (mCurrentRotation != 0) {
 					rotate();
 				}
@@ -217,6 +310,11 @@ public class GameActivity extends Activity {
 		resetPlayerFrames();
 		loadPreferences();
 		resetMoveString();
+		if(mDialog != null){
+			mDialog.dismiss();
+			mDialog = null;
+		}
+		setDrawButtonMode(OFFERDRAW);
 	}
 
 	public void setCheckText(int color, int flag) {

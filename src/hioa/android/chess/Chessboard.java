@@ -14,7 +14,7 @@ public class Chessboard {
 	private EnPassant mEnPassant;
 	private int mPromotionFlag = NO_PROMOTION;
 	private PositionHashFactory mPositionHashFactory;
-	private ChessboardView mView;
+	protected ChessboardView mView;
 	private boolean firstMove = true;
 	private long mStartTime, mBonusTime;
 	private GameActivity mActivity;
