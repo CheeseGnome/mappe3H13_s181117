@@ -2,18 +2,13 @@
 <PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android" >
 
     <PreferenceCategory
-        android:key="game_settings"
-        android:title="Game Settings" >
+        android:key="display_settings"
+        android:title="Display Settings" >
         <CheckBoxPreference
             android:defaultValue="false"
             android:key="rotate"
             android:summary="Rotate screen after each move"
             android:title="Rotate" />
-    </PreferenceCategory>
-    
-    <PreferenceCategory
-        android:key="other_settings"
-        android:title="Other Settings" >
         
         <CheckBoxPreference
             android:defaultValue="false"
