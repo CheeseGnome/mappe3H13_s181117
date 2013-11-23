@@ -12,6 +12,18 @@
             android:defaultValue="Black"
             android:key="blackName"
             android:title="Default black name" />
+        <!--
+        <ListPreference
+            android:entries="@array/time_settings"
+            android:entryValues="@array/resolved_time"
+            android:key="time_preference"
+            android:title="Default time" />
+        <ListPreference
+            android:entries="@array/bonus_settings"
+            android:entryValues="@array/resolved_bonus"
+            android:key="bonus_preference"
+            android:title="Default bonus" />
+        -->
     </PreferenceCategory>
     <PreferenceCategory
         android:key="display_settings"
