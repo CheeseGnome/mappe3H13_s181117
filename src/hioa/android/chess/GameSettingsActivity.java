@@ -57,6 +57,13 @@ public class GameSettingsActivity extends Activity {
 		});
 	}
 
+	/**
+	 * Creates a warning dialog based on the provided flag
+	 * 
+	 * @param flag
+	 *            A constant that decides the dialog texts
+	 */
+
 	private void invalidInput(int flag) {
 		AlertDialog dialog = new AlertDialog.Builder(this).create();
 		dialog.setTitle(getString(R.string.title_invalid_input));

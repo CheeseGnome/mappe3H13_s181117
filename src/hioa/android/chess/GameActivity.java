@@ -48,7 +48,6 @@ public class GameActivity extends Activity {
 		setContentView(R.layout.activity_game);
 
 		ChessboardView board = (ChessboardView) findViewById(R.id.chessboard);
-		setupBundleItems(board);
 
 		mWhiteFrame = (PlayerFrame) findViewById(R.id.whiteFrame);
 		mBlackFrame = (PlayerFrame) findViewById(R.id.blackFrame);
@@ -61,6 +60,7 @@ public class GameActivity extends Activity {
 		mBlackFrame.loadIcons(Chesspiece.WHITE);
 
 		mChessboard = board.getChessboard();
+		setupBundleItems(board);
 		updateClock(Chesspiece.WHITE, mStartTime);
 		updateClock(Chesspiece.BLACK, mStartTime);
 
@@ -277,7 +277,7 @@ public class GameActivity extends Activity {
 		Bundle bundle = getIntent().getExtras();
 		mStartTime = bundle.getLong(GameSettingsActivity.TIME);
 		mBonusTime = bundle.getLong(GameSettingsActivity.BONUS);
-		view.setTime(mStartTime, mBonusTime);
+		mChessboard.setTime(mStartTime, mBonusTime);
 		mWhiteName = bundle.getString(GameSettingsActivity.WHITENAME);
 		mBlackName = bundle.getString(GameSettingsActivity.BLACKNAME);
 		view.setPlayerNames(mWhiteName, mBlackName);

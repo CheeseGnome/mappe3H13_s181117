@@ -13,6 +13,14 @@ import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+/**
+ * A view that contains a player's name, clock, captured pieces and provides
+ * info on the game state(in check etc)
+ * 
+ * @author Lars Sætaberget
+ * @version 2013-11-23
+ */
+
 public class PlayerFrame extends RelativeLayout {
 
 	private BitmapDrawable[] mIcons;
@@ -21,7 +29,7 @@ public class PlayerFrame extends RelativeLayout {
 
 	public static final int NO_CHECK = 0, CHECK = 1, CHECKMATE = 2, WINNER = 3, DRAW = 4, RESIGNED = 5, TIMEOUT = 6;
 
-	private LinkedList<Chesspiece> pieces = new LinkedList<Chesspiece>();
+	private LinkedList<Chesspiece> mCapturedPieces = new LinkedList<Chesspiece>();
 	private TextView mClock;
 
 	private Context mContext;
@@ -38,6 +46,11 @@ public class PlayerFrame extends RelativeLayout {
 		((TextView) findViewById(R.id.txt_player_name)).setText(name);
 	}
 
+	/**
+	 * Sets the King icon for this view to the king image of the selected color
+	 * 
+	 * @param color
+	 */
 	public void setKingIcon(int color) {
 		ImageView image = (ImageView) findViewById(R.id.img_king);
 		if (color == Chesspiece.WHITE) {
@@ -48,27 +61,42 @@ public class PlayerFrame extends RelativeLayout {
 		}
 	}
 
+	/**
+	 * Clears all the captured pieces from the view
+	 */
 	public void resetPieces() {
-		pieces.clear();
+		mCapturedPieces.clear();
 		drawPieces();
 	}
 
+	/**
+	 * Sets the time string
+	 * 
+	 * @param time
+	 *            The formatted time string to display
+	 */
 	public void setTime(String time) {
 		mClock.setText(time);
 	}
 
+	/**
+	 * Adds a captured piece to the list and displays it in order:</br> Pawn -
+	 * Knight - Bishop - Rook - Queen
+	 * 
+	 * @param piece
+	 */
 	public void addPiece(Chesspiece piece) {
 		if (piece instanceof Pawn) {
-			pieces.addFirst(piece);
+			mCapturedPieces.addFirst(piece);
 			drawPieces();
 			return;
 		} else if (piece instanceof Queen) {
-			pieces.addLast(piece);
+			mCapturedPieces.addLast(piece);
 			drawPieces();
 			return;
 		}
 
-		Iterator<Chesspiece> iterator = pieces.iterator();
+		Iterator<Chesspiece> iterator = mCapturedPieces.iterator();
 		Chesspiece currentPiece;
 		int index = -1;
 
@@ -78,17 +106,24 @@ public class PlayerFrame extends RelativeLayout {
 			index++;
 			currentPiece = iterator.next();
 			if (addBefore(piece, currentPiece)) {
-				pieces.add(index, piece);
+				mCapturedPieces.add(index, piece);
 				added = true;
 				break;
 			}
 		}
 		if (!added) {
-			pieces.addLast(piece);
+			mCapturedPieces.addLast(piece);
 		}
 		drawPieces();
 	}
 
+	/**
+	 * Sets the large info text for this view based on the provided flag
+	 * 
+	 * @param flag
+	 *            NO_CHECK to hide this TextView from the frame, or another flag
+	 *            provided in this class
+	 */
 	public void setCheckText(int flag) {
 		TextView check = (TextView) findViewById(R.id.txt_check);
 		switch (flag) {
@@ -129,6 +164,16 @@ public class PlayerFrame extends RelativeLayout {
 		}
 	}
 
+	/**
+	 * Help method to determine if the piece should be added before currentPiece
+	 * in the list
+	 * 
+	 * @param piece
+	 *            The piece to add
+	 * @param currentPiece
+	 *            The piece that was jsut iterated
+	 * @return True if the piece should be added here
+	 */
 	private boolean addBefore(Chesspiece piece, Chesspiece currentPiece) {
 		if (piece instanceof Knight) {
 			return (currentPiece instanceof Bishop || currentPiece instanceof Rook || currentPiece instanceof Queen);
@@ -142,8 +187,11 @@ public class PlayerFrame extends RelativeLayout {
 		throw new IllegalArgumentException("Illegal piece passed to addBefore()");
 	}
 
+	/**
+	 * Sets the imageviews to display the contents of the list
+	 */
 	private void drawPieces() {
-		Iterator<Chesspiece> iterator = pieces.iterator();
+		Iterator<Chesspiece> iterator = mCapturedPieces.iterator();
 		int id;
 		for (int i = 1; i < 16; i++) {
 			id = mContext.getResources().getIdentifier("imageView" + i, "id", "hioa.android.chess");
@@ -158,6 +206,13 @@ public class PlayerFrame extends RelativeLayout {
 		invalidate();
 	}
 
+	/**
+	 * Gets the icon for this piece
+	 * 
+	 * @param piece
+	 *            The piece who's icon to retrieve
+	 * @return A drawable scaled to fit inside the imageViews
+	 */
 	private Drawable getIcon(Chesspiece piece) {
 		if (piece instanceof Pawn) {
 			return mIcons[PAWN];
@@ -177,6 +232,12 @@ public class PlayerFrame extends RelativeLayout {
 		return null;
 	}
 
+	/**
+	 * Loads the icons for the provided color
+	 * 
+	 * @param color
+	 *            The color who's icons to load
+	 */
 	public void loadIcons(int color) {
 		mIcons = new BitmapDrawable[5];
 		if (color == Chesspiece.BLACK) {

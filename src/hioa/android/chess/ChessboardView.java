@@ -19,7 +19,7 @@ import android.widget.TextView;
  * file
  * 
  * @author Lars Sætaberget
- * @version 2013-11-15
+ * @version 2013-11-23
  */
 
 public class ChessboardView extends TableLayout {
@@ -67,6 +67,12 @@ public class ChessboardView extends TableLayout {
 		placePieces();
 	}
 
+	/**
+	 * Queues an endTheGame() method in the UI thread based on time out
+	 * 
+	 * @param color
+	 *            The color who won by time out
+	 */
 	public void timeOut(final int color) {
 		final int enemy;
 		if (color == Chesspiece.WHITE) {
@@ -83,18 +89,21 @@ public class ChessboardView extends TableLayout {
 		});
 	}
 
+	/**
+	 * Returns an int Chesspiece.WHITE or Chesspiece.BLACK depending on who's
+	 * turn it is
+	 * 
+	 * @return Chesspiece.WHITE or Chesspiece.BLACK
+	 */
 	public int getCurrentPlayer() {
 		return mCurrentPlayer;
 	}
 
-	public void setTime(long startTime, long bonusTime) {
-		mChessboard.setTime(startTime, bonusTime);
-	}
-
-	public void updateClock(final int color, final long time) {
-		mActivity.updateClock(color, time);
-	}
-
+	/**
+	 * Gets the underlying {@link Chessboard} that is currently being used
+	 * 
+	 * @return A Chessboard object
+	 */
 	public Chessboard getChessboard() {
 		return mChessboard;
 	}
@@ -107,6 +116,12 @@ public class ChessboardView extends TableLayout {
 		return mBlackName;
 	}
 
+	/**
+	 * Sets the activity for this view and the underlying {@link Chessboard}
+	 * 
+	 * @param activity
+	 *            The activity to set
+	 */
 	public void setActivity(GameActivity activity) {
 		mActivity = activity;
 		mChessboard.setActivity(activity);
@@ -161,12 +176,12 @@ public class ChessboardView extends TableLayout {
 	 * @param color
 	 *            The color that made the last move
 	 */
-	public void endTheGame(int flag, int color) {	
+	public void endTheGame(int flag, int color) {
 		mSelected = null;
 		mLegalMoves = null;
 		mChessboard.stopClock();
 		setLegalMovesHint();
-		
+
 		final Dialog dialog = new Dialog(mContext);
 		TableLayout contentView = (TableLayout) View.inflate(mContext, R.layout.endgamedialog, null);
 		dialog.setContentView(contentView);

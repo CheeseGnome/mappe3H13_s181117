@@ -5,6 +5,12 @@ import java.util.Date;
 import android.content.Context;
 import android.util.Log;
 
+/**
+ * The backend representation of the chessboard
+ * @author Lars Sætaberget
+ * @version 2013-11-23
+ */
+
 public class Chessboard {
 
 	public static final int NO_PROMOTION = -1, QUEEN = 0, ROOK = 1, BISHOP = 2, KNIGHT = 3;
@@ -18,6 +24,10 @@ public class Chessboard {
 	private boolean firstMove = true;
 	private long mStartTime, mBonusTime;
 	private GameActivity mActivity;
+
+	/**
+	 * This is used to confirm that the clock thread is not running
+	 */
 	private volatile boolean mClockRunning = false;
 
 	/**
@@ -64,15 +74,35 @@ public class Chessboard {
 		mPromotionFlag = flag;
 	}
 
+	/**
+	 * Set the time for the clock to use.
+	 * 
+	 * @param startTime
+	 *            Starting time in millis
+	 * @param bonusTime
+	 *            Bonus time gained after each move in millis
+	 */
 	public void setTime(long startTime, long bonusTime) {
 		mStartTime = startTime;
 		mBonusTime = bonusTime;
 	}
 
+	/**
+	 * Stops the clock and eventually(up to 50ms delay) kills the thread
+	 * <p>
+	 * Use clockRunning() to determine whether or not the clock is still
+	 * running.
+	 */
 	public void stopClock() {
 		mStopClock = true;
 	}
 
+	/**
+	 * Starts the clock
+	 * 
+	 * @param startTime
+	 *            The starting time for each player
+	 */
 	private void startClock(final long startTime) {
 		new Thread(new Runnable() {
 			public void run() {
@@ -106,11 +136,11 @@ public class Chessboard {
 						mChangeClockColor = false;
 						if (color == Chesspiece.WHITE) {
 							whiteTime += mBonusTime;
-							mView.updateClock(color, whiteTime);
+							mActivity.updateClock(color, whiteTime);
 							color = Chesspiece.BLACK;
 						} else {
 							blackTime += mBonusTime;
-							mView.updateClock(color, blackTime);
+							mActivity.updateClock(color, blackTime);
 							color = Chesspiece.WHITE;
 						}
 						diff1 = new Date().getTime();
@@ -120,12 +150,12 @@ public class Chessboard {
 						difference = diff2 - diff1;
 						whiteTime -= difference;
 						diff1 = diff2;
-						mView.updateClock(color, whiteTime);
+						mActivity.updateClock(color, whiteTime);
 					} else {
 						difference = diff2 - diff1;
 						blackTime -= difference;
 						diff1 = diff2;
-						mView.updateClock(color, blackTime);
+						mActivity.updateClock(color, blackTime);
 					}
 					try {
 						// Performance
@@ -160,6 +190,13 @@ public class Chessboard {
 		}).start();
 	}
 
+	/**
+	 * True if the clock is still running.
+	 * <p>
+	 * (And thus has an active thread)
+	 * 
+	 * @return
+	 */
 	public boolean clockRunning() {
 		return mClockRunning;
 	}
@@ -286,6 +323,14 @@ public class Chessboard {
 		mView = view;
 	}
 
+	/**
+	 * Set this to block the current player from losing from time out until the
+	 * current next call to move() is completed
+	 * 
+	 * @param moving
+	 *            Should probably only ever be set to true from outside this
+	 *            class
+	 */
 	public void setMoving(boolean moving) {
 		mMoving = moving;
 	}
@@ -294,6 +339,23 @@ public class Chessboard {
 		mActivity = activity;
 	}
 
+	/**
+	 * Moves the piece to the provided row and column.
+	 * <p>
+	 * Note: This method does no error-checking and simply assumes that the move
+	 * is legal
+	 * 
+	 * @param piece
+	 *            The piece to move
+	 * @param row
+	 *            The piece's new row position
+	 * @param column
+	 *            The piece's new column position
+	 * @param oldRow
+	 *            The piece's old row position
+	 * @param oldColumn
+	 *            The piece's old column position
+	 */
 	public void move(Chesspiece piece, int row, int column, int oldRow, int oldColumn) {
 		move(piece, row, column, oldRow, oldColumn, false);
 	}
@@ -408,7 +470,8 @@ public class Chessboard {
 	}
 
 	/**
-	 * Checks for various game over scenarios
+	 * Checks for various game over scenarios and ends the game if it should
+	 * end.
 	 * 
 	 * @param color
 	 *            The color who just moved

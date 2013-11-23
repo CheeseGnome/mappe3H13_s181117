@@ -2,6 +2,13 @@ package hioa.android.chess;
 
 import java.util.Arrays;
 
+/**
+ * This class hashes positions to check for draw by repetition
+ * 
+ * @author Lars Sætaberget
+ * @version 2013-11-20
+ */
+
 public class PositionHashFactory {
 
 	private Chessboard mChessboard;
@@ -12,9 +19,9 @@ public class PositionHashFactory {
 	public PositionHashFactory(Chessboard board) {
 		mChessboard = board;
 	}
-	
-	public String getMoves(){
-		return "a";//TODO
+
+	public String getMoves() {
+		return "a";// TODO
 	}
 
 	/**
@@ -120,7 +127,6 @@ public class PositionHashFactory {
 	 * Expands the array by ARRAY_INCREMENT number of spaces
 	 */
 	private void expandArray() {
-		mHashedPositions = Arrays.copyOf(mHashedPositions,
-				mHashedPositions.length + ARRAY_INCREMENT);
+		mHashedPositions = Arrays.copyOf(mHashedPositions, mHashedPositions.length + ARRAY_INCREMENT);
 	}
 }

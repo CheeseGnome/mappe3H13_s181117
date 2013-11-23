@@ -4,6 +4,13 @@ import android.os.Bundle;
 import android.preference.PreferenceActivity;
 import android.preference.PreferenceFragment;
 
+/**
+ * The activity to set preferences
+ * 
+ * @author Lars Sætaberget
+ * @version 2013-11-22
+ */
+
 public class Preferences extends PreferenceActivity {
 
 	@Override

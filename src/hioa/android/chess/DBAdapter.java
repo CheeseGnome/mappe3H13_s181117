@@ -15,7 +15,7 @@ import android.provider.BaseColumns;
  * This class handles all queries towards the database
  * 
  * @author Lars Sætaberget
- * @version 2013-10-22
+ * @version 2013-11-23
  */
 public class DBAdapter {
 	Context context;
@@ -31,8 +31,8 @@ public class DBAdapter {
 	static final String MOVES = "moves";
 	static final int DB_VERSION = 1;
 
-	public static final String WHITE_WON = "white_won",
-			BLACK_WON = "black_won", DRAW_STALEMATE = "draw_stalemate", DRAW_REPETITION = "draw_repetition", DRAW_CLAIMED = "draw_claimed", DRAW_AGREED = "draw_agreed";
+	public static final String WHITE_WON = "white_won", BLACK_WON = "black_won", DRAW_STALEMATE = "draw_stalemate",
+			DRAW_REPETITION = "draw_repetition", DRAW_CLAIMED = "draw_claimed", DRAW_AGREED = "draw_agreed";
 
 	private DatabaseHelper dbHelper;
 	private SQLiteDatabase database;
@@ -60,14 +60,21 @@ public class DBAdapter {
 	}
 
 	/**
-	 * Insert an entry into the database
+	 * Inserts a game result into the database
 	 * 
-	 * @param cv
-	 *            The values to be put into the database
+	 * @param white_name
+	 *            The white player's name
+	 * @param black_name
+	 *            The black player's name
+	 * @param moves
+	 *            A string representing the moves that were made
+	 * @param result
+	 *            The result(constants in this class)
+	 * @param date
+	 *            The date when the game was played
 	 */
 	@SuppressLint("SimpleDateFormat")
-	protected void insertGameResult(String white_name, String black_name,
-			String moves, String result, Date date) {
+	protected void insertGameResult(String white_name, String black_name, String moves, String result, Date date) {
 		ContentValues values = new ContentValues();
 		values.put(WHITE_PLAYER, white_name);
 		values.put(BLACK_PLAYER, black_name);
@@ -107,8 +114,7 @@ public class DBAdapter {
 	 *            by the values from whereArgs. The values will be bound as
 	 *            Strings.
 	 */
-	public void update(ContentValues values, String selection,
-			String[] selectionArgs) {
+	public void update(ContentValues values, String selection, String[] selectionArgs) {
 		database.update(TABLE, values, selection, selectionArgs);
 	}
 
@@ -130,10 +136,8 @@ public class DBAdapter {
 	 * @return A Cursor object positioned before the first entry
 	 */
 	protected Cursor query(String where, String having) {
-		String[] columns = { ID, WHITE_PLAYER, BLACK_PLAYER, DATE, RESULT,
-				MOVES };
-		return database.query(false, TABLE, columns, where, null, null, having,
-				WHITE_PLAYER + " ASC", null, null);
+		String[] columns = { ID, WHITE_PLAYER, BLACK_PLAYER, DATE, RESULT, MOVES };
+		return database.query(false, TABLE, columns, where, null, null, having, WHITE_PLAYER + " ASC", null, null);
 	}
 
 	/**
@@ -157,10 +161,8 @@ public class DBAdapter {
 	 *            default sort order, which may be unordered.
 	 * @return A Cursor object positioned before the first entry
 	 */
-	public Cursor query(String[] projection, String selection,
-			String[] selectionArgs, String sortOrder) {
-		return database.query(TABLE, projection, selection, selectionArgs,
-				null, null, sortOrder);
+	public Cursor query(String[] projection, String selection, String[] selectionArgs, String sortOrder) {
+		return database.query(TABLE, projection, selection, selectionArgs, null, null, sortOrder);
 	}
 
 	/**
@@ -177,13 +179,11 @@ public class DBAdapter {
 
 		@Override
 		public void onCreate(SQLiteDatabase db) {
-			String sql = "create table " + TABLE + " (" + ID
-					+ " integer primary key autoincrement, " + WHITE_PLAYER
-					+ " text, " + BLACK_PLAYER + " text, " + DATE + " date, "
-					+ RESULT + " text, " + MOVES + " text);";
+			String sql = "create table " + TABLE + " (" + ID + " integer primary key autoincrement, " + WHITE_PLAYER
+					+ " text, " + BLACK_PLAYER + " text, " + DATE + " date, " + RESULT + " text, " + MOVES + " text);";
 			db.execSQL(sql);
-			sql = "create table " + TABLE_POSITION + " (" + ID
-					+ " integer primary key autoincrement, " + HASH + " text);";
+			sql = "create table " + TABLE_POSITION + " (" + ID + " integer primary key autoincrement, " + HASH
+					+ " text);";
 			db.execSQL(sql);
 		}
 
