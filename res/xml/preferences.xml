@@ -12,18 +12,19 @@
             android:defaultValue="Black"
             android:key="blackName"
             android:title="Default black name" />
-        <!--
+
         <ListPreference
+            android:defaultValue="0"
             android:entries="@array/time_settings"
             android:entryValues="@array/resolved_time"
             android:key="time_preference"
-            android:title="Default time" />
+            android:title="Default time per player" />
         <ListPreference
+            android:defaultValue="0"
             android:entries="@array/bonus_settings"
             android:entryValues="@array/resolved_bonus"
             android:key="bonus_preference"
-            android:title="Default bonus" />
-        -->
+            android:title="Default bonus time per move" />
     </PreferenceCategory>
     <PreferenceCategory
         android:key="display_settings"

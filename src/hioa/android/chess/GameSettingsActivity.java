@@ -70,7 +70,23 @@ public class GameSettingsActivity extends Activity {
 		SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
 		((EditText) findViewById(R.id.etxt_white_name)).setText(preferences.getString("whiteName", "White"));
 		((EditText) findViewById(R.id.etxt_black_name)).setText(preferences.getString("blackName", "Black"));
+		
+		((EditText) findViewById(R.id.etxt_minutes)).setText(parsedMinutes(preferences.getString("time_preference", "0")));
+		((EditText) findViewById(R.id.etxt_seconds)).setText(parsedSeconds(preferences.getString("time_preference", "0")));
+		
+		((EditText) findViewById(R.id.etxt_bonus_minutes)).setText(parsedMinutes(preferences.getString("bonus_preference", "0")));
+		((EditText) findViewById(R.id.etxt_bonus_seconds)).setText(parsedSeconds(preferences.getString("bonus_preference", "0")));
 		super.onResume();
+	}
+	
+	private String parsedMinutes(String time){
+		long minutes = Long.parseLong(time) / 60;
+		return "" + minutes;
+	}
+	
+	private String parsedSeconds(String time){
+		long seconds = Long.parseLong(time) % 60;
+		return "" + seconds;
 	}
 
 	private boolean containsNonLetter(String name) {
