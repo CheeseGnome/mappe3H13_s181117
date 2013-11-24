@@ -1,11 +1,11 @@
 <resources>
 
-    <dimen name="activity_horizontal_margin">40dp</dimen>
-    <dimen name="activity_vertical_margin">40dp</dimen>
-    <dimen name="tile_size">97dp</dimen>
-    <dimen name="captured_size">52dp</dimen>
-    <dimen name="txt_check_size">100sp</dimen>
-    <dimen name="txt_move_size">62sp</dimen>
-    <dimen name="img_king_size">100dp</dimen>
+    <dimen name="activity_horizontal_margin">24dp</dimen>
+    <dimen name="activity_vertical_margin">24dp</dimen>
+    <dimen name="tile_size">60dp</dimen>
+    <dimen name="captured_size">32dp</dimen>
+    <dimen name="txt_check_size">60sp</dimen>
+    <dimen name="txt_move_size">40sp</dimen>
+    <dimen name="img_king_size">60dp</dimen>
 
 </resources>
