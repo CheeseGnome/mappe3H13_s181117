@@ -2,9 +2,6 @@ package hioa.android.chess;
 
 import java.util.Arrays;
 
-import android.content.Context;
-import android.database.Cursor;
-
 /**
  * This class hashes positions to check for draw by repetition
  * 
@@ -19,71 +16,158 @@ public class PositionHashFactory {
 	String[] mHashedPositions = new String[ARRAY_INCREMENT];
 	String[] mMoves = new String[ARRAY_INCREMENT];
 	private int mCurrentHashIndex = 0, mCurrentMoveIndex = 0;
-	DBAdapter database;
 
 	private static final String WHITE = "a", BLACK = "b", ENPASSANT = "c", NOPIECE = "d", WPAWN = "e", WROOK = "f",
 			WBISHOP = "g", WKNIGHT = "h", WKING = "i", WQUEEN = "j", BPAWN = "k", BROOK = "l", BBISHOP = "m",
 			BKNIGHT = "n", BKING = "o", BQUEEN = "p";
 
-	private static final int PIECE = 0, ROW = 1, COLUMN = 2, OLDROW = 3, OLDCOLUMN = 4, CASTLE = 5;
-
-	public PositionHashFactory(Context context, Chessboard board) {
+	public PositionHashFactory(Chessboard board) {
 		mChessboard = board;
-		database = new DBAdapter(context);
-		database.open();
-		database.newPositionHashFactory();
 	}
-
-	public PositionHashFactory(Context context, Chessboard board, Cursor oldHashes) {
-		mChessboard = board;
-		database = new DBAdapter(context);
-		database.open();
-		while (mHashedPositions.length < oldHashes.getCount()) {
-			expandArray(mHashedPositions);
-		}
-		int i = 0;
-		int columnIndex = oldHashes.getColumnIndex(DBAdapter.HASH);
-		while (oldHashes.moveToNext()) {
-			mHashedPositions[i] = oldHashes.getString(columnIndex);
-			i++;
-		}
+	
+	public int getCurrentMovesIndex(){
+		return mCurrentMoveIndex;
 	}
 
 	public void insertMove(Chessboard board, Chesspiece piece, int row, int column, int oldRow, int oldColumn,
-			Chesspiece captured, int flag) {
+			Chesspiece captured, int flag, boolean check, boolean checkmate, Chesspiece other) {
+		
 		StringBuilder builder = new StringBuilder();
-		Chesspiece other;
-		boolean otherPossible = false;
-		if (!(piece instanceof King) && !(piece instanceof Pawn)) {
-			loop: for (int i = 0; i < board.getMaxRows(); i++) {
-				for (int j = 0; j < board.getMaxColumns(); j++) {
-					other = board.getPieceAt(i, j);
-					if (other != null && other.getColor() == piece.getColor() && other.sameClass(piece)
-							&& other.legalMoves()[row][column]) {
-						otherPossible = true;
-						break loop;
-					}
-				}
-			}
-		}
+		
 		if (piece instanceof Pawn) {
 			if (captured != null) {
 				builder.append(translateColumn(oldColumn));
 				builder.append("x");
 			}
 			builder.append(translateColumn(column));
-			builder.append(translateColumn(row));
+			builder.append(translateRow(row));
 			if (flag != Chessboard.NO_PROMOTION) {
 				switch (flag) {
 				case Chessboard.QUEEN:
 					builder.append("Q");
+					break;
 				case Chessboard.KNIGHT:
 					builder.append("N");
+					break;
 				case Chessboard.ROOK:
 					builder.append("R");
+					break;
 				case Chessboard.BISHOP:
 					builder.append("B");
+					break;
 				}
+			}
+			if (check) {
+				builder.append("+");
+			} else if (checkmate) {
+				builder.append("#");
+			}
+			mMoves[mCurrentMoveIndex++] = builder.toString();
+			return;
+		} else if (piece instanceof Rook) {
+			builder.append("R");
+			if (other != null) {
+				if (oldRow == other.getRow()) {
+					builder.append(translateColumn(oldColumn));
+				} else {
+					builder.append(translateRow(oldRow));
+				}
+			}
+			if (captured != null) {
+				builder.append("x");
+			}
+			builder.append(translateColumn(column));
+			builder.append(translateRow(row));
+			if (check) {
+				builder.append("+");
+			} else if (checkmate) {
+				builder.append("#");
+			}
+			mMoves[mCurrentMoveIndex++] = builder.toString();
+			return;
+		} else if (piece instanceof Knight) {
+			builder.append("N");
+			if (other != null) {
+				if (oldRow == other.getRow()) {
+					builder.append(translateColumn(oldColumn));
+				} else {
+					builder.append(translateRow(oldRow));
+				}
+			}
+			if (captured != null) {
+				builder.append("x");
+			}
+			builder.append(translateColumn(column));
+			builder.append(translateRow(row));
+			if (check) {
+				builder.append("+");
+			} else if (checkmate) {
+				builder.append("#");
+			}
+			mMoves[mCurrentMoveIndex++] = builder.toString();
+			return;
+		} else if (piece instanceof Bishop) {
+			builder.append("B");
+			if (other != null) {
+				if (oldRow == other.getRow()) {
+					builder.append(translateColumn(oldColumn));
+				} else {
+					builder.append(translateRow(oldRow));
+				}
+			}
+			if (captured != null) {
+				builder.append("x");
+			}
+			builder.append(translateColumn(column));
+			builder.append(translateRow(row));
+			if (check) {
+				builder.append("+");
+			} else if (checkmate) {
+				builder.append("#");
+			}
+			mMoves[mCurrentMoveIndex++] = builder.toString();
+			return;
+		} else if (piece instanceof Queen) {
+			builder.append("Q");
+			if (other != null) {
+				if (oldRow == other.getRow()) {
+					builder.append(translateColumn(oldColumn));
+				} else {
+					builder.append(translateRow(oldRow));
+				}
+			}
+			if (captured != null) {
+				builder.append("x");
+			}
+			builder.append(translateColumn(column));
+			builder.append(translateRow(row));
+			if (check) {
+				builder.append("+");
+			} else if (checkmate) {
+				builder.append("#");
+			}
+			mMoves[mCurrentMoveIndex++] = builder.toString();
+			return;
+		} else if (piece instanceof King) {
+			if (column - oldColumn == 2) {
+				builder.append("O-O");
+				mMoves[mCurrentMoveIndex++] = builder.toString();
+				return;
+			} else if (column - oldColumn == -2) {
+				builder.append("O-O-O");
+				mMoves[mCurrentMoveIndex++] = builder.toString();
+				return;
+			}
+			builder.append("K");
+			if (captured != null) {
+				builder.append("x");
+			}
+			builder.append(translateColumn(column));
+			builder.append(translateRow(row));
+			if (check) {
+				builder.append("+");
+			} else if (checkmate) {
+				builder.append("#");
 			}
 			mMoves[mCurrentMoveIndex++] = builder.toString();
 			return;
@@ -118,57 +202,16 @@ public class PositionHashFactory {
 		return "";
 	}
 
-	/**
-	 * Rebuilds the last hashed position on this {@link Chessboard}
-	 * 
-	 * @param board
-	 *            The board where the rebuilding should occur
-	 */
-	public void rebuildPosition(Chessboard board) {
-		// TODO klokke?
-		Object[] parameters = new Object[6];
-		String hash;
-		// TODO promotion will not work here
-		for (int k = 1; k <= mCurrentHashIndex; k++) {
-			hash = mHashedPositions[k];
-			for (int i = 0; i < board.getMaxRows(); i++) {
-				for (int j = 0; j < board.getMaxColumns(); j++) {
-					if (!("" + hash.charAt(i * 8 + j)).equals(getHashValue(board.getPieceAt(i, j)))) {
-						if (board.getPieceAt(i, j) != null && !(board.getPieceAt(i, j) instanceof EnPassant)) {
-							/*
-							 * Special cases where we don't want to select rook
-							 * if it's a castle move
-							 */
-							if (parameters[PIECE] == null || parameters[PIECE] instanceof Rook) {
-								parameters[PIECE] = board.getPieceAt(i, j);
-							}
-							parameters[OLDROW] = i;
-							parameters[OLDCOLUMN] = j;
-						} else if (!(board.getPieceAt(i, j) instanceof EnPassant)) {
-							parameters[ROW] = i;
-							parameters[COLUMN] = j;
-						}
-					}
-				}// columns
-			}// rows
-			move(board, parameters);
-		}// hashes
-	}
-
-	private void move(Chessboard board, Object[] parameters) {
-		boolean castle = (parameters[PIECE] instanceof King && Math.abs((Integer) parameters[OLDCOLUMN]
-				- (Integer) parameters[COLUMN]) == 2);
-
-		board.move((Chesspiece) parameters[PIECE], (Integer) parameters[ROW], (Integer) parameters[COLUMN],
-				(Integer) parameters[OLDROW], (Integer) parameters[OLDCOLUMN], castle);
-
-		for (int i = 0; i < parameters.length; i++) {
-			parameters[i] = null;
-		}
-	}
-
 	public String getMoves() {
-		return "a";// TODO
+		StringBuilder builder = new StringBuilder();
+		for (int i = 0; i < mCurrentMoveIndex; i++) {
+			builder.append(mMoves[i] + " ");
+		}
+		return builder.toString();
+	}
+	
+	public String[] getMovesArray(){
+		return mMoves;
 	}
 
 	/**
@@ -193,7 +236,6 @@ public class PositionHashFactory {
 			expandArray(mHashedPositions);
 		}
 		mHashedPositions[mCurrentHashIndex++] = builder.toString();
-		database.insertHash(builder.toString());
 	}
 
 	/**

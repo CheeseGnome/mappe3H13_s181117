@@ -14,6 +14,7 @@ import android.content.Context;
 public class Chessboard {
 
 	public static final int NO_PROMOTION = -1, QUEEN = 0, ROOK = 1, BISHOP = 2, KNIGHT = 3;
+	public static final int CHECKMATE = 0, OTHERGAMEOVER = 1, GAMENOTOVER = 2;
 
 	private Chesspiece[][] mChessboard;
 	private Context mContext;
@@ -62,7 +63,7 @@ public class Chessboard {
 		Chesspiece.context = context;
 		Chesspiece.chessboard = this;
 		mChessboard = createChessboard();
-		mPositionHashFactory = new PositionHashFactory(mContext, this);
+		mPositionHashFactory = new PositionHashFactory(this);
 	}
 
 	/**
@@ -340,6 +341,23 @@ public class Chessboard {
 		mMoving = moving;
 	}
 
+	private Chesspiece otherPieceCanMoveTo(Chesspiece piece, int row, int column) {
+		Chesspiece other = null;
+		if (!(piece instanceof King) && !(piece instanceof Pawn)) {
+			loop: for (int i = 0; i < getMaxRows(); i++) {
+				for (int j = 0; j < getMaxColumns(); j++) {
+					other = getPieceAt(i, j);
+					if (other != null && other.getColor() == piece.getColor() && other.sameClass(piece)
+							&& !other.equals(piece) && other.legalMoves()[row][column]) {
+						break loop;
+					}
+					other = null;
+				}
+			}
+		}
+		return other;
+	}
+
 	public void setActivity(GameActivity activity) {
 		mActivity = activity;
 	}
@@ -389,6 +407,7 @@ public class Chessboard {
 			mActivity.rotate();
 		}
 		boolean incrementCount = !(piece instanceof Pawn);
+		Chesspiece other = otherPieceCanMoveTo(piece, row, column);
 		// Kill En-Passant
 		if (mChessboard[row][column] != null && mChessboard[row][column].getColor() == Chesspiece.EN_PASSANT) {
 			mChessboard[mEnPassant.getPawn().getRow()][mEnPassant.getPawn().getColumn()] = null;
@@ -408,14 +427,14 @@ public class Chessboard {
 			mActivity.capturePiece(captured);
 		}
 		mChessboard[row][column] = piece;
-
+		int flag = mPromotionFlag;
 		if (mPromotionFlag != NO_PROMOTION) {
 			mChessboard[row][column] = getPieceByFlag(mPromotionFlag, piece.getColor(), row, column);
 			mPromotionFlag = NO_PROMOTION;
 		}
 		getKing(piece.getColor()).setInCheck(false);
 		mActivity.setCheckText(piece.getColor(), PlayerFrame.NO_CHECK);
-		boolean gameOver = checkForGameEnd(piece.getColor());
+		int status = checkForGameEnd(piece.getColor());
 
 		if (!firstMove && !castle) {
 			mChangeClockColor = true;
@@ -424,7 +443,7 @@ public class Chessboard {
 			startClock(mStartTime);
 		}
 		mMoving = false;
-		if (!gameOver && !castle) {
+		if (status == GAMENOTOVER && !castle) {
 			mActivity.switchPlayer();
 			if (incrementCount) {
 				mMoveCount++;
@@ -439,6 +458,20 @@ public class Chessboard {
 			}
 		}
 		mActivity.setDrawButtonEnabled(true);
+		boolean check = false, checkmate = false;
+		int color = Chesspiece.WHITE;
+		if (piece.getColor() == Chesspiece.WHITE) {
+			color = Chesspiece.BLACK;
+		}
+		if (status == CHECKMATE) {
+			checkmate = true;
+		} else if (getKing(color).isInCheck()) {
+			check = true;
+		}
+		if (!castle) {
+			mPositionHashFactory.insertMove(this, piece, row, column, oldRow, oldColumn, captured, flag, check,
+					checkmate, other);
+		}
 	}
 
 	/**
@@ -494,8 +527,8 @@ public class Chessboard {
 	 * @param color
 	 *            The color who just moved
 	 */
-	private boolean checkForGameEnd(int color) {
-		boolean gameOver = false;
+	private int checkForGameEnd(int color) {
+		int status = GAMENOTOVER;
 		int enemy;
 		if (color == Chesspiece.WHITE) {
 			enemy = Chesspiece.BLACK;
@@ -512,11 +545,11 @@ public class Chessboard {
 		}
 
 		if (!hasLegalMoves(enemy)) {
-			gameOver = true;
 			mStopClock = true;
 			DBAdapter database = new DBAdapter(mContext);
 			database.open();
 			if (inCheck) {
+				status = CHECKMATE;
 				mActivity.setCheckText(enemy, PlayerFrame.CHECKMATE);
 				mActivity.setCheckText(color, PlayerFrame.WINNER);
 				String won;
@@ -529,6 +562,7 @@ public class Chessboard {
 						won, new Date());
 				mView.endTheGame(ChessboardView.WINCHECKMATE, color);
 			} else {
+				status = OTHERGAMEOVER;
 				database.insertGameResult(mView.getWhiteName(), mView.getBlackName(), mPositionHashFactory.getMoves(),
 						DBAdapter.DRAW_STALEMATE, new Date());
 				mView.endTheGame(ChessboardView.DRAWSTALEMATE, color);
@@ -540,7 +574,7 @@ public class Chessboard {
 		mPositionHashFactory.hashPosition(color);
 		if (mPositionHashFactory.drawByRepetition()) {
 			mStopClock = true;
-			gameOver = true;
+			status = OTHERGAMEOVER;
 			DBAdapter database = new DBAdapter(mContext);
 			database.open();
 			database.insertGameResult(mView.getWhiteName(), mView.getBlackName(), mPositionHashFactory.getMoves(),
@@ -550,7 +584,7 @@ public class Chessboard {
 			mActivity.setCheckText(enemy, PlayerFrame.DRAW);
 		}
 
-		return gameOver;
+		return status;
 		/*
 		 * TODO lag denne Sjekk: 50 trekk uten sjakk/fanget brikke
 		 */

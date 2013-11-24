@@ -64,5 +64,7 @@
     <string name="txt_draw_offer">has offered you a draw</string>
     <string name="btn_accept">Accept</string>
     <string name="btn_decline">Decline</string>
+    <string name="btn_annotations">Annotations</string>
+    <string name="btn_view_board">View board</string>
 
 </resources>

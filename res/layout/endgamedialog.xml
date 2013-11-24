@@ -40,5 +40,29 @@
             android:layout_weight="1.0"
             android:text="@string/btn_main_menu" />
     </TableRow>
+    
+    <TableRow
+        android:id="@+id/tableRow3"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:gravity="center_horizontal"
+        style="android:attr/buttonBarStyle" >
+
+        <Button
+            android:id="@+id/btn_view_annotations"
+            style="android:attr/buttonBarStyle"
+            android:layout_width="0.0dip"
+            android:layout_height="55dp"
+            android:layout_weight="1.0"
+            android:text="@string/btn_annotations" />
+
+        <Button
+            android:id="@+id/btn_view_board"
+            style="android:attr/buttonBarStyle"
+            android:layout_width="0.0dip"
+            android:layout_height="55dp"
+            android:layout_weight="1.0"
+            android:text="@string/btn_view_board" />
+    </TableRow>
 
 </TableLayout>

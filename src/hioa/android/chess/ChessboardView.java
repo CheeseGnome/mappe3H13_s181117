@@ -1,7 +1,11 @@
 package hioa.android.chess;
 
+import java.util.Date;
+
+import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.drawable.BitmapDrawable;
@@ -33,6 +37,8 @@ public class ChessboardView extends TableLayout {
 	private int mOldRow = -1, mOldColumn = -1, mRow = -1, mColumn = -1;
 	public static final int DRAWREPETITION = 0, DRAWCLAIMED = 1, DRAWAGREED = 2, WINCHECKMATE = 3, WINRESIGN = 4,
 			DRAWSTALEMATE = 5, WINTIMEOUT = 6;
+
+	private static final long VIEWBOARDTIME = 3 * 1000;
 	/**
 	 * The currently selected chesspiece.
 	 * <p>
@@ -199,6 +205,7 @@ public class ChessboardView extends TableLayout {
 		((Button) contentView.findViewById(R.id.btn_new_game)).setOnClickListener(new OnClickListener() {
 			@Override
 			public void onClick(View v) {
+				setButtonsEnabled(true);
 				mChessboard = new Chessboard(mContext);
 				mChessboard.setTime(mActivity.getStartTime(), mActivity.getBonusTime());
 				mChessboard.setChessboardView(view);
@@ -207,6 +214,77 @@ public class ChessboardView extends TableLayout {
 				mActivity.newGame(mChessboard);
 				placePieces();
 				dialog.dismiss();
+			}
+		});
+		((Button) contentView.findViewById(R.id.btn_view_annotations)).setOnClickListener(new OnClickListener() {
+			@Override
+			public void onClick(View v) {
+				final AlertDialog annotations = new AlertDialog.Builder(mActivity).create();
+				annotations.setTitle(R.string.btn_annotations);
+				StringBuilder builder = new StringBuilder();
+				String[] moves = mChessboard.mPositionHashFactory.getMovesArray();
+				
+				/*
+				 * Don't waste your time trying to understand the string formatting that is done here.
+				 * It sort of works.
+				 */
+				int moveNr = -1;
+				String space1 = "  ";
+				String space2 = " ";
+				String space3 = "";
+				String white = "";
+				int spaces = 0;
+				for (int i = 0; i < mChessboard.mPositionHashFactory.getCurrentMovesIndex(); i++) {
+					if (i % 2 == 0) {
+						moveNr = (i / 2) + 1;
+						if (moveNr == 10) {
+							space1 = "";
+							space2 = "";
+						}
+						// builder.append(String.format("%-10s%s",space + moveNr
+						// + ".",room + moves[i]));
+						white = moves[i];
+					} else {
+						spaces = 8 - white.length();
+						for(;spaces >= 0; spaces--){
+							space3 += " ";
+						}
+						builder.append(String.format("%-10s%-10s%s", space1 + moveNr + ".", space2 + white,space3 + moves[i]
+								+ "\n"));
+						space3 = "";
+						// builder.append(String.format("%10s%s",moves[i],
+						// "\n"));
+					}
+				}
+				annotations.setMessage(builder.toString());
+				annotations.setButton(AlertDialog.BUTTON_NEUTRAL, (CharSequence) mResources.getString(R.string.btn_ok),
+						new DialogInterface.OnClickListener() {
+							@Override
+							public void onClick(DialogInterface dialog, int which) {
+								annotations.dismiss();
+							}
+
+						});
+				annotations.show();
+			}
+		});
+		((Button) contentView.findViewById(R.id.btn_view_board)).setOnClickListener(new OnClickListener() {
+			@Override
+			public void onClick(View v) {
+				setButtonsEnabled(false);
+				dialog.hide();
+				new Thread(new Runnable() {
+					public void run() {
+						Date now = new Date();
+						while (new Date().getTime() - now.getTime() < VIEWBOARDTIME) {
+						}
+						mActivity.runOnUiThread(new Runnable() {
+							public void run() {
+								dialog.show();
+							}
+						});
+					}
+				}).start();
 			}
 		});
 
@@ -252,6 +330,14 @@ public class ChessboardView extends TableLayout {
 		dialog.setCanceledOnTouchOutside(false);
 		dialog.show();
 		mActivity.unrotate();
+	}
+
+	private void setButtonsEnabled(boolean enabled) {
+		for (int i = 0; i < mChessboard.getMaxRows(); i++) {
+			for (int j = 0; j < mChessboard.getMaxColumns(); j++) {
+				mButtons[i][j].setEnabled(enabled);
+			}
+		}
 	}
 
 	/**
@@ -469,7 +555,7 @@ public class ChessboardView extends TableLayout {
 	 */
 	private void setLegalMovesHint() {
 		int id = -1;
-		//Performance
+		// Performance
 		boolean legal;
 		for (int i = 0; i < mChessboard.getMaxRows(); i++) {
 			for (int j = 0; j < mChessboard.getMaxColumns(); j++) {
