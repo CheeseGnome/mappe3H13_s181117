@@ -32,6 +32,11 @@ public final class R {
         /**  Default screen margins, per the Android Design guidelines. 
 
          Customize dimensions originally defined in res/values/dimens.xml (such as
+         screen margins) for sw600dp devices (e.g. 7" tablets) here.
+
+    
+
+         Customize dimensions originally defined in res/values/dimens.xml (such as
          screen margins) for sw720dp devices (e.g. 10" tablets) in landscape here.
     
          */
@@ -220,6 +225,7 @@ public final class R {
         public static final int btn_annotations=0x7f09003f;
         public static final int btn_cancel=0x7f090027;
         public static final int btn_claim_draw=0x7f090038;
+        public static final int btn_copy=0x7f090041;
         public static final int btn_decline=0x7f09003e;
         public static final int btn_main_menu=0x7f09000b;
         public static final int btn_new_game=0x7f09000a;
@@ -250,6 +256,7 @@ public final class R {
         public static final int title_win_checkmate=0x7f09000d;
         public static final int title_win_resign=0x7f09000f;
         public static final int title_win_timeout=0x7f09000e;
+        public static final int toast_annotations=0x7f090042;
         public static final int txt_black_move=0x7f090035;
         public static final int txt_black_name=0x7f09001b;
         public static final int txt_bonus=0x7f090023;

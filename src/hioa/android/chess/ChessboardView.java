@@ -4,6 +4,8 @@ import java.util.Date;
 
 import android.app.AlertDialog;
 import android.app.Dialog;
+import android.content.ClipData;
+import android.content.ClipboardManager;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.res.Resources;
@@ -17,6 +19,7 @@ import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.TableLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 /**
  * A visual representation of a chessboard based on the chessboardlayout.xml
@@ -221,12 +224,12 @@ public class ChessboardView extends TableLayout {
 			public void onClick(View v) {
 				final AlertDialog annotations = new AlertDialog.Builder(mActivity).create();
 				annotations.setTitle(R.string.btn_annotations);
-				StringBuilder builder = new StringBuilder();
+				final StringBuilder builder = new StringBuilder();
 				String[] moves = mChessboard.mPositionHashFactory.getMovesArray();
-				
+
 				/*
-				 * Don't waste your time trying to understand the string formatting that is done here.
-				 * It sort of works.
+				 * Don't waste your time trying to understand the string
+				 * formatting that is done here. It sort of works.
 				 */
 				int moveNr = -1;
 				String space1 = "  ";
@@ -241,27 +244,39 @@ public class ChessboardView extends TableLayout {
 							space1 = "";
 							space2 = "";
 						}
-						// builder.append(String.format("%-10s%s",space + moveNr
-						// + ".",room + moves[i]));
 						white = moves[i];
 					} else {
 						spaces = 8 - white.length();
-						for(;spaces >= 0; spaces--){
+						for (; spaces >= 0; spaces--) {
 							space3 += " ";
 						}
-						builder.append(String.format("%-10s%-10s%s", space1 + moveNr + ".", space2 + white,space3 + moves[i]
-								+ "\n"));
+						builder.append(String.format("%-10s%-10s%s", space1 + moveNr + ".", space2 + white, space3
+								+ moves[i] + "\n"));
 						space3 = "";
-						// builder.append(String.format("%10s%s",moves[i],
-						// "\n"));
 					}
 				}
+				//White ends the game
+				if(mChessboard.mPositionHashFactory.getCurrentMovesIndex() % 2 != 0){
+					builder.append(String.format("%-10s%s", space1 + moveNr + ".", space2 + white));
+				}
 				annotations.setMessage(builder.toString());
-				annotations.setButton(AlertDialog.BUTTON_NEUTRAL, (CharSequence) mResources.getString(R.string.btn_ok),
-						new DialogInterface.OnClickListener() {
+				annotations.setButton(AlertDialog.BUTTON_POSITIVE,
+						(CharSequence) mResources.getString(R.string.btn_ok), new DialogInterface.OnClickListener() {
 							@Override
 							public void onClick(DialogInterface dialog, int which) {
 								annotations.dismiss();
+							}
+
+						});
+				annotations.setButton(AlertDialog.BUTTON_NEUTRAL,
+						(CharSequence) mResources.getString(R.string.btn_copy), new DialogInterface.OnClickListener() {
+							@Override
+							public void onClick(DialogInterface dialog, int which) {
+								ClipboardManager clipboard = (ClipboardManager) mContext.getSystemService(Context.CLIPBOARD_SERVICE);
+								ClipData clip = ClipData.newPlainText("Chess annotation", builder.toString());
+								clipboard.setPrimaryClip(clip);
+								Toast.makeText(mContext, mContext.getString(R.string.toast_annotations),
+										Toast.LENGTH_LONG).show();
 							}
 
 						});

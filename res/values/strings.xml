@@ -66,5 +66,7 @@
     <string name="btn_decline">Decline</string>
     <string name="btn_annotations">Annotations</string>
     <string name="btn_view_board">View board</string>
+    <string name="btn_copy">Copy to clipboard</string>
+    <string name="toast_annotations">Annotations have been copied to clipboard</string>
 
 </resources>
