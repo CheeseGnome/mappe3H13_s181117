@@ -2,6 +2,7 @@ package hioa.android.chess;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
+
 import android.annotation.SuppressLint;
 import android.content.ContentValues;
 import android.content.Context;
@@ -57,6 +58,25 @@ public class DBAdapter {
 	public DBAdapter open() throws SQLException {
 		database = dbHelper.getWritableDatabase();
 		return this;
+	}
+	
+	public boolean hasPositionHashFactory(){
+		Cursor cursor = database.query(TABLE_POSITION, new String[]{HASH}, null, null, null, null, null, "1");
+		return cursor.getCount() == 1;
+	}
+
+	public void newPositionHashFactory() {
+		database.delete(TABLE_POSITION, null, null);
+	}
+
+	public void insertHash(String hash) {
+		ContentValues values = new ContentValues();
+		values.put(HASH, hash);
+		database.insert(TABLE_POSITION, null, values);
+	}
+
+	public Cursor getHashes() {
+		return database.query(TABLE_POSITION, new String[] { HASH }, null, null, null, null, null, null);
 	}
 
 	/**

@@ -33,6 +33,11 @@ public class EnPassant extends Chesspiece {
 		}
 		mPawn = pawn;
 	}
+	
+	@Override
+	public boolean sameClass(Chesspiece piece){
+		return (piece instanceof EnPassant);
+	}
 
 	/**
 	 * Returns the {@link Pawn} that created this EnPassant opportunity

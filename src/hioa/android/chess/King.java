@@ -18,6 +18,11 @@ public class King extends Chesspiece {
 	public void setInCheck(boolean inCheck) {
 		mInCheck = inCheck;
 	}
+	
+	@Override
+	public boolean sameClass(Chesspiece piece){
+		return (piece instanceof King);
+	}
 
 	@Override
 	public boolean move(int row, int column) {

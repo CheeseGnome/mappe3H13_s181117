@@ -51,6 +51,8 @@ public abstract class Chesspiece {
 	 */
 	public abstract boolean threatensPosition(int row, int column);
 
+	public abstract boolean sameClass(Chesspiece piece);
+	
 	public int getColor() {
 		return mColor;
 	}

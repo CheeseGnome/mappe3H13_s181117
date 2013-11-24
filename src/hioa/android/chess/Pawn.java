@@ -22,6 +22,11 @@ public class Pawn extends Chesspiece {
 	}
 
 	@Override
+	public boolean sameClass(Chesspiece piece){
+		return (piece instanceof Pawn);
+	}
+	
+	@Override
 	public boolean move(int row, int column) {
 		if (legalMoves()[row][column] == true) {
 			boolean placeEnPassant = Math.abs(row - getRow()) == 2;

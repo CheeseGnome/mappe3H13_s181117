@@ -15,6 +15,11 @@ public class Knight extends Chesspiece {
 	}
 	
 	@Override
+	public boolean sameClass(Chesspiece piece){
+		return (piece instanceof Knight);
+	}
+	
+	@Override
 	public boolean move(int row, int column) {
 		if (legalMoves()[row][column] == true) {
 			int oldRow = getRow();

@@ -14,6 +14,11 @@ public class Queen extends Chesspiece {
 		setRow(row);
 		setColumn(column);
 	}
+	
+	@Override
+	public boolean sameClass(Chesspiece piece){
+		return (piece instanceof Queen);
+	}
 
 	@Override
 	public boolean move(int row, int column) {

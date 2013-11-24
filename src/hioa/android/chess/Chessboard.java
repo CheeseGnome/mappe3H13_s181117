@@ -62,7 +62,7 @@ public class Chessboard {
 		Chesspiece.context = context;
 		Chesspiece.chessboard = this;
 		mChessboard = createChessboard();
-		mPositionHashFactory = new PositionHashFactory(this);
+		mPositionHashFactory = new PositionHashFactory(mContext, this);
 	}
 
 	/**

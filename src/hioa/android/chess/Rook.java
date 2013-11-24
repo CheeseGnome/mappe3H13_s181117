@@ -19,6 +19,11 @@ public class Rook extends Chesspiece {
 		setRow(row);
 		setColumn(column);
 	}
+	
+	@Override
+	public boolean sameClass(Chesspiece piece){
+		return (piece instanceof Rook);
+	}
 
 	@Override
 	public boolean threatensPosition(int row, int column) {
