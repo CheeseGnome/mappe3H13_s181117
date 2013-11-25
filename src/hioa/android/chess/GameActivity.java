@@ -1,22 +1,18 @@
 package hioa.android.chess;
 
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.ObjectOutput;
-import java.io.ObjectOutputStream;
 import java.io.Serializable;
 import java.util.Date;
 
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.AlertDialog;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.SharedPreferences.Editor;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -37,7 +33,7 @@ import android.widget.TextView;
 
 public class GameActivity extends Activity implements Serializable {
 
-	private static final String FILENAME = "local_chessgame.game";
+	private static final String FILENAME = "local_chessgame.xml";
 
 	/**
 	 * 
@@ -206,6 +202,7 @@ public class GameActivity extends Activity implements Serializable {
 
 	@Override
 	protected void onResume() {
+		loadGame();
 		loadPreferences();
 		super.onResume();
 	}
@@ -324,16 +321,7 @@ public class GameActivity extends Activity implements Serializable {
 
 	@Override
 	protected void onPause() {
-//		try {
-//			File file = new File(getFilesDir(), "");
-//			file.getParentFile().mkdirs();
-//			file.createNewFile();
-//			ObjectOutput out = new ObjectOutputStream(new FileOutputStream(file + File.separator + FILENAME));
-//			out.writeObject(this);
-//			out.close();
-//		} catch (IOException ioe) {
-//			Log.d("ZZZ", "IOException");
-//		}
+		Serializer.objectToString(this);
 		super.onPause();
 	}
 
@@ -385,6 +373,21 @@ public class GameActivity extends Activity implements Serializable {
 			return true;
 		}
 		return super.onOptionsItemSelected(item);
+	}
+
+	private void saveGame() {
+		SharedPreferences settings = getSharedPreferences(FILENAME, Context.MODE_PRIVATE);
+		Editor editor = settings.edit();
+		editor.putString("gameActivity", Serializer.objectToString(this));
+		editor.commit();
+	}
+//TODO fjern disse?
+	private void loadGame() {
+		SharedPreferences settings = getSharedPreferences(FILENAME, Context.MODE_PRIVATE);
+		String game = settings.getString("gameActivity", "");
+		if (!game.equals("")) {
+//			this = Serializer.stringToObject(game);
+		}
 	}
 
 	/**
