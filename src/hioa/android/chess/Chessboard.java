@@ -341,7 +341,27 @@ public class Chessboard {
 		mMoving = moving;
 	}
 
-	private Chesspiece otherPieceCanMoveTo(Chesspiece piece, int row, int column) {
+	protected Chesspiece getPieceOnRow(Chesspiece piece, int row) {
+		for (int i = 0; i < getMaxColumns(); i++) {
+			if (mChessboard[row][i] != null && mChessboard[row][i].getColor() == piece.getColor()
+					&& mChessboard[row][i].sameClass(piece)) {
+				return mChessboard[row][i];
+			}
+		}
+		return null;
+	}
+
+	protected Chesspiece getPieceOnColumn(Chesspiece piece, int column) {
+		for (int i = 0; i < getMaxRows(); i++) {
+			if (mChessboard[i][column] != null && mChessboard[i][column].getColor() == piece.getColor()
+					&& mChessboard[i][column].sameClass(piece)) {
+				return mChessboard[i][column];
+			}
+		}
+		return null;
+	}
+
+	protected Chesspiece otherPieceCanMoveTo(Chesspiece piece, int row, int column) {
 		Chesspiece other = null;
 		if (!(piece instanceof King) && !(piece instanceof Pawn)) {
 			loop: for (int i = 0; i < getMaxRows(); i++) {

@@ -21,8 +21,11 @@ public class PositionHashFactory {
 			WBISHOP = "g", WKNIGHT = "h", WKING = "i", WQUEEN = "j", BPAWN = "k", BROOK = "l", BBISHOP = "m",
 			BKNIGHT = "n", BKING = "o", BQUEEN = "p";
 
-	// Just making sure that DRAW doees not equal the color for white or black
-	public static final int DRAW = Chesspiece.WHITE + Chesspiece.BLACK + 1;
+	/*
+	 * It is extremely important that this does not equal Chesspiece.WHITE or
+	 * Chesspiece.BLACK
+	 */
+	public static final int DRAW = Integer.MAX_VALUE;
 
 	public PositionHashFactory(Chessboard board) {
 		mChessboard = board;
@@ -47,6 +50,95 @@ public class PositionHashFactory {
 			mMoves[mCurrentMoveIndex++] = "½–½";
 			return;
 		}
+	}
+
+	/**
+	 * Performs a move based on the chess annotation for the move and the color
+	 * that moved
+	 * 
+	 * @param move
+	 *            The chess annotation for the move to perform
+	 * @param color
+	 *            The color to move
+	 */
+	private void performMove(String move, int color) {
+		move = move.replaceAll("x", "").replaceAll("+", "").replaceAll("#", "");
+		char letter = move.charAt(0);
+		Chesspiece piece;
+		Chesspiece sameClass = null;
+		
+		if (letter == 'R') {
+			sameClass = new Rook(color, -1, -1);
+		}
+		else if (letter == 'N') {
+			sameClass = new Knight(color, -1, -1);
+		}
+		else if (letter == 'B') {
+			sameClass = new Bishop(color, -1, -1);
+		}
+		else if (letter == 'Q') {
+			sameClass = new Queen(color, -1, -1);
+		}
+		
+		if (sameClass != null) {
+			letter = move.charAt(2);
+			if (Character.isDigit(letter)) {
+				piece = mChessboard.otherPieceCanMoveTo(sameClass, translateRow(letter),
+						translateColumn(move.charAt(1)));
+				piece.move(translateRow(letter), translateColumn(move.charAt(1)));
+			} else if (Character.isDigit(move.charAt(1))) {
+				piece = mChessboard.getPieceOnRow(sameClass, translateRow(move.charAt(1)));
+				piece.move(translateRow(letter), translateColumn(move.charAt(1)));
+			} else {
+				piece = mChessboard.getPieceOnColumn(sameClass, translateColumn(move.charAt(1)));
+				piece.move(translateRow(letter), translateColumn(move.charAt(1)));
+			}
+		}
+
+		else if (letter == 'K') {
+
+		}
+
+		else if (letter == 'O') {
+			// castle
+		}
+
+		else {
+			// TODO promotering
+		}
+
+	}
+
+	private int translateRow(char row) {
+		int result;
+		try {
+			result = 8 - Integer.parseInt("" + row);
+		} catch (NumberFormatException nfe) {
+			result = -1;
+		}
+		return result;
+	}
+
+	private int translateColumn(char column) {
+		int result = -1;
+		if (column == 'a') {
+			result = 0;
+		} else if (column == 'b') {
+			result = 1;
+		} else if (column == 'c') {
+			result = 2;
+		} else if (column == 'd') {
+			result = 3;
+		} else if (column == 'e') {
+			result = 4;
+		} else if (column == 'f') {
+			result = 5;
+		} else if (column == 'g') {
+			result = 6;
+		} else if (column == 'h') {
+			result = 7;
+		}
+		return result;
 	}
 
 	public void insertMove(Chessboard board, Chesspiece piece, int row, int column, int oldRow, int oldColumn,
@@ -96,7 +188,9 @@ public class PositionHashFactory {
 			mMoves[mCurrentMoveIndex] = builder.toString();
 			mCurrentMoveIndex += addToIndex;
 			return;
-		} else if (piece instanceof Rook) {
+		}
+
+		else if (piece instanceof Rook) {
 			builder.append("R");
 			if (other != null) {
 				if (oldRow == other.getRow()) {
@@ -118,7 +212,9 @@ public class PositionHashFactory {
 			mMoves[mCurrentMoveIndex] = builder.toString();
 			mCurrentMoveIndex += addToIndex;
 			return;
-		} else if (piece instanceof Knight) {
+		}
+
+		else if (piece instanceof Knight) {
 			builder.append("N");
 			if (other != null) {
 				if (oldRow == other.getRow()) {
@@ -140,7 +236,9 @@ public class PositionHashFactory {
 			mMoves[mCurrentMoveIndex] = builder.toString();
 			mCurrentMoveIndex += addToIndex;
 			return;
-		} else if (piece instanceof Bishop) {
+		}
+
+		else if (piece instanceof Bishop) {
 			builder.append("B");
 			if (other != null) {
 				if (oldRow == other.getRow()) {
@@ -162,7 +260,9 @@ public class PositionHashFactory {
 			mMoves[mCurrentMoveIndex] = builder.toString();
 			mCurrentMoveIndex += addToIndex;
 			return;
-		} else if (piece instanceof Queen) {
+		}
+
+		else if (piece instanceof Queen) {
 			builder.append("Q");
 			if (other != null) {
 				if (oldRow == other.getRow()) {
@@ -184,7 +284,9 @@ public class PositionHashFactory {
 			mMoves[mCurrentMoveIndex] = builder.toString();
 			mCurrentMoveIndex += addToIndex;
 			return;
-		} else if (piece instanceof King) {
+		}
+
+		else if (piece instanceof King) {
 			if (column - oldColumn == 2) {
 				builder.append("O-O");
 				mMoves[mCurrentMoveIndex] = builder.toString();
