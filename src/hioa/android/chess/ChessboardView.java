@@ -77,6 +77,13 @@ public class ChessboardView extends TableLayout{
 		placePieces();
 	}
 	
+	private void animateMove(int oldRow, int oldColumn, int row, int column){
+		//TODO flytt drawables til activity
+		//TODO lag en kopi av knappen, background til transparent og animer den bortover
+//		ImageButton copy = (ImageButton) mButtons[oldRow][oldColumn].clone();
+		mButtons[oldRow][oldColumn].getTranslationX();
+	}
+	
 	public void setLastMoveHint(int oldRow, int oldColumn, int row, int column){
 		mOldRow = oldRow;
 		mOldColumn = oldColumn;
