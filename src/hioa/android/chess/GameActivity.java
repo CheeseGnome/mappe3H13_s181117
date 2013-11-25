@@ -202,7 +202,7 @@ public class GameActivity extends Activity implements Serializable {
 
 	@Override
 	protected void onResume() {
-		loadGame();
+//		loadGame();
 		loadPreferences();
 		super.onResume();
 	}

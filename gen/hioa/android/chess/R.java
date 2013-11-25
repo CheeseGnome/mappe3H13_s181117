@@ -30,15 +30,13 @@ public final class R {
     }
     public static final class dimen {
         /**  Default screen margins, per the Android Design guidelines. 
-
-         Customize dimensions originally defined in res/values/dimens.xml (such as
-         screen margins) for sw720dp devices (e.g. 10" tablets) in landscape here.
-    
          */
         public static final int activity_horizontal_margin=0x7f070000;
         public static final int activity_vertical_margin=0x7f070001;
         public static final int captured_size=0x7f070003;
         public static final int img_king_size=0x7f070006;
+        public static final int standard_space_medium=0x7f070008;
+        public static final int standard_space_small=0x7f070007;
         public static final int tile_size=0x7f070002;
         public static final int txt_check_size=0x7f070004;
         public static final int txt_move_size=0x7f070005;
@@ -292,17 +290,6 @@ public final class R {
             res/values-vXX/styles.xml, while customizations related to
             backward-compatibility can go here.
         
-
-        Base application theme for API 11+. This theme completely replaces
-        AppBaseTheme from res/values/styles.xml on API 11+ devices.
-    
- API 11 theme customizations can go here. 
-
-        Base application theme for API 14+. This theme completely replaces
-        AppBaseTheme from BOTH res/values/styles.xml and
-        res/values-v11/styles.xml on API 14+ devices.
-    
- API 14 theme customizations can go here. 
          */
         public static final int AppBaseTheme=0x7f0a0000;
         /**  Application theme. 

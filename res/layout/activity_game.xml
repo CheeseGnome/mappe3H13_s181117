@@ -25,7 +25,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_above="@+id/chessboard"
-        android:layout_marginBottom="10dp" />
+        android:layout_marginBottom="@dimen/standard_space_medium" />
 
     <hioa.android.chess.ChessboardView
         android:id="@+id/chessboard"
@@ -39,13 +39,14 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_below="@+id/chessboard"
-        android:layout_marginTop="10dp" />
+        android:layout_marginTop="@dimen/standard_space_medium" />
 
     <Button
         android:id="@+id/btn_draw"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_below="@+id/whiteFrame"
+        android:layout_marginTop="@dimen/standard_space_small"
         android:text="@string/btn_offer_draw" >
     </Button>
 
