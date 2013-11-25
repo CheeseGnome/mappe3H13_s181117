@@ -21,19 +21,50 @@ public class PositionHashFactory {
 			WBISHOP = "g", WKNIGHT = "h", WKING = "i", WQUEEN = "j", BPAWN = "k", BROOK = "l", BBISHOP = "m",
 			BKNIGHT = "n", BKING = "o", BQUEEN = "p";
 
+	// Just making sure that DRAW doees not equal the color for white or black
+	public static final int DRAW = Chesspiece.WHITE + Chesspiece.BLACK + 1;
+
 	public PositionHashFactory(Chessboard board) {
 		mChessboard = board;
 	}
-	
-	public int getCurrentMovesIndex(){
+
+	public int getCurrentMovesIndex() {
 		return mCurrentMoveIndex;
+	}
+
+	public void insertGameResult(int winningColor) {
+		if (mCurrentMoveIndex == mMoves.length) {
+			expandArray(mMoves);
+		}
+		switch (winningColor) {
+		case Chesspiece.WHITE:
+			mMoves[mCurrentMoveIndex++] = "1-0";
+			return;
+		case Chesspiece.BLACK:
+			mMoves[mCurrentMoveIndex++] = "0-1";
+			return;
+		case DRAW:
+			mMoves[mCurrentMoveIndex++] = "½–½";
+			return;
+		}
 	}
 
 	public void insertMove(Chessboard board, Chesspiece piece, int row, int column, int oldRow, int oldColumn,
 			Chesspiece captured, int flag, boolean check, boolean checkmate, Chesspiece other) {
-		
+
+		if (mCurrentMoveIndex == mMoves.length) {
+			expandArray(mMoves);
+		}
+		int addToIndex = 1;
+		if (checkmate) {
+			// Game result is added before the final move if the game ends by
+			// checkmate
+			String result = mMoves[mCurrentMoveIndex - 1];
+			mMoves[mCurrentMoveIndex--] = result;
+			addToIndex++;
+		}
 		StringBuilder builder = new StringBuilder();
-		
+
 		if (piece instanceof Pawn) {
 			if (captured != null) {
 				builder.append(translateColumn(oldColumn));
@@ -62,7 +93,8 @@ public class PositionHashFactory {
 			} else if (checkmate) {
 				builder.append("#");
 			}
-			mMoves[mCurrentMoveIndex++] = builder.toString();
+			mMoves[mCurrentMoveIndex] = builder.toString();
+			mCurrentMoveIndex += addToIndex;
 			return;
 		} else if (piece instanceof Rook) {
 			builder.append("R");
@@ -83,7 +115,8 @@ public class PositionHashFactory {
 			} else if (checkmate) {
 				builder.append("#");
 			}
-			mMoves[mCurrentMoveIndex++] = builder.toString();
+			mMoves[mCurrentMoveIndex] = builder.toString();
+			mCurrentMoveIndex += addToIndex;
 			return;
 		} else if (piece instanceof Knight) {
 			builder.append("N");
@@ -104,7 +137,8 @@ public class PositionHashFactory {
 			} else if (checkmate) {
 				builder.append("#");
 			}
-			mMoves[mCurrentMoveIndex++] = builder.toString();
+			mMoves[mCurrentMoveIndex] = builder.toString();
+			mCurrentMoveIndex += addToIndex;
 			return;
 		} else if (piece instanceof Bishop) {
 			builder.append("B");
@@ -125,7 +159,8 @@ public class PositionHashFactory {
 			} else if (checkmate) {
 				builder.append("#");
 			}
-			mMoves[mCurrentMoveIndex++] = builder.toString();
+			mMoves[mCurrentMoveIndex] = builder.toString();
+			mCurrentMoveIndex += addToIndex;
 			return;
 		} else if (piece instanceof Queen) {
 			builder.append("Q");
@@ -146,16 +181,19 @@ public class PositionHashFactory {
 			} else if (checkmate) {
 				builder.append("#");
 			}
-			mMoves[mCurrentMoveIndex++] = builder.toString();
+			mMoves[mCurrentMoveIndex] = builder.toString();
+			mCurrentMoveIndex += addToIndex;
 			return;
 		} else if (piece instanceof King) {
 			if (column - oldColumn == 2) {
 				builder.append("O-O");
-				mMoves[mCurrentMoveIndex++] = builder.toString();
+				mMoves[mCurrentMoveIndex] = builder.toString();
+				mCurrentMoveIndex += addToIndex;
 				return;
 			} else if (column - oldColumn == -2) {
 				builder.append("O-O-O");
-				mMoves[mCurrentMoveIndex++] = builder.toString();
+				mMoves[mCurrentMoveIndex] = builder.toString();
+				mCurrentMoveIndex += addToIndex;
 				return;
 			}
 			builder.append("K");
@@ -169,7 +207,8 @@ public class PositionHashFactory {
 			} else if (checkmate) {
 				builder.append("#");
 			}
-			mMoves[mCurrentMoveIndex++] = builder.toString();
+			mMoves[mCurrentMoveIndex] = builder.toString();
+			mCurrentMoveIndex += addToIndex;
 			return;
 		}
 	}
@@ -209,8 +248,8 @@ public class PositionHashFactory {
 		}
 		return builder.toString();
 	}
-	
-	public String[] getMovesArray(){
+
+	public String[] getMovesArray() {
 		return mMoves;
 	}
 

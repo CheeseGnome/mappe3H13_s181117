@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <dimen name="activity_horizontal_margin">16dp</dimen>
+    <dimen name="activity_vertical_margin">16dp</dimen>
+    <dimen name="tile_size">39dp</dimen>
+    <dimen name="captured_size">21dp</dimen>
+    <dimen name="txt_check_size">35sp</dimen>
+    <dimen name="txt_move_size">25sp</dimen>
+    <dimen name="img_king_size">40dp</dimen>
+
+</resources>

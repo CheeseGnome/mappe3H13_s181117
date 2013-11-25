@@ -29,7 +29,7 @@ import android.widget.Toast;
  * @version 2013-11-23
  */
 
-public class ChessboardView extends TableLayout {
+public class ChessboardView extends TableLayout{
 
 	private Chessboard mChessboard;
 	private ImageButton[][] mButtons;
@@ -204,14 +204,13 @@ public class ChessboardView extends TableLayout {
 				mActivity.finish();
 			}
 		});
-		final ChessboardView view = this;
 		((Button) contentView.findViewById(R.id.btn_new_game)).setOnClickListener(new OnClickListener() {
 			@Override
 			public void onClick(View v) {
 				setButtonsEnabled(true);
 				mChessboard = new Chessboard(mContext);
 				mChessboard.setTime(mActivity.getStartTime(), mActivity.getBonusTime());
-				mChessboard.setChessboardView(view);
+				mChessboard.setChessboardView(ChessboardView.this);
 				mChessboard.setActivity(mActivity);
 				mCurrentPlayer = Chesspiece.WHITE;
 				mActivity.newGame(mChessboard);
@@ -310,27 +309,34 @@ public class ChessboardView extends TableLayout {
 		case DRAWREPETITION:
 			title = mResources.getString(R.string.title_draw);
 			body = mResources.getString(R.string.txt_draw_repetition);
+			mChessboard.mPositionHashFactory.insertGameResult(PositionHashFactory.DRAW);
 			break;
 		case DRAWAGREED:
 			title = mResources.getString(R.string.title_draw);
 			body = mResources.getString(R.string.txt_draw_agreed);
+			mChessboard.mPositionHashFactory.insertGameResult(PositionHashFactory.DRAW);
 			break;
 		case DRAWCLAIMED:
 			title = mResources.getString(R.string.title_draw);
 			body = mResources.getString(R.string.txt_draw_claimed);
+			mChessboard.mPositionHashFactory.insertGameResult(PositionHashFactory.DRAW);
 			break;
 		case WINCHECKMATE:
 			title = mResources.getString(R.string.title_win_checkmate);
 			body = winner + " " + mResources.getString(R.string.txt_win_checkmate);
+			mChessboard.mPositionHashFactory.insertGameResult(color);
 			break;
 		case WINRESIGN:
 			title = mResources.getString(R.string.title_win_resign);
 			body = loser + " " + mResources.getString(R.string.txt_win_resign_1) + " " + winner + " "
 					+ mResources.getString(R.string.txt_win_resign_2);
+			mChessboard.mPositionHashFactory.insertGameResult(color);
 			break;
 		case DRAWSTALEMATE:
 			title = mResources.getString(R.string.title_draw);
 			body = mResources.getString(R.string.txt_draw_stalemate);
+			mChessboard.mPositionHashFactory.insertGameResult(PositionHashFactory.DRAW);
+			mChessboard.mPositionHashFactory.insertGameResult(color);
 			break;
 		case WINTIMEOUT:
 			title = mResources.getString(R.string.title_win_timeout);

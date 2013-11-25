@@ -1,5 +1,11 @@
 package hioa.android.chess;
 
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.ObjectOutput;
+import java.io.ObjectOutputStream;
+import java.io.Serializable;
 import java.util.Date;
 
 import android.annotation.SuppressLint;
@@ -10,6 +16,7 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -28,8 +35,14 @@ import android.widget.TextView;
  * @version 2013-11-23
  */
 
-public class GameActivity extends Activity {
+public class GameActivity extends Activity implements Serializable {
 
+	private static final String FILENAME = "local_chessgame.game";
+
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
 	private PlayerFrame mWhiteFrame, mBlackFrame;
 	private String mWhiteName, mBlackName;
 	private Chessboard mChessboard;
@@ -229,7 +242,7 @@ public class GameActivity extends Activity {
 		if (mPreferences.getBoolean("screenAlwaysOn", false)) {
 			mAlwaysOn = true;
 			getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
-		}else if(mAlwaysOn){
+		} else if (mAlwaysOn) {
 			mAlwaysOn = false;
 			getWindow().clearFlags(android.view.WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
 		}
@@ -307,6 +320,21 @@ public class GameActivity extends Activity {
 		mBlackName = bundle.getString(GameSettingsActivity.BLACKNAME);
 		view.setPlayerNames(mWhiteName, mBlackName);
 		view.setActivity(this);
+	}
+
+	@Override
+	protected void onPause() {
+//		try {
+//			File file = new File(getFilesDir(), "");
+//			file.getParentFile().mkdirs();
+//			file.createNewFile();
+//			ObjectOutput out = new ObjectOutputStream(new FileOutputStream(file + File.separator + FILENAME));
+//			out.writeObject(this);
+//			out.close();
+//		} catch (IOException ioe) {
+//			Log.d("ZZZ", "IOException");
+//		}
+		super.onPause();
 	}
 
 	@Override

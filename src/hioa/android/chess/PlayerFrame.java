@@ -21,7 +21,7 @@ import android.widget.TextView;
  * @version 2013-11-23
  */
 
-public class PlayerFrame extends RelativeLayout {
+public class PlayerFrame extends RelativeLayout{
 
 	private BitmapDrawable[] mIcons;
 	private static final int PAWN = 0, ROOK = 1, KNIGHT = 2, BISHOP = 3, QUEEN = 4;
