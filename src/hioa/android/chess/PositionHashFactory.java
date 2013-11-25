@@ -66,20 +66,17 @@ public class PositionHashFactory {
 		char letter = move.charAt(0);
 		Chesspiece piece;
 		Chesspiece sameClass = null;
-		
+
 		if (letter == 'R') {
 			sameClass = new Rook(color, -1, -1);
-		}
-		else if (letter == 'N') {
+		} else if (letter == 'N') {
 			sameClass = new Knight(color, -1, -1);
-		}
-		else if (letter == 'B') {
+		} else if (letter == 'B') {
 			sameClass = new Bishop(color, -1, -1);
-		}
-		else if (letter == 'Q') {
+		} else if (letter == 'Q') {
 			sameClass = new Queen(color, -1, -1);
 		}
-		
+
 		if (sameClass != null) {
 			letter = move.charAt(2);
 			if (Character.isDigit(letter)) {
@@ -96,17 +93,36 @@ public class PositionHashFactory {
 		}
 
 		else if (letter == 'K') {
-
+			piece = mChessboard.getKing(color);
+			piece.move(translateRow(move.charAt(2)), translateColumn(move.charAt(1)));
 		}
-
+		// castle
 		else if (letter == 'O') {
-			// castle
+			piece = mChessboard.getKing(color);
+			if (move.length() == 3) {
+				// kingside
+				piece.move(piece.getRow(), piece.getColumn() + 2);
+			} else {
+				// queenside
+				piece.move(piece.getRow(), piece.getColumn() - 2);
+			}
 		}
 
 		else {
-			// TODO promotering
+			sameClass = new Pawn(color, -1, -1);
+			if (move.lastIndexOf("Q") != -1) {
+				mChessboard.setPromotionFlag(Chessboard.QUEEN);
+			} else if (move.lastIndexOf("N") != -1) {
+				mChessboard.setPromotionFlag(Chessboard.KNIGHT);
+			} else if (move.lastIndexOf("R") != -1) {
+				mChessboard.setPromotionFlag(Chessboard.ROOK);
+			} else if (move.lastIndexOf("B") != -1) {
+				mChessboard.setPromotionFlag(Chessboard.BISHOP);
+			}
+			piece = mChessboard.getPawnOnColumn(color, translateColumn(move.charAt(0)), translateRow(move.charAt(2)),
+					translateColumn(move.charAt(1)));
+			piece.move(translateRow(move.charAt(2)), translateColumn(move.charAt(1)));
 		}
-
 	}
 
 	private int translateRow(char row) {

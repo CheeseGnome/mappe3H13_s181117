@@ -361,6 +361,17 @@ public class Chessboard {
 		return null;
 	}
 
+	protected Chesspiece getPawnOnColumn(int color, int column, int legalRow, int legalColumn) {
+		for (int i = 0; i < getMaxRows(); i++) {
+			if (mChessboard[i][column] != null && mChessboard[i][column].getColor() == color
+					&& mChessboard[i][column] instanceof Pawn
+					&& mChessboard[i][column].legalMoves()[legalRow][legalColumn]) {
+				return mChessboard[i][column];
+			}
+		}
+		return null;
+	}
+
 	protected Chesspiece otherPieceCanMoveTo(Chesspiece piece, int row, int column) {
 		Chesspiece other = null;
 		if (!(piece instanceof King) && !(piece instanceof Pawn)) {
@@ -529,7 +540,7 @@ public class Chessboard {
 	 *            The color whose king you want
 	 * @return The king whose getColor() matches color
 	 */
-	private King getKing(int color) {
+	protected King getKing(int color) {
 		for (int i = 0; i < getMaxRows(); i++) {
 			for (int j = 0; j < getMaxColumns(); j++) {
 				if (mChessboard[i][j] instanceof King && mChessboard[i][j].getColor() == color) {
