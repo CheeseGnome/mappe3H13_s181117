@@ -8,5 +8,7 @@
     <dimen name="txt_check_size">23sp</dimen>
     <dimen name="txt_move_size">18sp</dimen>
     <dimen name="img_king_size">32dp</dimen>
+    <dimen name="standard_space_small">4dp</dimen>
+    <dimen name="standard_space_medium">8dp</dimen>
 
 </resources>
