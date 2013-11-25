@@ -21,17 +21,16 @@ import android.widget.TextView;
  * @version 2013-11-23
  */
 
-public class PlayerFrame extends RelativeLayout{
+public class PlayerFrame extends RelativeLayout {
 
-	private BitmapDrawable[] mIcons;
-	private static final int PAWN = 0, ROOK = 1, KNIGHT = 2, BISHOP = 3, QUEEN = 4;
 	private static final float SHADOWRADIUS = 20;
 
 	public static final int NO_CHECK = 0, CHECK = 1, CHECKMATE = 2, WINNER = 3, DRAW = 4, RESIGNED = 5, TIMEOUT = 6;
 
 	private LinkedList<Chesspiece> mCapturedPieces = new LinkedList<Chesspiece>();
 	private TextView mClock;
-
+	private GameActivity mActivity;
+	private int mColor;
 	private Context mContext;
 
 	public PlayerFrame(Context context, AttributeSet attributes) {
@@ -40,6 +39,10 @@ public class PlayerFrame extends RelativeLayout{
 		layoutInflater.inflate(R.layout.playerframe, this);
 		mContext = context;
 		mClock = (TextView) findViewById(R.id.txt_clock);
+	}
+
+	public void setActivity(GameActivity activity) {
+		mActivity = activity;
 	}
 
 	public void setName(String name) {
@@ -52,6 +55,7 @@ public class PlayerFrame extends RelativeLayout{
 	 * @param color
 	 */
 	public void setKingIcon(int color) {
+		mColor = color;
 		ImageView image = (ImageView) findViewById(R.id.img_king);
 		if (color == Chesspiece.WHITE) {
 			image.setImageDrawable(getDrawable(R.drawable.white_king, R.dimen.img_king_size));
@@ -214,45 +218,40 @@ public class PlayerFrame extends RelativeLayout{
 	 * @return A drawable scaled to fit inside the imageViews
 	 */
 	private Drawable getIcon(Chesspiece piece) {
-		if (piece instanceof Pawn) {
-			return mIcons[PAWN];
-		}
-		if (piece instanceof Knight) {
-			return mIcons[KNIGHT];
-		}
-		if (piece instanceof Bishop) {
-			return mIcons[BISHOP];
-		}
-		if (piece instanceof Rook) {
-			return mIcons[ROOK];
-		}
-		if (piece instanceof Queen) {
-			return mIcons[QUEEN];
+		if (mColor == Chesspiece.WHITE) {
+			if (piece instanceof Pawn) {
+				return mActivity.getPieceIcon(GameActivity.WHITEPAWN);
+			}
+			if (piece instanceof Knight) {
+				return mActivity.getPieceIcon(GameActivity.WHITEKNIGHT);
+			}
+			if (piece instanceof Bishop) {
+				return mActivity.getPieceIcon(GameActivity.WHITEBISHOP);
+			}
+			if (piece instanceof Rook) {
+				return mActivity.getPieceIcon(GameActivity.WHITEROOK);
+			}
+			if (piece instanceof Queen) {
+				return mActivity.getPieceIcon(GameActivity.WHITEQUEEN);
+			}
+		} else {
+			if (piece instanceof Pawn) {
+				return mActivity.getPieceIcon(GameActivity.BLACKPAWN);
+			}
+			if (piece instanceof Knight) {
+				return mActivity.getPieceIcon(GameActivity.BLACKKNIGHT);
+			}
+			if (piece instanceof Bishop) {
+				return mActivity.getPieceIcon(GameActivity.BLACKBISHOP);
+			}
+			if (piece instanceof Rook) {
+				return mActivity.getPieceIcon(GameActivity.BLACKROOK);
+			}
+			if (piece instanceof Queen) {
+				return mActivity.getPieceIcon(GameActivity.BLACKQUEEN);
+			}
 		}
 		return null;
-	}
-
-	/**
-	 * Loads the icons for the provided color
-	 * 
-	 * @param color
-	 *            The color who's icons to load
-	 */
-	public void loadIcons(int color) {
-		mIcons = new BitmapDrawable[5];
-		if (color == Chesspiece.BLACK) {
-			mIcons[PAWN] = getDrawable(R.drawable.black_pawn, R.dimen.captured_size);
-			mIcons[ROOK] = getDrawable(R.drawable.black_rook, R.dimen.captured_size);
-			mIcons[KNIGHT] = getDrawable(R.drawable.black_knight, R.dimen.captured_size);
-			mIcons[BISHOP] = getDrawable(R.drawable.black_bishop, R.dimen.captured_size);
-			mIcons[QUEEN] = getDrawable(R.drawable.black_queen, R.dimen.captured_size);
-		} else {
-			mIcons[PAWN] = getDrawable(R.drawable.white_pawn, R.dimen.captured_size);
-			mIcons[ROOK] = getDrawable(R.drawable.white_rook, R.dimen.captured_size);
-			mIcons[KNIGHT] = getDrawable(R.drawable.white_knight, R.dimen.captured_size);
-			mIcons[BISHOP] = getDrawable(R.drawable.white_bishop, R.dimen.captured_size);
-			mIcons[QUEEN] = getDrawable(R.drawable.white_queen, R.dimen.captured_size);
-		}
 	}
 
 	/**

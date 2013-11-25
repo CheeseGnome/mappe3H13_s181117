@@ -9,13 +9,9 @@ import android.content.ClipboardManager;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.res.Resources;
-import android.graphics.Bitmap;
-import android.graphics.drawable.BitmapDrawable;
-import android.graphics.drawable.Drawable;
 import android.util.AttributeSet;
 import android.view.LayoutInflater;
 import android.view.View;
-import android.view.ViewPropertyAnimator;
 import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.TableLayout;
@@ -52,16 +48,7 @@ public class ChessboardView extends TableLayout {
 	private Context mContext;
 	private int mCurrentPlayer = Chesspiece.WHITE;
 
-	/**
-	 * Array of the icons for the various chesspieces.
-	 * <p>
-	 * This array is indexed through int constants named: BLACKPAWN, WHITEKING
-	 * etc.
-	 */
-	private BitmapDrawable[] mIcons;
-	private static final int BLACKPAWN = 0, BLACKROOK = 1, BLACKKNIGHT = 2, BLACKBISHOP = 3, BLACKQUEEN = 4,
-			BLACKKING = 5, WHITEPAWN = 6, WHITEROOK = 7, WHITEKNIGHT = 8, WHITEBISHOP = 9, WHITEQUEEN = 10,
-			WHITEKING = 11;
+
 
 	public ChessboardView(Context context, AttributeSet attributes) {
 		super(context, attributes);
@@ -71,7 +58,6 @@ public class ChessboardView extends TableLayout {
 		mResources = getResources();
 		mContext = context;
 
-		initializeDrawableArray();
 		mChessboard = new Chessboard(context);
 		mChessboard.setChessboardView(this);
 		initializeButtonArray();
@@ -157,42 +143,6 @@ public class ChessboardView extends TableLayout {
 	public void setPlayerNames(String whiteName, String blackName) {
 		mWhiteName = whiteName;
 		mBlackName = blackName;
-	}
-
-	/**
-	 * Loads the chesspiece icons
-	 */
-	private void initializeDrawableArray() {
-		mIcons = new BitmapDrawable[12];
-		mIcons[BLACKPAWN] = getDrawable(R.drawable.black_pawn);
-		mIcons[BLACKROOK] = getDrawable(R.drawable.black_rook);
-		mIcons[BLACKKNIGHT] = getDrawable(R.drawable.black_knight);
-		mIcons[BLACKBISHOP] = getDrawable(R.drawable.black_bishop);
-		mIcons[BLACKQUEEN] = getDrawable(R.drawable.black_queen);
-		mIcons[BLACKKING] = getDrawable(R.drawable.black_king);
-
-		mIcons[WHITEPAWN] = getDrawable(R.drawable.white_pawn);
-		mIcons[WHITEROOK] = getDrawable(R.drawable.white_rook);
-		mIcons[WHITEKNIGHT] = getDrawable(R.drawable.white_knight);
-		mIcons[WHITEBISHOP] = getDrawable(R.drawable.white_bishop);
-		mIcons[WHITEQUEEN] = getDrawable(R.drawable.white_queen);
-		mIcons[WHITEKING] = getDrawable(R.drawable.white_king);
-	}
-
-	/**
-	 * This method returns the drawable found at id, resized to fit inside a
-	 * tile.
-	 * 
-	 * @param id
-	 *            The image resource id
-	 * @return The image found by the resource id resized to fit inside an
-	 *         imagebutton in this view
-	 */
-	private BitmapDrawable getDrawable(int id) {
-		Drawable dr = mResources.getDrawable(id);
-		Bitmap bitmap = ((BitmapDrawable) dr).getBitmap();
-		int size = mResources.getDimensionPixelSize(R.dimen.tile_size);
-		return new BitmapDrawable(getResources(), Bitmap.createScaledBitmap(bitmap, size, size, true));
 	}
 
 	/**
@@ -404,10 +354,10 @@ public class ChessboardView extends TableLayout {
 		ImageButton btn_bishop = (ImageButton) contentView.findViewById(R.id.btn_bishop);
 		ImageButton btn_knight = (ImageButton) contentView.findViewById(R.id.btn_knight);
 
-		btn_queen.setImageDrawable(getPieceIcon(queen));
-		btn_rook.setImageDrawable(getPieceIcon(rook));
-		btn_bishop.setImageDrawable(getPieceIcon(bishop));
-		btn_knight.setImageDrawable(getPieceIcon(knight));
+		btn_queen.setImageDrawable(mActivity.getPieceIcon(queen));
+		btn_rook.setImageDrawable(mActivity.getPieceIcon(rook));
+		btn_bishop.setImageDrawable(mActivity.getPieceIcon(bishop));
+		btn_knight.setImageDrawable(mActivity.getPieceIcon(knight));
 
 		btn_queen.setOnClickListener(new OnClickListener() {
 			@Override
@@ -459,52 +409,10 @@ public class ChessboardView extends TableLayout {
 				if (piece == null || piece.getColor() == Chesspiece.EN_PASSANT) {
 					mButtons[i][j].setImageResource(android.R.color.transparent);
 				} else {
-					mButtons[i][j].setImageDrawable(getPieceIcon(piece));
+					mButtons[i][j].setImageDrawable(mActivity.getPieceIcon(piece));
 				}
 			}
 		}
-	}
-
-	/**
-	 * Returns the appropriate icon for the provided piece
-	 * 
-	 * @param piece
-	 *            The piece whose drawable to return
-	 * @return A drawable representing the piece, scaled to fit inside a button
-	 *         in this view
-	 */
-	private Drawable getPieceIcon(Chesspiece piece) {
-
-		if (piece.getColor() == Chesspiece.WHITE) {
-			if (piece instanceof Pawn) {
-				return mIcons[WHITEPAWN];
-			} else if (piece instanceof Rook) {
-				return mIcons[WHITEROOK];
-			} else if (piece instanceof Knight) {
-				return mIcons[WHITEKNIGHT];
-			} else if (piece instanceof Bishop) {
-				return mIcons[WHITEBISHOP];
-			} else if (piece instanceof Queen) {
-				return mIcons[WHITEQUEEN];
-			} else if (piece instanceof King) {
-				return mIcons[WHITEKING];
-			}
-		} else {
-			if (piece instanceof Pawn) {
-				return mIcons[BLACKPAWN];
-			} else if (piece instanceof Rook) {
-				return mIcons[BLACKROOK];
-			} else if (piece instanceof Knight) {
-				return mIcons[BLACKKNIGHT];
-			} else if (piece instanceof Bishop) {
-				return mIcons[BLACKBISHOP];
-			} else if (piece instanceof Queen) {
-				return mIcons[BLACKQUEEN];
-			} else if (piece instanceof King) {
-				return mIcons[BLACKKING];
-			}
-		}
-		return null;
 	}
 
 	/**

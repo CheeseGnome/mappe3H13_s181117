@@ -8,6 +8,9 @@ import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.graphics.Bitmap;
+import android.graphics.drawable.BitmapDrawable;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.view.Menu;
@@ -42,13 +45,26 @@ public class GameActivity extends Activity {
 	private AlertDialog mDialog;
 	private boolean mAlwaysOn;
 
+	/**
+	 * Array of the icons for the various chesspieces.
+	 * <p>
+	 * This array is indexed through int constants named: BLACKPAWN, WHITEKING
+	 * etc.
+	 */
+	private BitmapDrawable[] mIcons;
+
 	public static final int CLAIMDRAW = 0, OFFERDRAW = 1;
+
+	public static final int BLACKPAWN = 0, BLACKROOK = 1, BLACKKNIGHT = 2, BLACKBISHOP = 3, BLACKQUEEN = 4,
+			BLACKKING = 5, WHITEPAWN = 6, WHITEROOK = 7, WHITEKNIGHT = 8, WHITEBISHOP = 9, WHITEQUEEN = 10,
+			WHITEKING = 11;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		requestWindowFeature(Window.FEATURE_NO_TITLE);
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_game);
+		initializeDrawableArray();
 
 		ChessboardView board = (ChessboardView) findViewById(R.id.chessboard);
 
@@ -58,9 +74,6 @@ public class GameActivity extends Activity {
 		mWhiteFrame.setKingIcon(Chesspiece.WHITE);
 		mBlackFrame.setKingIcon(Chesspiece.BLACK);
 
-		mWhiteFrame.loadIcons(Chesspiece.BLACK);
-		mBlackFrame.loadIcons(Chesspiece.WHITE);
-
 		mChessboard = board.getChessboard();
 		setupBundleItems(board);
 		mWhiteFrame.setName(mWhiteName);
@@ -68,49 +81,132 @@ public class GameActivity extends Activity {
 
 		setDrawButtonMode(OFFERDRAW);
 
-		((Button) findViewById(R.id.btn_resign))
-				.setOnClickListener(new OnClickListener() {
-					@Override
-					public void onClick(View v) {
-						mChessboard.stopClock();
-						int color;
-						if (mChessboard.mView.getCurrentPlayer() == Chesspiece.WHITE) {
-							color = Chesspiece.BLACK;
-						} else {
-							color = Chesspiece.WHITE;
-						}
-						mChessboard.mView.endTheGame(ChessboardView.WINRESIGN,
-								color);
-						setCheckText(mChessboard.mView.getCurrentPlayer(),
-								PlayerFrame.RESIGNED);
-						setCheckText(color, PlayerFrame.WINNER);
-						DBAdapter database = new DBAdapter(GameActivity.this);
-						database.open();
-						String winner;
-						if (color == Chesspiece.WHITE) {
-							winner = DBAdapter.WHITE_WON;
-						} else {
-							winner = DBAdapter.BLACK_WON;
-						}
-						database.insertGameResult(mWhiteName, mBlackName,
-								mChessboard.mPositionHashFactory.getMoves(),
-								winner, new Date());
-					}
+		((Button) findViewById(R.id.btn_resign)).setOnClickListener(new OnClickListener() {
+			@Override
+			public void onClick(View v) {
+				mChessboard.stopClock();
+				int color;
+				if (mChessboard.mView.getCurrentPlayer() == Chesspiece.WHITE) {
+					color = Chesspiece.BLACK;
+				} else {
+					color = Chesspiece.WHITE;
+				}
+				mChessboard.mView.endTheGame(ChessboardView.WINRESIGN, color);
+				setCheckText(mChessboard.mView.getCurrentPlayer(), PlayerFrame.RESIGNED);
+				setCheckText(color, PlayerFrame.WINNER);
+				DBAdapter database = new DBAdapter(GameActivity.this);
+				database.open();
+				String winner;
+				if (color == Chesspiece.WHITE) {
+					winner = DBAdapter.WHITE_WON;
+				} else {
+					winner = DBAdapter.BLACK_WON;
+				}
+				database.insertGameResult(mWhiteName, mBlackName, mChessboard.mPositionHashFactory.getMoves(), winner,
+						new Date());
+			}
 
-				});
+		});
 
-		((Button) findViewById(R.id.btn_quit))
-				.setOnClickListener(new OnClickListener() {
-					@Override
-					public void onClick(View v) {
-						DBAdapter database = new DBAdapter(GameActivity.this);
-						database.open();
-						database.clearMoves();
-						finish();
-					}
+		((Button) findViewById(R.id.btn_quit)).setOnClickListener(new OnClickListener() {
+			@Override
+			public void onClick(View v) {
+				DBAdapter database = new DBAdapter(GameActivity.this);
+				database.open();
+				database.clearMoves();
+				finish();
+			}
 
-				});
+		});
 
+	}
+
+	private void initializeDrawableArray() {
+		mIcons = new BitmapDrawable[12];
+		mIcons[BLACKPAWN] = getDrawable(R.drawable.black_pawn);
+		mIcons[BLACKROOK] = getDrawable(R.drawable.black_rook);
+		mIcons[BLACKKNIGHT] = getDrawable(R.drawable.black_knight);
+		mIcons[BLACKBISHOP] = getDrawable(R.drawable.black_bishop);
+		mIcons[BLACKQUEEN] = getDrawable(R.drawable.black_queen);
+		mIcons[BLACKKING] = getDrawable(R.drawable.black_king);
+
+		mIcons[WHITEPAWN] = getDrawable(R.drawable.white_pawn);
+		mIcons[WHITEROOK] = getDrawable(R.drawable.white_rook);
+		mIcons[WHITEKNIGHT] = getDrawable(R.drawable.white_knight);
+		mIcons[WHITEBISHOP] = getDrawable(R.drawable.white_bishop);
+		mIcons[WHITEQUEEN] = getDrawable(R.drawable.white_queen);
+		mIcons[WHITEKING] = getDrawable(R.drawable.white_king);
+	}
+
+	/**
+	 * This method returns the drawable found at id, resized to fit inside a
+	 * tile.
+	 * 
+	 * @param id
+	 *            The image resource id
+	 * @return The image found by the resource id resized to fit inside an
+	 *         imagebutton in this view
+	 */
+	private BitmapDrawable getDrawable(int id) {
+		Drawable dr = getDrawable(id);
+		Bitmap bitmap = ((BitmapDrawable) dr).getBitmap();
+		int size = getResources().getDimensionPixelSize(R.dimen.tile_size);
+		return new BitmapDrawable(getResources(), Bitmap.createScaledBitmap(bitmap, size, size, true));
+	}
+	
+	/**
+	 * Returns the appropriate icon for the provided piece
+	 * 
+	 * @param piece
+	 *            The piece whose drawable to return
+	 * @return A drawable representing the piece, scaled to fit inside a button
+	 *         in this view
+	 */
+	public Drawable getPieceIcon(int piece) {
+		return mIcons[piece];
+	}
+	
+
+	/**
+	 * Returns the appropriate icon for the provided piece
+	 * 
+	 * @param piece
+	 *            The piece whose drawable to return
+	 * @return A drawable representing the piece, scaled to fit inside a button
+	 *         in this view
+	 */
+	public Drawable getPieceIcon(Chesspiece piece) {
+
+		if (piece.getColor() == Chesspiece.WHITE) {
+			if (piece instanceof Pawn) {
+				return mIcons[WHITEPAWN];
+			} else if (piece instanceof Rook) {
+				return mIcons[WHITEROOK];
+			} else if (piece instanceof Knight) {
+				return mIcons[WHITEKNIGHT];
+			} else if (piece instanceof Bishop) {
+				return mIcons[WHITEBISHOP];
+			} else if (piece instanceof Queen) {
+				return mIcons[WHITEQUEEN];
+			} else if (piece instanceof King) {
+				return mIcons[WHITEKING];
+			}
+		} else {
+			if (piece instanceof Pawn) {
+				return mIcons[BLACKPAWN];
+			} else if (piece instanceof Rook) {
+				return mIcons[BLACKROOK];
+			} else if (piece instanceof Knight) {
+				return mIcons[BLACKKNIGHT];
+			} else if (piece instanceof Bishop) {
+				return mIcons[BLACKBISHOP];
+			} else if (piece instanceof Queen) {
+				return mIcons[BLACKQUEEN];
+			} else if (piece instanceof King) {
+				return mIcons[BLACKKING];
+			}
+		}
+		return null;
 	}
 
 	/**
@@ -140,56 +236,41 @@ public class GameActivity extends Activity {
 				@Override
 				public void onClick(View v) {
 					button.setEnabled(false);
-					mDialog = new AlertDialog.Builder(GameActivity.this)
-							.create();
-					mDialog.setTitle(getResources().getString(
-							R.string.title_draw_offer));
+					mDialog = new AlertDialog.Builder(GameActivity.this).create();
+					mDialog.setTitle(getResources().getString(R.string.title_draw_offer));
 					String player;
 					if (mChessboard.mView.getCurrentPlayer() == Chesspiece.WHITE) {
 						player = mWhiteName;
 					} else {
 						player = mBlackName;
 					}
-					mDialog.setMessage(player + " "
-							+ getResources().getString(R.string.txt_draw_offer));
-					mDialog.setButton(AlertDialog.BUTTON_POSITIVE,
-							getString(R.string.btn_accept),
+					mDialog.setMessage(player + " " + getResources().getString(R.string.txt_draw_offer));
+					mDialog.setButton(AlertDialog.BUTTON_POSITIVE, getString(R.string.btn_accept),
 							new DialogInterface.OnClickListener() {
-								public void onClick(DialogInterface dialog,
-										int which) {
-									mChessboard.mView.endTheGame(
-											ChessboardView.DRAWAGREED,
-											mChessboard.mView
-													.getCurrentPlayer());
-									setCheckText(Chesspiece.WHITE,
-											PlayerFrame.DRAW);
-									setCheckText(Chesspiece.BLACK,
-											PlayerFrame.DRAW);
-									DBAdapter database = new DBAdapter(
-											GameActivity.this);
+								public void onClick(DialogInterface dialog, int which) {
+									mChessboard.mView.endTheGame(ChessboardView.DRAWAGREED,
+											mChessboard.mView.getCurrentPlayer());
+									setCheckText(Chesspiece.WHITE, PlayerFrame.DRAW);
+									setCheckText(Chesspiece.BLACK, PlayerFrame.DRAW);
+									DBAdapter database = new DBAdapter(GameActivity.this);
 									database.open();
-									database.insertGameResult(mWhiteName,
-											mBlackName,
-											mChessboard.mPositionHashFactory
-													.getMoves(),
-											DBAdapter.DRAW_AGREED, new Date());
+									database.insertGameResult(mWhiteName, mBlackName,
+											mChessboard.mPositionHashFactory.getMoves(), DBAdapter.DRAW_AGREED,
+											new Date());
 									mDialog.dismiss();
 									mDialog = null;
 								}
 							});
-					mDialog.setButton(AlertDialog.BUTTON_NEGATIVE,
-							getString(R.string.btn_decline),
+					mDialog.setButton(AlertDialog.BUTTON_NEGATIVE, getString(R.string.btn_decline),
 							new DialogInterface.OnClickListener() {
-								public void onClick(DialogInterface dialog,
-										int which) {
+								public void onClick(DialogInterface dialog, int which) {
 									mDialog.dismiss();
 									mDialog = null;
 								}
 							});
 					mDialog.show();
 					if (mRotate && mCurrentRotation == 0) {
-						ViewPropertyAnimator animator = mDialog.findViewById(
-								android.R.id.content).animate();
+						ViewPropertyAnimator animator = mDialog.findViewById(android.R.id.content).animate();
 						animator.rotation(ROTATION);
 					}
 				}
@@ -199,14 +280,12 @@ public class GameActivity extends Activity {
 			button.setOnClickListener(new OnClickListener() {
 				@Override
 				public void onClick(View v) {
-					mChessboard.mView.endTheGame(ChessboardView.DRAWCLAIMED,
-							mChessboard.mView.getCurrentPlayer());
+					mChessboard.mView.endTheGame(ChessboardView.DRAWCLAIMED, mChessboard.mView.getCurrentPlayer());
 					setCheckText(Chesspiece.WHITE, PlayerFrame.DRAW);
 					setCheckText(Chesspiece.BLACK, PlayerFrame.DRAW);
 					DBAdapter database = new DBAdapter(GameActivity.this);
 					database.open();
-					database.insertGameResult(mWhiteName, mBlackName,
-							mChessboard.mPositionHashFactory.getMoves(),
+					database.insertGameResult(mWhiteName, mBlackName, mChessboard.mPositionHashFactory.getMoves(),
 							DBAdapter.DRAW_CLAIMED, new Date());
 				}
 			});
@@ -223,8 +302,7 @@ public class GameActivity extends Activity {
 	protected void onPause() {
 		DBAdapter database = new DBAdapter(this);
 		database.open();
-		database.updateTimes("" + mChessboard.getTime(Chesspiece.WHITE), ""
-				+ mChessboard.getTime(Chesspiece.BLACK));
+		database.updateTimes("" + mChessboard.getTime(Chesspiece.WHITE), "" + mChessboard.getTime(Chesspiece.BLACK));
 		super.onPause();
 	}
 
@@ -242,8 +320,7 @@ public class GameActivity extends Activity {
 	 */
 	public void switchPlayer() {
 		TextView header = (TextView) findViewById(R.id.txt_move);
-		if (header.getText().toString()
-				.equals(getResources().getString(R.string.txt_black_move))) {
+		if (header.getText().toString().equals(getResources().getString(R.string.txt_black_move))) {
 			header.setText(R.string.txt_white_move);
 		} else {
 			header.setText(R.string.txt_black_move);
@@ -256,18 +333,14 @@ public class GameActivity extends Activity {
 	 */
 	@SuppressLint("Wakelock")
 	private void loadPreferences() {
-		mPreferences = PreferenceManager
-				.getDefaultSharedPreferences(getApplicationContext());
+		mPreferences = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
 
 		if (mPreferences.getBoolean("screenAlwaysOn", false)) {
 			mAlwaysOn = true;
-			getWindow()
-					.addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
+			getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
 		} else if (mAlwaysOn) {
 			mAlwaysOn = false;
-			getWindow()
-					.clearFlags(
-							android.view.WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
+			getWindow().clearFlags(android.view.WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
 		}
 
 		mRotate = mPreferences.getBoolean("rotate", false);
@@ -296,8 +369,7 @@ public class GameActivity extends Activity {
 		if (!mRotate) {
 			return;
 		}
-		ViewPropertyAnimator animator = ((RelativeLayout) this
-				.findViewById(R.id.view)).animate();
+		ViewPropertyAnimator animator = ((RelativeLayout) this.findViewById(R.id.view)).animate();
 		if (mCurrentRotation == 0) {
 			mCurrentRotation += ROTATION;
 		} else {
@@ -340,8 +412,7 @@ public class GameActivity extends Activity {
 		String moves = bundle.getString(MainMenuActivity.MOVES);
 		// Initialized from main menu
 		if (moves != null) {
-			mPreferences = PreferenceManager
-					.getDefaultSharedPreferences(getApplicationContext());
+			mPreferences = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
 			mStartTime = Long.parseLong(bundle.getString(DBAdapter.TIME, "0"));
 			mBonusTime = Long.parseLong(bundle.getString(DBAdapter.BONUS, "0"));
 			mChessboard.setTime(mStartTime, mBonusTime);
@@ -357,17 +428,14 @@ public class GameActivity extends Activity {
 		view.setPlayerNames(mWhiteName, mBlackName);
 		view.setActivity(this);
 		if (moves != null) {
-			int toMove = mChessboard.mPositionHashFactory
-					.rebuildPosition(moves);
+			int toMove = mChessboard.mPositionHashFactory.rebuildPosition(moves);
 			mChessboard.mView.setCurrentPlayer(toMove);
 			mChessboard.mView.reDraw();
-			long whiteTime = Long.parseLong(bundle.getString(
-					DBAdapter.WHITETIME, "0"));
-			long blackTime = Long.parseLong(bundle.getString(
-					DBAdapter.BLACKTIME, "0"));
+			long whiteTime = Long.parseLong(bundle.getString(DBAdapter.WHITETIME, "0"));
+			long blackTime = Long.parseLong(bundle.getString(DBAdapter.BLACKTIME, "0"));
 			mChessboard.setTime(Chesspiece.WHITE, whiteTime);
 			mChessboard.setTime(Chesspiece.BLACK, blackTime);
-		}else{
+		} else {
 			mChessboard.setTime(Chesspiece.WHITE, mStartTime);
 			mChessboard.setTime(Chesspiece.BLACK, mStartTime);
 		}
@@ -465,8 +533,7 @@ public class GameActivity extends Activity {
 	 */
 	private void resetMoveString() {
 		TextView header = (TextView) findViewById(R.id.txt_move);
-		if (!header.getText().equals(
-				getResources().getString(R.string.txt_white_move))) {
+		if (!header.getText().equals(getResources().getString(R.string.txt_white_move))) {
 			header.setText(R.string.txt_white_move);
 		}
 	}
@@ -503,8 +570,7 @@ public class GameActivity extends Activity {
 	 */
 	public void setCheckText(int color, int flag) {
 		if (flag != PlayerFrame.NO_CHECK && flag != PlayerFrame.CHECK) {
-			((TextView) findViewById(R.id.txt_move))
-					.setText(R.string.txt_game_over);
+			((TextView) findViewById(R.id.txt_move)).setText(R.string.txt_game_over);
 		}
 		if (color == Chesspiece.WHITE) {
 			mWhiteFrame.setCheckText(flag);
