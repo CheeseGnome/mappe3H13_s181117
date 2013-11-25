@@ -79,41 +79,46 @@ public class GameActivity extends Activity implements Serializable {
 
 		setDrawButtonMode(OFFERDRAW);
 
-		((Button) findViewById(R.id.btn_resign)).setOnClickListener(new OnClickListener() {
-			@Override
-			public void onClick(View v) {
-				mChessboard.stopClock();
-				int color;
-				if (mChessboard.mView.getCurrentPlayer() == Chesspiece.WHITE) {
-					color = Chesspiece.BLACK;
-				} else {
-					color = Chesspiece.WHITE;
-				}
-				mChessboard.mView.endTheGame(ChessboardView.WINRESIGN, color);
-				setCheckText(mChessboard.mView.getCurrentPlayer(), PlayerFrame.RESIGNED);
-				setCheckText(color, PlayerFrame.WINNER);
-				DBAdapter database = new DBAdapter(GameActivity.this);
-				database.open();
-				String winner;
-				if (color == Chesspiece.WHITE) {
-					winner = DBAdapter.WHITE_WON;
-				} else {
-					winner = DBAdapter.BLACK_WON;
-				}
-				database.insertGameResult(mWhiteName, mBlackName, mChessboard.mPositionHashFactory.getMoves(), winner,
-						new Date());
-			}
+		((Button) findViewById(R.id.btn_resign))
+				.setOnClickListener(new OnClickListener() {
+					@Override
+					public void onClick(View v) {
+						mChessboard.stopClock();
+						int color;
+						if (mChessboard.mView.getCurrentPlayer() == Chesspiece.WHITE) {
+							color = Chesspiece.BLACK;
+						} else {
+							color = Chesspiece.WHITE;
+						}
+						mChessboard.mView.endTheGame(ChessboardView.WINRESIGN,
+								color);
+						setCheckText(mChessboard.mView.getCurrentPlayer(),
+								PlayerFrame.RESIGNED);
+						setCheckText(color, PlayerFrame.WINNER);
+						DBAdapter database = new DBAdapter(GameActivity.this);
+						database.open();
+						String winner;
+						if (color == Chesspiece.WHITE) {
+							winner = DBAdapter.WHITE_WON;
+						} else {
+							winner = DBAdapter.BLACK_WON;
+						}
+						database.insertGameResult(mWhiteName, mBlackName,
+								mChessboard.mPositionHashFactory.getMoves(),
+								winner, new Date());
+					}
 
-		});
+				});
 
-		((Button) findViewById(R.id.btn_quit)).setOnClickListener(new OnClickListener() {
-			@Override
-			public void onClick(View v) {
-				// TODO Save
-				finish();
-			}
+		((Button) findViewById(R.id.btn_quit))
+				.setOnClickListener(new OnClickListener() {
+					@Override
+					public void onClick(View v) {
+						// TODO Save
+						finish();
+					}
 
-		});
+				});
 
 	}
 
@@ -144,41 +149,56 @@ public class GameActivity extends Activity implements Serializable {
 				@Override
 				public void onClick(View v) {
 					button.setEnabled(false);
-					mDialog = new AlertDialog.Builder(GameActivity.this).create();
-					mDialog.setTitle(getResources().getString(R.string.title_draw_offer));
+					mDialog = new AlertDialog.Builder(GameActivity.this)
+							.create();
+					mDialog.setTitle(getResources().getString(
+							R.string.title_draw_offer));
 					String player;
 					if (mChessboard.mView.getCurrentPlayer() == Chesspiece.WHITE) {
 						player = mWhiteName;
 					} else {
 						player = mBlackName;
 					}
-					mDialog.setMessage(player + " " + getResources().getString(R.string.txt_draw_offer));
-					mDialog.setButton(AlertDialog.BUTTON_POSITIVE, getString(R.string.btn_accept),
+					mDialog.setMessage(player + " "
+							+ getResources().getString(R.string.txt_draw_offer));
+					mDialog.setButton(AlertDialog.BUTTON_POSITIVE,
+							getString(R.string.btn_accept),
 							new DialogInterface.OnClickListener() {
-								public void onClick(DialogInterface dialog, int which) {
-									mChessboard.mView.endTheGame(ChessboardView.DRAWAGREED,
-											mChessboard.mView.getCurrentPlayer());
-									setCheckText(Chesspiece.WHITE, PlayerFrame.DRAW);
-									setCheckText(Chesspiece.BLACK, PlayerFrame.DRAW);
-									DBAdapter database = new DBAdapter(GameActivity.this);
+								public void onClick(DialogInterface dialog,
+										int which) {
+									mChessboard.mView.endTheGame(
+											ChessboardView.DRAWAGREED,
+											mChessboard.mView
+													.getCurrentPlayer());
+									setCheckText(Chesspiece.WHITE,
+											PlayerFrame.DRAW);
+									setCheckText(Chesspiece.BLACK,
+											PlayerFrame.DRAW);
+									DBAdapter database = new DBAdapter(
+											GameActivity.this);
 									database.open();
-									database.insertGameResult(mWhiteName, mBlackName,
-											mChessboard.mPositionHashFactory.getMoves(), DBAdapter.DRAW_AGREED,
-											new Date());
+									database.insertGameResult(mWhiteName,
+											mBlackName,
+											mChessboard.mPositionHashFactory
+													.getMoves(),
+											DBAdapter.DRAW_AGREED, new Date());
 									mDialog.dismiss();
 									mDialog = null;
 								}
 							});
-					mDialog.setButton(AlertDialog.BUTTON_NEGATIVE, getString(R.string.btn_decline),
+					mDialog.setButton(AlertDialog.BUTTON_NEGATIVE,
+							getString(R.string.btn_decline),
 							new DialogInterface.OnClickListener() {
-								public void onClick(DialogInterface dialog, int which) {
+								public void onClick(DialogInterface dialog,
+										int which) {
 									mDialog.dismiss();
 									mDialog = null;
 								}
 							});
 					mDialog.show();
 					if (mRotate && mCurrentRotation == 0) {
-						ViewPropertyAnimator animator = mDialog.findViewById(android.R.id.content).animate();
+						ViewPropertyAnimator animator = mDialog.findViewById(
+								android.R.id.content).animate();
 						animator.rotation(ROTATION);
 					}
 				}
@@ -188,12 +208,14 @@ public class GameActivity extends Activity implements Serializable {
 			button.setOnClickListener(new OnClickListener() {
 				@Override
 				public void onClick(View v) {
-					mChessboard.mView.endTheGame(ChessboardView.DRAWCLAIMED, mChessboard.mView.getCurrentPlayer());
+					mChessboard.mView.endTheGame(ChessboardView.DRAWCLAIMED,
+							mChessboard.mView.getCurrentPlayer());
 					setCheckText(Chesspiece.WHITE, PlayerFrame.DRAW);
 					setCheckText(Chesspiece.BLACK, PlayerFrame.DRAW);
 					DBAdapter database = new DBAdapter(GameActivity.this);
 					database.open();
-					database.insertGameResult(mWhiteName, mBlackName, mChessboard.mPositionHashFactory.getMoves(),
+					database.insertGameResult(mWhiteName, mBlackName,
+							mChessboard.mPositionHashFactory.getMoves(),
 							DBAdapter.DRAW_CLAIMED, new Date());
 				}
 			});
@@ -202,7 +224,7 @@ public class GameActivity extends Activity implements Serializable {
 
 	@Override
 	protected void onResume() {
-//		loadGame();
+		// loadGame();
 		loadPreferences();
 		super.onResume();
 	}
@@ -221,7 +243,8 @@ public class GameActivity extends Activity implements Serializable {
 	 */
 	public void switchPlayer() {
 		TextView header = (TextView) findViewById(R.id.txt_move);
-		if (header.getText().toString().equals(getResources().getString(R.string.txt_black_move))) {
+		if (header.getText().toString()
+				.equals(getResources().getString(R.string.txt_black_move))) {
 			header.setText(R.string.txt_white_move);
 		} else {
 			header.setText(R.string.txt_black_move);
@@ -234,14 +257,18 @@ public class GameActivity extends Activity implements Serializable {
 	 */
 	@SuppressLint("Wakelock")
 	private void loadPreferences() {
-		mPreferences = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
+		mPreferences = PreferenceManager
+				.getDefaultSharedPreferences(getApplicationContext());
 
 		if (mPreferences.getBoolean("screenAlwaysOn", false)) {
 			mAlwaysOn = true;
-			getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
+			getWindow()
+					.addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
 		} else if (mAlwaysOn) {
 			mAlwaysOn = false;
-			getWindow().clearFlags(android.view.WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
+			getWindow()
+					.clearFlags(
+							android.view.WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
 		}
 
 		mRotate = mPreferences.getBoolean("rotate", false);
@@ -270,7 +297,8 @@ public class GameActivity extends Activity implements Serializable {
 		if (!mRotate) {
 			return;
 		}
-		ViewPropertyAnimator animator = ((RelativeLayout) this.findViewById(R.id.view)).animate();
+		ViewPropertyAnimator animator = ((RelativeLayout) this
+				.findViewById(R.id.view)).animate();
 		if (mCurrentRotation == 0) {
 			mCurrentRotation += ROTATION;
 		} else {
@@ -311,22 +339,24 @@ public class GameActivity extends Activity implements Serializable {
 	private void setupBundleItems(ChessboardView view) {
 		Bundle bundle = getIntent().getExtras();
 		String moves = bundle.getString(MainMenuActivity.MOVES);
-		//Initialized from main menu
-		if(moves != null){
-			mPreferences = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
+		// Initialized from main menu
+		if (moves != null) {
+			mPreferences = PreferenceManager
+					.getDefaultSharedPreferences(getApplicationContext());
 			mStartTime = Long.parseLong(bundle.getString(DBAdapter.TIME, "0"));
 			mBonusTime = Long.parseLong(bundle.getString(DBAdapter.BONUS, "0"));
 			mChessboard.setTime(mStartTime, mBonusTime);
-			mChessboard.mPositionHashFactory.rebuildPosition(moves);
-			long whiteTime = Long.parseLong(bundle.getString(DBAdapter.WHITETIME,"0"));
-			long blackTime = Long.parseLong(bundle.getString(DBAdapter.BLACKTIME,"0"));
+			long whiteTime = Long.parseLong(bundle.getString(
+					DBAdapter.WHITETIME, "0"));
+			long blackTime = Long.parseLong(bundle.getString(
+					DBAdapter.BLACKTIME, "0"));
 			mChessboard.setTime(Chesspiece.WHITE, whiteTime);
 			mChessboard.setTime(Chesspiece.BLACK, blackTime);
 			updateClock(Chesspiece.WHITE, whiteTime);
-			updateClock(Chesspiece.BLACK,blackTime);
+			updateClock(Chesspiece.BLACK, blackTime);
 		}
-		//initialised from gamesettings
-		else{
+		// initialised from gamesettings
+		else {
 			mStartTime = bundle.getLong(GameSettingsActivity.TIME);
 			mBonusTime = bundle.getLong(GameSettingsActivity.BONUS);
 			mChessboard.setTime(mStartTime, mBonusTime);
@@ -335,6 +365,11 @@ public class GameActivity extends Activity implements Serializable {
 		mBlackName = bundle.getString(GameSettingsActivity.BLACKNAME);
 		view.setPlayerNames(mWhiteName, mBlackName);
 		view.setActivity(this);
+		if (moves != null) {
+			int toMove = mChessboard.mPositionHashFactory.rebuildPosition(moves);
+			mChessboard.mView.setCurrentPlayer(toMove);
+			mChessboard.mView.reDraw();
+		}
 	}
 
 	@Override
@@ -394,17 +429,20 @@ public class GameActivity extends Activity implements Serializable {
 	}
 
 	private void saveGame() {
-		SharedPreferences settings = getSharedPreferences(FILENAME, Context.MODE_PRIVATE);
+		SharedPreferences settings = getSharedPreferences(FILENAME,
+				Context.MODE_PRIVATE);
 		Editor editor = settings.edit();
 		editor.putString("gameActivity", Serializer.objectToString(this));
 		editor.commit();
 	}
-//TODO fjern disse?
+
+	// TODO fjern disse?
 	private void loadGame() {
-		SharedPreferences settings = getSharedPreferences(FILENAME, Context.MODE_PRIVATE);
+		SharedPreferences settings = getSharedPreferences(FILENAME,
+				Context.MODE_PRIVATE);
 		String game = settings.getString("gameActivity", "");
 		if (!game.equals("")) {
-//			this = Serializer.stringToObject(game);
+			// this = Serializer.stringToObject(game);
 		}
 	}
 
@@ -447,7 +485,8 @@ public class GameActivity extends Activity implements Serializable {
 	 */
 	private void resetMoveString() {
 		TextView header = (TextView) findViewById(R.id.txt_move);
-		if (!header.getText().equals(getResources().getString(R.string.txt_white_move))) {
+		if (!header.getText().equals(
+				getResources().getString(R.string.txt_white_move))) {
 			header.setText(R.string.txt_white_move);
 		}
 	}
@@ -484,7 +523,8 @@ public class GameActivity extends Activity implements Serializable {
 	 */
 	public void setCheckText(int color, int flag) {
 		if (flag != PlayerFrame.NO_CHECK && flag != PlayerFrame.CHECK) {
-			((TextView) findViewById(R.id.txt_move)).setText(R.string.txt_game_over);
+			((TextView) findViewById(R.id.txt_move))
+					.setText(R.string.txt_game_over);
 		}
 		if (color == Chesspiece.WHITE) {
 			mWhiteFrame.setCheckText(flag);

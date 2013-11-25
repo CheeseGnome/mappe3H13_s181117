@@ -17,9 +17,10 @@ public class PositionHashFactory {
 	String[] mMoves = new String[ARRAY_INCREMENT];
 	private int mCurrentHashIndex = 0, mCurrentMoveIndex = 0;
 
-	private static final String WHITE = "a", BLACK = "b", ENPASSANT = "c", NOPIECE = "d", WPAWN = "e", WROOK = "f",
-			WBISHOP = "g", WKNIGHT = "h", WKING = "i", WQUEEN = "j", BPAWN = "k", BROOK = "l", BBISHOP = "m",
-			BKNIGHT = "n", BKING = "o", BQUEEN = "p";
+	private static final String WHITE = "a", BLACK = "b", ENPASSANT = "c",
+			NOPIECE = "d", WPAWN = "e", WROOK = "f", WBISHOP = "g",
+			WKNIGHT = "h", WKING = "i", WQUEEN = "j", BPAWN = "k", BROOK = "l",
+			BBISHOP = "m", BKNIGHT = "n", BKING = "o", BQUEEN = "p";
 	private static final String SPLIT = " ";
 
 	/*
@@ -31,21 +32,26 @@ public class PositionHashFactory {
 	public PositionHashFactory(Chessboard board) {
 		mChessboard = board;
 	}
-	
-	public void rebuildPosition(String moves){
+
+	public int rebuildPosition(String moves) {
 		String[] move = moves.split(SPLIT);
 		int color = Chesspiece.WHITE;
-		
-		for(int i = 0; i < move.length; i++){
-			if(move[i] == null){
+
+		for (int i = 0; i < move.length; i++) {
+			if (move[i] == null) {
 				break;
 			}
 			performMove(move[i], color);
-			if(color == Chesspiece.WHITE){
+			if (color == Chesspiece.WHITE) {
 				color = Chesspiece.BLACK;
-			}else{
+			} else {
 				color = Chesspiece.WHITE;
 			}
+		}
+		if(move.length % 2 == 0){
+			return Chesspiece.WHITE;
+		}else{
+			return Chesspiece.BLACK;
 		}
 	}
 
@@ -80,7 +86,8 @@ public class PositionHashFactory {
 	 *            The color to move
 	 */
 	private void performMove(String move, int color) {
-		move = move.replaceAll("x", "").replaceAll("+", "").replaceAll("#", "");
+		move = move.replaceAll("x", "").replaceAll("\\+", "")
+				.replaceAll("#", "");
 		char letter = move.charAt(0);
 		Chesspiece piece;
 		Chesspiece sameClass = null;
@@ -98,21 +105,27 @@ public class PositionHashFactory {
 		if (sameClass != null) {
 			letter = move.charAt(2);
 			if (Character.isDigit(letter)) {
-				piece = mChessboard.otherPieceCanMoveTo(sameClass, translateRow(letter),
+				piece = mChessboard.otherPieceCanMoveTo(sameClass,
+						translateRow(letter), translateColumn(move.charAt(1)));
+				piece.move(translateRow(letter),
 						translateColumn(move.charAt(1)));
-				piece.move(translateRow(letter), translateColumn(move.charAt(1)));
 			} else if (Character.isDigit(move.charAt(1))) {
-				piece = mChessboard.getPieceOnRow(sameClass, translateRow(move.charAt(1)));
-				piece.move(translateRow(letter), translateColumn(move.charAt(1)));
+				piece = mChessboard.getPieceOnRow(sameClass,
+						translateRow(move.charAt(1)));
+				piece.move(translateRow(letter),
+						translateColumn(move.charAt(1)));
 			} else {
-				piece = mChessboard.getPieceOnColumn(sameClass, translateColumn(move.charAt(1)));
-				piece.move(translateRow(letter), translateColumn(move.charAt(1)));
+				piece = mChessboard.getPieceOnColumn(sameClass,
+						translateColumn(move.charAt(1)));
+				piece.move(translateRow(letter),
+						translateColumn(move.charAt(1)));
 			}
 		}
 
 		else if (letter == 'K') {
 			piece = mChessboard.getKing(color);
-			piece.move(translateRow(move.charAt(2)), translateColumn(move.charAt(1)));
+			piece.move(translateRow(move.charAt(2)),
+					translateColumn(move.charAt(1)));
 		}
 		// castle
 		else if (letter == 'O') {
@@ -137,9 +150,17 @@ public class PositionHashFactory {
 			} else if (move.lastIndexOf("B") != -1) {
 				mChessboard.setPromotionFlag(Chessboard.BISHOP);
 			}
-			piece = mChessboard.getPawnOnColumn(color, translateColumn(move.charAt(0)), translateRow(move.charAt(2)),
-					translateColumn(move.charAt(1)));
-			piece.move(translateRow(move.charAt(2)), translateColumn(move.charAt(1)));
+			int legalRow, legalColumn;
+			if (Character.isDigit(move.charAt(1))) {
+				legalRow = translateRow(move.charAt(1));
+				legalColumn = translateColumn(move.charAt(0));
+			} else {
+				legalRow = translateRow(move.charAt(2));
+				legalColumn = translateColumn(move.charAt(1));
+			}
+			piece = mChessboard.getPawnOnColumn(color,
+					translateColumn(move.charAt(0)), legalRow, legalColumn);
+			piece.move(legalRow, legalColumn);
 		}
 	}
 
@@ -175,8 +196,9 @@ public class PositionHashFactory {
 		return result;
 	}
 
-	public void insertMove(Chessboard board, Chesspiece piece, int row, int column, int oldRow, int oldColumn,
-			Chesspiece captured, int flag, boolean check, boolean checkmate, Chesspiece other) {
+	public void insertMove(Chessboard board, Chesspiece piece, int row,
+			int column, int oldRow, int oldColumn, Chesspiece captured,
+			int flag, boolean check, boolean checkmate, Chesspiece other) {
 
 		if (mCurrentMoveIndex == mMoves.length) {
 			expandArray(mMoves);
@@ -382,7 +404,7 @@ public class PositionHashFactory {
 		for (int i = 0; i < mCurrentMoveIndex; i++) {
 			builder.append(mMoves[i] + SPLIT);
 		}
-		//remove last split
+		// remove last split
 		builder.deleteCharAt(builder.length() - 1);
 		return builder.toString();
 	}
@@ -424,7 +446,8 @@ public class PositionHashFactory {
 	 */
 	public boolean drawByRepetition() {
 		// Last entered hash
-		String hash = mHashedPositions[mCurrentHashIndex - 1].replaceAll(ENPASSANT, NOPIECE);
+		String hash = mHashedPositions[mCurrentHashIndex - 1].replaceAll(
+				ENPASSANT, NOPIECE);
 		int repetition_count = 1;
 		for (int i = 0; i < mCurrentHashIndex - 1; i++) {
 			if (mHashedPositions[i].replaceAll(ENPASSANT, NOPIECE).equals(hash)) {

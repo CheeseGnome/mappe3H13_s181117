@@ -98,6 +98,15 @@ public class ChessboardView extends TableLayout{
 			}
 		});
 	}
+	
+	public void setCurrentPlayer(int color){
+		mCurrentPlayer = color;
+	}
+	
+	public void reDraw(){
+		placePieces();
+		setLegalMovesHint();
+	}
 
 	/**
 	 * Returns an int Chesspiece.WHITE or Chesspiece.BLACK depending on who's
