@@ -13,7 +13,8 @@ import android.content.Context;
 
 public class Chessboard {
 
-	public static final int NO_PROMOTION = -1, QUEEN = 0, ROOK = 1, BISHOP = 2, KNIGHT = 3;
+	public static final int NO_PROMOTION = -1, QUEEN = 0, ROOK = 1, BISHOP = 2,
+			KNIGHT = 3;
 	public static final int CHECKMATE = 0, OTHERGAMEOVER = 1, GAMENOTOVER = 2;
 
 	private Chesspiece[][] mChessboard;
@@ -25,6 +26,7 @@ public class Chessboard {
 	private boolean firstMove = true;
 	private long mStartTime, mBonusTime;
 	private GameActivity mActivity;
+	private volatile long mWhiteTime, mBlackTime;
 
 	/**
 	 * Used to count towards the 50-move rule
@@ -64,6 +66,10 @@ public class Chessboard {
 		Chesspiece.chessboard = this;
 		mChessboard = createChessboard();
 		mPositionHashFactory = new PositionHashFactory(this);
+	}
+
+	public Context getContext() {
+		return mContext;
 	}
 
 	/**
@@ -119,12 +125,9 @@ public class Chessboard {
 				long diff1 = new Date().getTime();
 				long diff2 = diff1;
 				long difference;
-
-				long whiteTime = startTime;
-				long blackTime = startTime;
 				int color = Chesspiece.BLACK;
 
-				while (whiteTime > 0 && blackTime > 0) {
+				while (mWhiteTime > 0 && mBlackTime > 0) {
 					while (mMoving) {
 						if (mStopClock) {
 							mStopClock = false;
@@ -141,12 +144,12 @@ public class Chessboard {
 					if (mChangeClockColor) {
 						mChangeClockColor = false;
 						if (color == Chesspiece.WHITE) {
-							whiteTime += mBonusTime;
-							mActivity.updateClock(color, whiteTime);
+							mWhiteTime += mBonusTime;
+							mActivity.updateClock(color, mWhiteTime);
 							color = Chesspiece.BLACK;
 						} else {
-							blackTime += mBonusTime;
-							mActivity.updateClock(color, blackTime);
+							mBlackTime += mBonusTime;
+							mActivity.updateClock(color, mBlackTime);
 							color = Chesspiece.WHITE;
 						}
 						diff1 = new Date().getTime();
@@ -154,14 +157,14 @@ public class Chessboard {
 					diff2 = new Date().getTime();
 					if (color == Chesspiece.WHITE) {
 						difference = diff2 - diff1;
-						whiteTime -= difference;
+						mWhiteTime -= difference;
 						diff1 = diff2;
-						mActivity.updateClock(color, whiteTime);
+						mActivity.updateClock(color, mWhiteTime);
 					} else {
 						difference = diff2 - diff1;
-						blackTime -= difference;
+						mBlackTime -= difference;
 						diff1 = diff2;
-						mActivity.updateClock(color, blackTime);
+						mActivity.updateClock(color, mBlackTime);
 					}
 					try {
 						// Performance
@@ -218,7 +221,8 @@ public class Chessboard {
 
 		for (int i = 0; i < getMaxColumns(); i++) {
 			board[1][i] = new Pawn(Chesspiece.BLACK, 1, i);
-			board[getMaxRows() - 2][i] = new Pawn(Chesspiece.WHITE, getMaxRows() - 2, i);
+			board[getMaxRows() - 2][i] = new Pawn(Chesspiece.WHITE,
+					getMaxRows() - 2, i);
 		}
 		board[0][0] = new Rook(Chesspiece.BLACK, 0, 0);
 		board[0][1] = new Knight(Chesspiece.BLACK, 0, 1);
@@ -229,14 +233,22 @@ public class Chessboard {
 		board[0][6] = new Knight(Chesspiece.BLACK, 0, 6);
 		board[0][7] = new Rook(Chesspiece.BLACK, 0, 7);
 
-		board[getMaxRows() - 1][0] = new Rook(Chesspiece.WHITE, getMaxRows() - 1, 0);
-		board[getMaxRows() - 1][1] = new Knight(Chesspiece.WHITE, getMaxRows() - 1, 1);
-		board[getMaxRows() - 1][2] = new Bishop(Chesspiece.WHITE, getMaxRows() - 1, 2);
-		board[getMaxRows() - 1][3] = new Queen(Chesspiece.WHITE, getMaxRows() - 1, 3);
-		board[getMaxRows() - 1][4] = new King(Chesspiece.WHITE, getMaxRows() - 1, 4);
-		board[getMaxRows() - 1][5] = new Bishop(Chesspiece.WHITE, getMaxRows() - 1, 5);
-		board[getMaxRows() - 1][6] = new Knight(Chesspiece.WHITE, getMaxRows() - 1, 6);
-		board[getMaxRows() - 1][7] = new Rook(Chesspiece.WHITE, getMaxRows() - 1, 7);
+		board[getMaxRows() - 1][0] = new Rook(Chesspiece.WHITE,
+				getMaxRows() - 1, 0);
+		board[getMaxRows() - 1][1] = new Knight(Chesspiece.WHITE,
+				getMaxRows() - 1, 1);
+		board[getMaxRows() - 1][2] = new Bishop(Chesspiece.WHITE,
+				getMaxRows() - 1, 2);
+		board[getMaxRows() - 1][3] = new Queen(Chesspiece.WHITE,
+				getMaxRows() - 1, 3);
+		board[getMaxRows() - 1][4] = new King(Chesspiece.WHITE,
+				getMaxRows() - 1, 4);
+		board[getMaxRows() - 1][5] = new Bishop(Chesspiece.WHITE,
+				getMaxRows() - 1, 5);
+		board[getMaxRows() - 1][6] = new Knight(Chesspiece.WHITE,
+				getMaxRows() - 1, 6);
+		board[getMaxRows() - 1][7] = new Rook(Chesspiece.WHITE,
+				getMaxRows() - 1, 7);
 
 		return board;
 	}
@@ -317,7 +329,8 @@ public class Chessboard {
 	 */
 	public int tileContains(int row, int column, boolean showEnPassant) {
 		if (mChessboard[row][column] != null) {
-			if (mChessboard[row][column].getColor() == Chesspiece.EN_PASSANT && !showEnPassant) {
+			if (mChessboard[row][column].getColor() == Chesspiece.EN_PASSANT
+					&& !showEnPassant) {
 				return Chesspiece.NO_PIECE;
 			}
 			return mChessboard[row][column].getColor();
@@ -343,7 +356,8 @@ public class Chessboard {
 
 	protected Chesspiece getPieceOnRow(Chesspiece piece, int row) {
 		for (int i = 0; i < getMaxColumns(); i++) {
-			if (mChessboard[row][i] != null && mChessboard[row][i].getColor() == piece.getColor()
+			if (mChessboard[row][i] != null
+					&& mChessboard[row][i].getColor() == piece.getColor()
 					&& mChessboard[row][i].sameClass(piece)) {
 				return mChessboard[row][i];
 			}
@@ -353,7 +367,8 @@ public class Chessboard {
 
 	protected Chesspiece getPieceOnColumn(Chesspiece piece, int column) {
 		for (int i = 0; i < getMaxRows(); i++) {
-			if (mChessboard[i][column] != null && mChessboard[i][column].getColor() == piece.getColor()
+			if (mChessboard[i][column] != null
+					&& mChessboard[i][column].getColor() == piece.getColor()
 					&& mChessboard[i][column].sameClass(piece)) {
 				return mChessboard[i][column];
 			}
@@ -361,9 +376,11 @@ public class Chessboard {
 		return null;
 	}
 
-	protected Chesspiece getPawnOnColumn(int color, int column, int legalRow, int legalColumn) {
+	protected Chesspiece getPawnOnColumn(int color, int column, int legalRow,
+			int legalColumn) {
 		for (int i = 0; i < getMaxRows(); i++) {
-			if (mChessboard[i][column] != null && mChessboard[i][column].getColor() == color
+			if (mChessboard[i][column] != null
+					&& mChessboard[i][column].getColor() == color
 					&& mChessboard[i][column] instanceof Pawn
 					&& mChessboard[i][column].legalMoves()[legalRow][legalColumn]) {
 				return mChessboard[i][column];
@@ -372,14 +389,16 @@ public class Chessboard {
 		return null;
 	}
 
-	protected Chesspiece otherPieceCanMoveTo(Chesspiece piece, int row, int column) {
+	protected Chesspiece otherPieceCanMoveTo(Chesspiece piece, int row,
+			int column) {
 		Chesspiece other = null;
 		if (!(piece instanceof King) && !(piece instanceof Pawn)) {
 			loop: for (int i = 0; i < getMaxRows(); i++) {
 				for (int j = 0; j < getMaxColumns(); j++) {
 					other = getPieceAt(i, j);
-					if (other != null && other.getColor() == piece.getColor() && other.sameClass(piece)
-							&& !other.equals(piece) && other.legalMoves()[row][column]) {
+					if (other != null && other.getColor() == piece.getColor()
+							&& other.sameClass(piece) && !other.equals(piece)
+							&& other.legalMoves()[row][column]) {
 						break loop;
 					}
 					other = null;
@@ -410,7 +429,8 @@ public class Chessboard {
 	 * @param oldColumn
 	 *            The piece's old column position
 	 */
-	public void move(Chesspiece piece, int row, int column, int oldRow, int oldColumn) {
+	public void move(Chesspiece piece, int row, int column, int oldRow,
+			int oldColumn) {
 		move(piece, row, column, oldRow, oldColumn, false);
 	}
 
@@ -433,15 +453,18 @@ public class Chessboard {
 	 * @param castle
 	 *            True if this is a castle(clock should not switch colors)
 	 */
-	public void move(Chesspiece piece, int row, int column, int oldRow, int oldColumn, boolean castle) {
+	public void move(Chesspiece piece, int row, int column, int oldRow,
+			int oldColumn, boolean castle) {
 		if (!castle) {
 			mActivity.rotate();
 		}
 		boolean incrementCount = !(piece instanceof Pawn);
 		Chesspiece other = otherPieceCanMoveTo(piece, row, column);
 		// Kill En-Passant
-		if (mChessboard[row][column] != null && mChessboard[row][column].getColor() == Chesspiece.EN_PASSANT) {
-			mChessboard[mEnPassant.getPawn().getRow()][mEnPassant.getPawn().getColumn()] = null;
+		if (mChessboard[row][column] != null
+				&& mChessboard[row][column].getColor() == Chesspiece.EN_PASSANT) {
+			mChessboard[mEnPassant.getPawn().getRow()][mEnPassant.getPawn()
+					.getColumn()] = null;
 			mActivity.capturePiece(mEnPassant.getPawn());
 		}
 		// Remove En-Passant opportunity (if there is one)
@@ -460,7 +483,8 @@ public class Chessboard {
 		mChessboard[row][column] = piece;
 		int flag = mPromotionFlag;
 		if (mPromotionFlag != NO_PROMOTION) {
-			mChessboard[row][column] = getPieceByFlag(mPromotionFlag, piece.getColor(), row, column);
+			mChessboard[row][column] = getPieceByFlag(mPromotionFlag,
+					piece.getColor(), row, column);
 			mPromotionFlag = NO_PROMOTION;
 		}
 		getKing(piece.getColor()).setInCheck(false);
@@ -471,6 +495,8 @@ public class Chessboard {
 			mChangeClockColor = true;
 		} else if (firstMove) {
 			firstMove = false;
+			mWhiteTime = mStartTime;
+			mBlackTime = mStartTime;
 			startClock(mStartTime);
 		}
 		mMoving = false;
@@ -500,8 +526,33 @@ public class Chessboard {
 			check = true;
 		}
 		if (!castle) {
-			mPositionHashFactory.insertMove(this, piece, row, column, oldRow, oldColumn, captured, flag, check,
-					checkmate, other);
+			mPositionHashFactory.insertMove(this, piece, row, column, oldRow,
+					oldColumn, captured, flag, check, checkmate, other);
+			if (status == GAMENOTOVER) {
+				DBAdapter database = new DBAdapter(mContext);
+				database.open();
+				database.insertMoves(mPositionHashFactory.getMoves(),mView.getWhiteName(),mView.getBlackName(),"" + mWhiteTime,"" + mBlackTime,"" + mBonusTime,"" + mStartTime);
+			} else {
+				DBAdapter database = new DBAdapter(mContext);
+				database.open();
+				database.clearMoves();
+			}
+		}
+	}
+	
+	public long getTime(int color){
+		if(color == Chesspiece.WHITE){
+			return mWhiteTime;
+		}else{
+			return mBlackTime;
+		}
+	}
+	
+	public void setTime(int color, long time){
+		if(color == Chesspiece.WHITE){
+			mWhiteTime = time;
+		}else{
+			mBlackTime = time;
 		}
 	}
 
@@ -543,7 +594,8 @@ public class Chessboard {
 	protected King getKing(int color) {
 		for (int i = 0; i < getMaxRows(); i++) {
 			for (int j = 0; j < getMaxColumns(); j++) {
-				if (mChessboard[i][j] instanceof King && mChessboard[i][j].getColor() == color) {
+				if (mChessboard[i][j] instanceof King
+						&& mChessboard[i][j].getColor() == color) {
 					return (King) mChessboard[i][j];
 				}
 			}
@@ -589,12 +641,14 @@ public class Chessboard {
 				} else {
 					won = DBAdapter.BLACK_WON;
 				}
-				database.insertGameResult(mView.getWhiteName(), mView.getBlackName(), mPositionHashFactory.getMoves(),
+				database.insertGameResult(mView.getWhiteName(),
+						mView.getBlackName(), mPositionHashFactory.getMoves(),
 						won, new Date());
 				mView.endTheGame(ChessboardView.WINCHECKMATE, color);
 			} else {
 				status = OTHERGAMEOVER;
-				database.insertGameResult(mView.getWhiteName(), mView.getBlackName(), mPositionHashFactory.getMoves(),
+				database.insertGameResult(mView.getWhiteName(),
+						mView.getBlackName(), mPositionHashFactory.getMoves(),
 						DBAdapter.DRAW_STALEMATE, new Date());
 				mView.endTheGame(ChessboardView.DRAWSTALEMATE, color);
 				mActivity.setCheckText(color, PlayerFrame.DRAW);
@@ -608,7 +662,8 @@ public class Chessboard {
 			status = OTHERGAMEOVER;
 			DBAdapter database = new DBAdapter(mContext);
 			database.open();
-			database.insertGameResult(mView.getWhiteName(), mView.getBlackName(), mPositionHashFactory.getMoves(),
+			database.insertGameResult(mView.getWhiteName(),
+					mView.getBlackName(), mPositionHashFactory.getMoves(),
 					DBAdapter.DRAW_REPETITION, new Date());
 			mView.endTheGame(ChessboardView.DRAWREPETITION, color);
 			mActivity.setCheckText(color, PlayerFrame.DRAW);
@@ -640,8 +695,10 @@ public class Chessboard {
 		// search for threats
 		for (int i = 0; i < getMaxRows(); i++) {
 			for (int j = 0; j < getMaxColumns(); j++) {
-				if (mChessboard[i][j] != null && mChessboard[i][j].getColor() == enemy
-						&& mChessboard[i][j].threatensPosition(king.getRow(), king.getColumn())) {
+				if (mChessboard[i][j] != null
+						&& mChessboard[i][j].getColor() == enemy
+						&& mChessboard[i][j].threatensPosition(king.getRow(),
+								king.getColumn())) {
 					return true;
 				}
 			}
@@ -659,7 +716,8 @@ public class Chessboard {
 	private boolean hasLegalMoves(int color) {
 		for (int i = 0; i < getMaxRows(); i++) {
 			for (int j = 0; j < getMaxColumns(); j++) {
-				if (mChessboard[i][j] != null && mChessboard[i][j].getColor() == color) {
+				if (mChessboard[i][j] != null
+						&& mChessboard[i][j].getColor() == color) {
 					if (containsTrue(mChessboard[i][j].legalMoves())) {
 						return true;
 					}
@@ -693,7 +751,8 @@ public class Chessboard {
 	 * @return The number of rows on this chessboard
 	 */
 	public int getMaxRows() {
-		return 1 + mContext.getResources().getInteger(R.integer.chesspiece_max_row_index);
+		return 1 + mContext.getResources().getInteger(
+				R.integer.chesspiece_max_row_index);
 	}
 
 	/**
@@ -702,6 +761,7 @@ public class Chessboard {
 	 * @return The number of columns on this chessboard
 	 */
 	public int getMaxColumns() {
-		return 1 + mContext.getResources().getInteger(R.integer.chesspiece_max_column_index);
+		return 1 + mContext.getResources().getInteger(
+				R.integer.chesspiece_max_column_index);
 	}
 }

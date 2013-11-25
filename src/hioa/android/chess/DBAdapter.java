@@ -23,17 +23,22 @@ public class DBAdapter {
 
 	static final String DB_NAME = "chess.db";
 	static final String TABLE = "game", TABLE_POSITION = "position";
-	static final String HASH = "hash";
 	static final String ID = BaseColumns._ID;
 	static final String DATE = "played_on";
 	static final String WHITE_PLAYER = "white_player";
 	static final String BLACK_PLAYER = "black_player";
 	static final String RESULT = "result";
 	static final String MOVES = "moves";
+	static final String TIME = "time";
+	static final String WHITETIME = "whitetime";
+	static final String BLACKTIME = "blacktime";
+	static final String BONUS = "bonus";
 	static final int DB_VERSION = 1;
 
-	public static final String WHITE_WON = "white_won", BLACK_WON = "black_won", DRAW_STALEMATE = "draw_stalemate",
-			DRAW_REPETITION = "draw_repetition", DRAW_CLAIMED = "draw_claimed", DRAW_AGREED = "draw_agreed";
+	public static final String WHITE_WON = "white_won",
+			BLACK_WON = "black_won", DRAW_STALEMATE = "draw_stalemate",
+			DRAW_REPETITION = "draw_repetition", DRAW_CLAIMED = "draw_claimed",
+			DRAW_AGREED = "draw_agreed";
 
 	private DatabaseHelper dbHelper;
 	private SQLiteDatabase database;
@@ -59,24 +64,30 @@ public class DBAdapter {
 		database = dbHelper.getWritableDatabase();
 		return this;
 	}
-	
-	public boolean hasPositionHashFactory(){
-		Cursor cursor = database.query(TABLE_POSITION, new String[]{HASH}, null, null, null, null, null, "1");
-		return cursor.getCount() == 1;
-	}
 
 	public void newPositionHashFactory() {
 		database.delete(TABLE_POSITION, null, null);
 	}
 
-	public void insertHash(String hash) {
+	public void insertMoves(String moves, String whiteName, String blackName,
+			String whiteTime, String blackTime, String bonus, String time) {
 		ContentValues values = new ContentValues();
-		values.put(HASH, hash);
+		values.put(MOVES, moves);
+		values.put(WHITE_PLAYER, whiteName);
+		values.put(BLACK_PLAYER, blackName);
+		values.put(WHITETIME, whiteTime);
+		values.put(BLACKTIME, blackTime);
+		values.put(BONUS, bonus);
+		values.put(TIME, time);
+		database.delete(TABLE_POSITION, null, null);
 		database.insert(TABLE_POSITION, null, values);
 	}
 
-	public Cursor getHashes() {
-		return database.query(TABLE_POSITION, new String[] { HASH }, null, null, null, null, null, null);
+	public Cursor getMoves() {
+		String[] columns = { MOVES, WHITE_PLAYER, BLACK_PLAYER, WHITETIME,
+				BLACKTIME, BONUS, TIME };
+		return database.query(TABLE_POSITION, columns, null, null, null, null,
+				null, null);
 	}
 
 	/**
@@ -94,7 +105,8 @@ public class DBAdapter {
 	 *            The date when the game was played
 	 */
 	@SuppressLint("SimpleDateFormat")
-	protected void insertGameResult(String white_name, String black_name, String moves, String result, Date date) {
+	protected void insertGameResult(String white_name, String black_name,
+			String moves, String result, Date date) {
 		ContentValues values = new ContentValues();
 		values.put(WHITE_PLAYER, white_name);
 		values.put(BLACK_PLAYER, black_name);
@@ -106,7 +118,7 @@ public class DBAdapter {
 	}
 
 	/**
-	 * Delete an entry from the database
+	 * Delete a game result from the database
 	 * 
 	 * @param where
 	 *            The optional WHERE clause to apply when deleting. Passing null
@@ -118,6 +130,10 @@ public class DBAdapter {
 	 */
 	public void delete(String where, String[] whereArgs) {
 		database.delete(TABLE, where, whereArgs);
+	}
+
+	public void clearMoves() {
+		database.delete(TABLE_POSITION, null, null);
 	}
 
 	/**
@@ -134,7 +150,8 @@ public class DBAdapter {
 	 *            by the values from whereArgs. The values will be bound as
 	 *            Strings.
 	 */
-	public void update(ContentValues values, String selection, String[] selectionArgs) {
+	public void update(ContentValues values, String selection,
+			String[] selectionArgs) {
 		database.update(TABLE, values, selection, selectionArgs);
 	}
 
@@ -156,8 +173,10 @@ public class DBAdapter {
 	 * @return A Cursor object positioned before the first entry
 	 */
 	protected Cursor query(String where, String having) {
-		String[] columns = { ID, WHITE_PLAYER, BLACK_PLAYER, DATE, RESULT, MOVES };
-		return database.query(false, TABLE, columns, where, null, null, having, WHITE_PLAYER + " ASC", null, null);
+		String[] columns = { ID, WHITE_PLAYER, BLACK_PLAYER, DATE, RESULT,
+				MOVES };
+		return database.query(false, TABLE, columns, where, null, null, having,
+				WHITE_PLAYER + " ASC", null, null);
 	}
 
 	/**
@@ -181,8 +200,10 @@ public class DBAdapter {
 	 *            default sort order, which may be unordered.
 	 * @return A Cursor object positioned before the first entry
 	 */
-	public Cursor query(String[] projection, String selection, String[] selectionArgs, String sortOrder) {
-		return database.query(TABLE, projection, selection, selectionArgs, null, null, sortOrder);
+	public Cursor query(String[] projection, String selection,
+			String[] selectionArgs, String sortOrder) {
+		return database.query(TABLE, projection, selection, selectionArgs,
+				null, null, sortOrder);
 	}
 
 	/**
@@ -199,11 +220,16 @@ public class DBAdapter {
 
 		@Override
 		public void onCreate(SQLiteDatabase db) {
-			String sql = "create table " + TABLE + " (" + ID + " integer primary key autoincrement, " + WHITE_PLAYER
-					+ " text, " + BLACK_PLAYER + " text, " + DATE + " date, " + RESULT + " text, " + MOVES + " text);";
+			String sql = "create table " + TABLE + " (" + ID
+					+ " integer primary key autoincrement, " + WHITE_PLAYER
+					+ " text, " + BLACK_PLAYER + " text, " + DATE + " date, "
+					+ RESULT + " text, " + MOVES + " text);";
 			db.execSQL(sql);
-			sql = "create table " + TABLE_POSITION + " (" + ID + " integer primary key autoincrement, " + HASH
-					+ " text);";
+			sql = "create table " + TABLE_POSITION + " (" + ID
+					+ " integer primary key autoincrement, " + WHITE_PLAYER
+					+ " text, " + BLACK_PLAYER + " text, " + WHITETIME
+					+ " text, " + BLACKTIME + " text, " + BONUS + " text, " + TIME + " text, "
+					+ MOVES + " text);";
 			db.execSQL(sql);
 		}
 

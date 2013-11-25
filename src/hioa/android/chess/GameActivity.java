@@ -310,9 +310,27 @@ public class GameActivity extends Activity implements Serializable {
 	 */
 	private void setupBundleItems(ChessboardView view) {
 		Bundle bundle = getIntent().getExtras();
-		mStartTime = bundle.getLong(GameSettingsActivity.TIME);
-		mBonusTime = bundle.getLong(GameSettingsActivity.BONUS);
-		mChessboard.setTime(mStartTime, mBonusTime);
+		String moves = bundle.getString(MainMenuActivity.MOVES);
+		//Initialized from main menu
+		if(moves != null){
+			mPreferences = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
+			mStartTime = Long.parseLong(bundle.getString(DBAdapter.TIME, "0"));
+			mBonusTime = Long.parseLong(bundle.getString(DBAdapter.BONUS, "0"));
+			mChessboard.setTime(mStartTime, mBonusTime);
+			mChessboard.mPositionHashFactory.rebuildPosition(moves);
+			long whiteTime = Long.parseLong(bundle.getString(DBAdapter.WHITETIME,"0"));
+			long blackTime = Long.parseLong(bundle.getString(DBAdapter.BLACKTIME,"0"));
+			mChessboard.setTime(Chesspiece.WHITE, whiteTime);
+			mChessboard.setTime(Chesspiece.BLACK, blackTime);
+			updateClock(Chesspiece.WHITE, whiteTime);
+			updateClock(Chesspiece.BLACK,blackTime);
+		}
+		//initialised from gamesettings
+		else{
+			mStartTime = bundle.getLong(GameSettingsActivity.TIME);
+			mBonusTime = bundle.getLong(GameSettingsActivity.BONUS);
+			mChessboard.setTime(mStartTime, mBonusTime);
+		}
 		mWhiteName = bundle.getString(GameSettingsActivity.WHITENAME);
 		mBlackName = bundle.getString(GameSettingsActivity.BLACKNAME);
 		view.setPlayerNames(mWhiteName, mBlackName);

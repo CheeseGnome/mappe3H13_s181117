@@ -20,6 +20,7 @@ public class PositionHashFactory {
 	private static final String WHITE = "a", BLACK = "b", ENPASSANT = "c", NOPIECE = "d", WPAWN = "e", WROOK = "f",
 			WBISHOP = "g", WKNIGHT = "h", WKING = "i", WQUEEN = "j", BPAWN = "k", BROOK = "l", BBISHOP = "m",
 			BKNIGHT = "n", BKING = "o", BQUEEN = "p";
+	private static final String SPLIT = " ";
 
 	/*
 	 * It is extremely important that this does not equal Chesspiece.WHITE or
@@ -29,6 +30,23 @@ public class PositionHashFactory {
 
 	public PositionHashFactory(Chessboard board) {
 		mChessboard = board;
+	}
+	
+	public void rebuildPosition(String moves){
+		String[] move = moves.split(SPLIT);
+		int color = Chesspiece.WHITE;
+		
+		for(int i = 0; i < move.length; i++){
+			if(move[i] == null){
+				break;
+			}
+			performMove(move[i], color);
+			if(color == Chesspiece.WHITE){
+				color = Chesspiece.BLACK;
+			}else{
+				color = Chesspiece.WHITE;
+			}
+		}
 	}
 
 	public int getCurrentMovesIndex() {
@@ -362,8 +380,10 @@ public class PositionHashFactory {
 	public String getMoves() {
 		StringBuilder builder = new StringBuilder();
 		for (int i = 0; i < mCurrentMoveIndex; i++) {
-			builder.append(mMoves[i] + " ");
+			builder.append(mMoves[i] + SPLIT);
 		}
+		//remove last split
+		builder.deleteCharAt(builder.length() - 1);
 		return builder.toString();
 	}
 
