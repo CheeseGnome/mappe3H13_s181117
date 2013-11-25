@@ -304,7 +304,6 @@ public final class R {
         public static final int AppTheme=0x7f0a0001;
     }
     public static final class xml {
-        public static final int local_chessgame=0x7f040000;
-        public static final int preferences=0x7f040001;
+        public static final int preferences=0x7f040000;
     }
 }

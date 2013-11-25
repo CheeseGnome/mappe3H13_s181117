@@ -15,6 +15,7 @@ import android.graphics.drawable.Drawable;
 import android.util.AttributeSet;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewPropertyAnimator;
 import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.TableLayout;
@@ -29,7 +30,7 @@ import android.widget.Toast;
  * @version 2013-11-23
  */
 
-public class ChessboardView extends TableLayout{
+public class ChessboardView extends TableLayout {
 
 	private Chessboard mChessboard;
 	private ImageButton[][] mButtons;
@@ -76,15 +77,8 @@ public class ChessboardView extends TableLayout{
 		initializeButtonArray();
 		placePieces();
 	}
-	
-	private void animateMove(int oldRow, int oldColumn, int row, int column){
-		//TODO flytt drawables til activity
-		//TODO lag en kopi av knappen, background til transparent og animer den bortover
-//		ImageButton copy = (ImageButton) mButtons[oldRow][oldColumn].clone();
-		mButtons[oldRow][oldColumn].getTranslationX();
-	}
-	
-	public void setLastMoveHint(int oldRow, int oldColumn, int row, int column){
+
+	public void setLastMoveHint(int oldRow, int oldColumn, int row, int column) {
 		mOldRow = oldRow;
 		mOldColumn = oldColumn;
 		mRow = row;
@@ -112,12 +106,12 @@ public class ChessboardView extends TableLayout{
 			}
 		});
 	}
-	
-	public void setCurrentPlayer(int color){
+
+	public void setCurrentPlayer(int color) {
 		mCurrentPlayer = color;
 	}
-	
-	public void reDraw(){
+
+	public void reDraw() {
 		placePieces();
 		setLegalMovesHint();
 	}
@@ -280,8 +274,8 @@ public class ChessboardView extends TableLayout{
 						space3 = "";
 					}
 				}
-				//White ends the game
-				if(mChessboard.mPositionHashFactory.getCurrentMovesIndex() % 2 != 0){
+				// White ends the game
+				if (mChessboard.mPositionHashFactory.getCurrentMovesIndex() % 2 != 0) {
 					builder.append(String.format("%-10s%s", space1 + moveNr + ".", space2 + white));
 				}
 				annotations.setMessage(builder.toString());
@@ -297,7 +291,8 @@ public class ChessboardView extends TableLayout{
 						(CharSequence) mResources.getString(R.string.btn_copy), new DialogInterface.OnClickListener() {
 							@Override
 							public void onClick(DialogInterface dialog, int which) {
-								ClipboardManager clipboard = (ClipboardManager) mContext.getSystemService(Context.CLIPBOARD_SERVICE);
+								ClipboardManager clipboard = (ClipboardManager) mContext
+										.getSystemService(Context.CLIPBOARD_SERVICE);
 								ClipData clip = ClipData.newPlainText("Chess annotation", builder.toString());
 								clipboard.setPrimaryClip(clip);
 								Toast.makeText(mContext, mContext.getString(R.string.toast_annotations),
