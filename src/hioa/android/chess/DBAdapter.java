@@ -82,6 +82,13 @@ public class DBAdapter {
 		database.delete(TABLE_POSITION, null, null);
 		database.insert(TABLE_POSITION, null, values);
 	}
+	
+	public void updateTimes(String whiteTime, String blackTime){
+		ContentValues values = new ContentValues();
+		values.put(WHITETIME, whiteTime);
+		values.put(BLACKTIME, blackTime);
+		database.update(TABLE_POSITION, values, null, null);
+	}
 
 	public Cursor getMoves() {
 		String[] columns = { MOVES, WHITE_PLAYER, BLACK_PLAYER, WHITETIME,

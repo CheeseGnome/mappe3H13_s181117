@@ -76,6 +76,13 @@ public class ChessboardView extends TableLayout{
 		initializeButtonArray();
 		placePieces();
 	}
+	
+	public void setLastMoveHint(int oldRow, int oldColumn, int row, int column){
+		mOldRow = oldRow;
+		mOldColumn = oldColumn;
+		mRow = row;
+		mColumn = column;
+	}
 
 	/**
 	 * Queues an endTheGame() method in the UI thread based on time out
@@ -200,6 +207,9 @@ public class ChessboardView extends TableLayout{
 		mLegalMoves = null;
 		mChessboard.stopClock();
 		mRow = mColumn = mOldRow = mOldColumn = -1;
+		DBAdapter database = new DBAdapter(mContext);
+		database.open();
+		database.clearMoves();
 		setLegalMovesHint();
 
 		final Dialog dialog = new Dialog(mContext);

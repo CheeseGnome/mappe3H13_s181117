@@ -1,16 +1,13 @@
 package hioa.android.chess;
 
-import java.io.Serializable;
 import java.util.Date;
 
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.AlertDialog;
-import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.content.SharedPreferences.Editor;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.view.Menu;
@@ -31,14 +28,8 @@ import android.widget.TextView;
  * @version 2013-11-23
  */
 
-public class GameActivity extends Activity implements Serializable {
+public class GameActivity extends Activity {
 
-	private static final String FILENAME = "local_chessgame.xml";
-
-	/**
-	 * 
-	 */
-	private static final long serialVersionUID = 1L;
 	private PlayerFrame mWhiteFrame, mBlackFrame;
 	private String mWhiteName, mBlackName;
 	private Chessboard mChessboard;
@@ -74,8 +65,6 @@ public class GameActivity extends Activity implements Serializable {
 		setupBundleItems(board);
 		mWhiteFrame.setName(mWhiteName);
 		mBlackFrame.setName(mBlackName);
-		updateClock(Chesspiece.WHITE, mStartTime);
-		updateClock(Chesspiece.BLACK, mStartTime);
 
 		setDrawButtonMode(OFFERDRAW);
 
@@ -114,7 +103,9 @@ public class GameActivity extends Activity implements Serializable {
 				.setOnClickListener(new OnClickListener() {
 					@Override
 					public void onClick(View v) {
-						// TODO Save
+						DBAdapter database = new DBAdapter(GameActivity.this);
+						database.open();
+						database.clearMoves();
 						finish();
 					}
 
@@ -224,9 +215,17 @@ public class GameActivity extends Activity implements Serializable {
 
 	@Override
 	protected void onResume() {
-		// loadGame();
 		loadPreferences();
 		super.onResume();
+	}
+
+	@Override
+	protected void onPause() {
+		DBAdapter database = new DBAdapter(this);
+		database.open();
+		database.updateTimes("" + mChessboard.getTime(Chesspiece.WHITE), ""
+				+ mChessboard.getTime(Chesspiece.BLACK));
+		super.onPause();
 	}
 
 	/**
@@ -346,14 +345,6 @@ public class GameActivity extends Activity implements Serializable {
 			mStartTime = Long.parseLong(bundle.getString(DBAdapter.TIME, "0"));
 			mBonusTime = Long.parseLong(bundle.getString(DBAdapter.BONUS, "0"));
 			mChessboard.setTime(mStartTime, mBonusTime);
-			long whiteTime = Long.parseLong(bundle.getString(
-					DBAdapter.WHITETIME, "0"));
-			long blackTime = Long.parseLong(bundle.getString(
-					DBAdapter.BLACKTIME, "0"));
-			mChessboard.setTime(Chesspiece.WHITE, whiteTime);
-			mChessboard.setTime(Chesspiece.BLACK, blackTime);
-			updateClock(Chesspiece.WHITE, whiteTime);
-			updateClock(Chesspiece.BLACK, blackTime);
 		}
 		// initialised from gamesettings
 		else {
@@ -366,16 +357,23 @@ public class GameActivity extends Activity implements Serializable {
 		view.setPlayerNames(mWhiteName, mBlackName);
 		view.setActivity(this);
 		if (moves != null) {
-			int toMove = mChessboard.mPositionHashFactory.rebuildPosition(moves);
+			int toMove = mChessboard.mPositionHashFactory
+					.rebuildPosition(moves);
 			mChessboard.mView.setCurrentPlayer(toMove);
 			mChessboard.mView.reDraw();
+			long whiteTime = Long.parseLong(bundle.getString(
+					DBAdapter.WHITETIME, "0"));
+			long blackTime = Long.parseLong(bundle.getString(
+					DBAdapter.BLACKTIME, "0"));
+			mChessboard.setTime(Chesspiece.WHITE, whiteTime);
+			mChessboard.setTime(Chesspiece.BLACK, blackTime);
+		}else{
+			mChessboard.setTime(Chesspiece.WHITE, mStartTime);
+			mChessboard.setTime(Chesspiece.BLACK, mStartTime);
 		}
-	}
-
-	@Override
-	protected void onPause() {
-		Serializer.objectToString(this);
-		super.onPause();
+		updateClock(Chesspiece.WHITE, mChessboard.getTime(Chesspiece.WHITE));
+		updateClock(Chesspiece.BLACK, mChessboard.getTime(Chesspiece.BLACK));
+		mChessboard.revalidateClock();
 	}
 
 	@Override
@@ -426,24 +424,6 @@ public class GameActivity extends Activity implements Serializable {
 			return true;
 		}
 		return super.onOptionsItemSelected(item);
-	}
-
-	private void saveGame() {
-		SharedPreferences settings = getSharedPreferences(FILENAME,
-				Context.MODE_PRIVATE);
-		Editor editor = settings.edit();
-		editor.putString("gameActivity", Serializer.objectToString(this));
-		editor.commit();
-	}
-
-	// TODO fjern disse?
-	private void loadGame() {
-		SharedPreferences settings = getSharedPreferences(FILENAME,
-				Context.MODE_PRIVATE);
-		String game = settings.getString("gameActivity", "");
-		if (!game.equals("")) {
-			// this = Serializer.stringToObject(game);
-		}
 	}
 
 	/**

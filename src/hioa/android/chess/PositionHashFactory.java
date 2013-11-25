@@ -48,9 +48,9 @@ public class PositionHashFactory {
 				color = Chesspiece.WHITE;
 			}
 		}
-		if(move.length % 2 == 0){
+		if (move.length % 2 == 0) {
 			return Chesspiece.WHITE;
-		}else{
+		} else {
 			return Chesspiece.BLACK;
 		}
 	}
@@ -107,15 +107,24 @@ public class PositionHashFactory {
 			if (Character.isDigit(letter)) {
 				piece = mChessboard.otherPieceCanMoveTo(sameClass,
 						translateRow(letter), translateColumn(move.charAt(1)));
+				mChessboard.mView.setLastMoveHint(piece.getRow(),
+						piece.getColumn(), translateRow(letter),
+						translateColumn(move.charAt(1)));
 				piece.move(translateRow(letter),
 						translateColumn(move.charAt(1)));
 			} else if (Character.isDigit(move.charAt(1))) {
 				piece = mChessboard.getPieceOnRow(sameClass,
 						translateRow(move.charAt(1)));
+				mChessboard.mView.setLastMoveHint(piece.getRow(),
+						piece.getColumn(), translateRow(letter),
+						translateColumn(move.charAt(1)));
 				piece.move(translateRow(letter),
 						translateColumn(move.charAt(1)));
 			} else {
 				piece = mChessboard.getPieceOnColumn(sameClass,
+						translateColumn(move.charAt(1)));
+				mChessboard.mView.setLastMoveHint(piece.getRow(),
+						piece.getColumn(), translateRow(letter),
 						translateColumn(move.charAt(1)));
 				piece.move(translateRow(letter),
 						translateColumn(move.charAt(1)));
@@ -124,6 +133,9 @@ public class PositionHashFactory {
 
 		else if (letter == 'K') {
 			piece = mChessboard.getKing(color);
+			mChessboard.mView.setLastMoveHint(piece.getRow(),
+					piece.getColumn(), translateRow(move.charAt(2)),
+					translateColumn(move.charAt(1)));
 			piece.move(translateRow(move.charAt(2)),
 					translateColumn(move.charAt(1)));
 		}
@@ -132,9 +144,15 @@ public class PositionHashFactory {
 			piece = mChessboard.getKing(color);
 			if (move.length() == 3) {
 				// kingside
+				mChessboard.mView.setLastMoveHint(piece.getRow(),
+						piece.getColumn(), piece.getRow(),
+						piece.getColumn() + 2);
 				piece.move(piece.getRow(), piece.getColumn() + 2);
 			} else {
 				// queenside
+				mChessboard.mView.setLastMoveHint(piece.getRow(),
+						piece.getColumn(), piece.getRow(),
+						piece.getColumn() - 2);
 				piece.move(piece.getRow(), piece.getColumn() - 2);
 			}
 		}
@@ -160,6 +178,8 @@ public class PositionHashFactory {
 			}
 			piece = mChessboard.getPawnOnColumn(color,
 					translateColumn(move.charAt(0)), legalRow, legalColumn);
+			mChessboard.mView.setLastMoveHint(piece.getRow(),
+					piece.getColumn(), legalRow, legalColumn);
 			piece.move(legalRow, legalColumn);
 		}
 	}

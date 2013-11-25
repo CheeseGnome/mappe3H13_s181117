@@ -27,6 +27,7 @@ public class Chessboard {
 	private long mStartTime, mBonusTime;
 	private GameActivity mActivity;
 	private volatile long mWhiteTime, mBlackTime;
+	private volatile int mRunningColor = -1;
 
 	/**
 	 * Used to count towards the 50-move rule
@@ -125,8 +126,7 @@ public class Chessboard {
 				long diff1 = new Date().getTime();
 				long diff2 = diff1;
 				long difference;
-				int color = Chesspiece.BLACK;
-
+				mRunningColor = Chesspiece.BLACK;
 				while (mWhiteTime > 0 && mBlackTime > 0) {
 					while (mMoving) {
 						if (mStopClock) {
@@ -143,28 +143,28 @@ public class Chessboard {
 					}
 					if (mChangeClockColor) {
 						mChangeClockColor = false;
-						if (color == Chesspiece.WHITE) {
+						if (mRunningColor == Chesspiece.WHITE) {
 							mWhiteTime += mBonusTime;
-							mActivity.updateClock(color, mWhiteTime);
-							color = Chesspiece.BLACK;
+							mActivity.updateClock(mRunningColor, mWhiteTime);
+							mRunningColor = Chesspiece.BLACK;
 						} else {
 							mBlackTime += mBonusTime;
-							mActivity.updateClock(color, mBlackTime);
-							color = Chesspiece.WHITE;
+							mActivity.updateClock(mRunningColor, mBlackTime);
+							mRunningColor = Chesspiece.WHITE;
 						}
 						diff1 = new Date().getTime();
 					}
 					diff2 = new Date().getTime();
-					if (color == Chesspiece.WHITE) {
+					if (mRunningColor == Chesspiece.WHITE) {
 						difference = diff2 - diff1;
 						mWhiteTime -= difference;
 						diff1 = diff2;
-						mActivity.updateClock(color, mWhiteTime);
+						mActivity.updateClock(mRunningColor, mWhiteTime);
 					} else {
 						difference = diff2 - diff1;
 						mBlackTime -= difference;
 						diff1 = diff2;
-						mActivity.updateClock(color, mBlackTime);
+						mActivity.updateClock(mRunningColor, mBlackTime);
 					}
 					try {
 						// Performance
@@ -182,7 +182,7 @@ public class Chessboard {
 					}
 				}
 				int enemy;
-				if (color == Chesspiece.WHITE) {
+				if (mRunningColor == Chesspiece.WHITE) {
 					enemy = Chesspiece.BLACK;
 				} else {
 					enemy = Chesspiece.WHITE;
@@ -531,7 +531,10 @@ public class Chessboard {
 			if (status == GAMENOTOVER) {
 				DBAdapter database = new DBAdapter(mContext);
 				database.open();
-				database.insertMoves(mPositionHashFactory.getMoves(),mView.getWhiteName(),mView.getBlackName(),"" + mWhiteTime,"" + mBlackTime,"" + mBonusTime,"" + mStartTime);
+				database.insertMoves(mPositionHashFactory.getMoves(),
+						mView.getWhiteName(), mView.getBlackName(), ""
+								+ mWhiteTime, "" + mBlackTime, "" + mBonusTime,
+						"" + mStartTime);
 			} else {
 				DBAdapter database = new DBAdapter(mContext);
 				database.open();
@@ -539,20 +542,26 @@ public class Chessboard {
 			}
 		}
 	}
-	
-	public long getTime(int color){
-		if(color == Chesspiece.WHITE){
+
+	public long getTime(int color) {
+		if (color == Chesspiece.WHITE) {
 			return mWhiteTime;
-		}else{
+		} else {
 			return mBlackTime;
 		}
 	}
-	
-	public void setTime(int color, long time){
-		if(color == Chesspiece.WHITE){
+
+	public void setTime(int color, long time) {
+		if (color == Chesspiece.WHITE) {
 			mWhiteTime = time;
-		}else{
+		} else {
 			mBlackTime = time;
+		}
+	}
+
+	public void revalidateClock() {
+		if (mRunningColor != -1 && mView.getCurrentPlayer() != mRunningColor) {
+			mChangeClockColor = true;
 		}
 	}
 
