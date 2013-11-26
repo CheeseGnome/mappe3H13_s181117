@@ -17,5 +17,6 @@
     <dimen name="img_stat_king_size">100dp</dimen>
     <dimen name="txt_logo_size">60sp</dimen>
     <dimen name="img_menu_king_size">80dp</dimen>
-
+    <dimen name="txt_check_margin_top">-15dp</dimen>
+    <dimen name="txt_check_margin_bottom">-15dp</dimen>
 </resources>

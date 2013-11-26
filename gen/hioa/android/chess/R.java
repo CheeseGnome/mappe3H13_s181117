@@ -47,6 +47,8 @@ public final class R {
         public static final int standard_space_small=0x7f080007;
         public static final int standard_space_xlarge=0x7f08000a;
         public static final int tile_size=0x7f080002;
+        public static final int txt_check_margin_bottom=0x7f080011;
+        public static final int txt_check_margin_top=0x7f080010;
         public static final int txt_check_size=0x7f080004;
         public static final int txt_logo_size=0x7f08000e;
         public static final int txt_move_size=0x7f080005;

@@ -11,8 +11,8 @@
         android:layout_below="@+id/txt_player_name"
         android:layout_centerHorizontal="true"
         android:gravity="center"
-        android:layout_marginTop="-15dp"
-        android:layout_marginBottom="-15dp"
+        android:layout_marginTop="@dimen/txt_check_margin_top"
+        android:layout_marginBottom="@dimen/txt_check_margin_bottom"
         android:textColor="@color/txt_check_color"
         android:textSize="@dimen/txt_check_size" />
     
