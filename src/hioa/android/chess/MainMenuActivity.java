@@ -3,6 +3,9 @@ package hioa.android.chess;
 import android.app.Activity;
 import android.content.Intent;
 import android.database.Cursor;
+import android.graphics.Bitmap;
+import android.graphics.drawable.BitmapDrawable;
+import android.graphics.drawable.Drawable;
 import android.media.AudioManager;
 import android.os.Bundle;
 import android.os.Looper;
@@ -11,6 +14,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.Window;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.Toast;
 
 public class MainMenuActivity extends Activity {
@@ -24,6 +28,9 @@ public class MainMenuActivity extends Activity {
 		setContentView(R.layout.activity_main_menu);
 
 		setVolumeControlStream(AudioManager.STREAM_MUSIC);
+		
+		((ImageView) findViewById(R.id.img_menu_king_white)).setImageDrawable(getKingIcon(Chesspiece.WHITE));
+		((ImageView) findViewById(R.id.img_menu_king_black)).setImageDrawable(getKingIcon(Chesspiece.BLACK));
 
 		Button button = (Button) findViewById(R.id.btn_new_game);
 		final Intent gameSettingsIntent = new Intent(this, GameSettingsActivity.class);
@@ -73,6 +80,19 @@ public class MainMenuActivity extends Activity {
 				startActivity(settings);
 			}
 		});
+	}
+	
+	private Drawable getKingIcon(int color) {
+		int id;
+		if (color == Chesspiece.WHITE) {
+			id = R.drawable.white_king;
+		} else {
+			id = R.drawable.black_king;
+		}
+		Drawable dr = getResources().getDrawable(id);
+		Bitmap bitmap = ((BitmapDrawable) dr).getBitmap();
+		int size = getResources().getDimensionPixelSize(R.dimen.img_menu_king_size);
+		return new BitmapDrawable(getResources(), Bitmap.createScaledBitmap(bitmap, size, size, true));
 	}
 
 	protected void onResume() {

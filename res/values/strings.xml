@@ -56,7 +56,7 @@
     <string name="btn_offer_draw">Offer Draw</string>
     <string name="btn_claim_draw">Claim Draw</string>
     <string name="btn_resign">Resign</string>
-    <string name="btn_quit">End game</string>
+    <string name="btn_quit">Abandon</string>
     <string name="title_draw_offer">Draw offered</string>
     <string name="txt_draw_offer">has offered you a draw</string>
     <string name="btn_accept">Accept</string>

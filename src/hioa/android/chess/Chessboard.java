@@ -506,11 +506,12 @@ public class Chessboard {
 			mActivity.rotate();
 		}
 		boolean incrementCount = !(piece instanceof Pawn);
+		Chesspiece captured = null;
 		Chesspiece other = otherPieceCanMoveTo(piece, row, column);
 		// Kill En-Passant
 		if (mChessboard[row][column] != null && mChessboard[row][column].getColor() == Chesspiece.EN_PASSANT) {
+			captured = mEnPassant.getPawn();
 			mChessboard[mEnPassant.getPawn().getRow()][mEnPassant.getPawn().getColumn()] = null;
-			mActivity.capturePiece(mEnPassant.getPawn());
 		}
 		// Remove En-Passant opportunity (if there is one)
 		if (mEnPassant != null) {
@@ -520,7 +521,9 @@ public class Chessboard {
 
 		mChessboard[oldRow][oldColumn] = null;
 
-		Chesspiece captured = getPieceAt(row, column);
+		if (captured == null) {
+			captured = getPieceAt(row, column);
+		}
 		if (captured != null) {
 			incrementCount = true;
 			mActivity.capturePiece(captured);
@@ -575,8 +578,8 @@ public class Chessboard {
 			if (status == GAMENOTOVER) {
 				DBAdapter database = new DBAdapter(mContext);
 				database.open();
-				database.insertGameState(mPositionHashFactory.getMoves(), mView.getWhiteName(), mView.getBlackName(), ""
-						+ mWhiteTime, "" + mBlackTime, "" + mBonusTime, "" + mStartTime);
+				database.insertGameState(mPositionHashFactory.getMoves(), mView.getWhiteName(), mView.getBlackName(),
+						"" + mWhiteTime, "" + mBlackTime, "" + mBonusTime, "" + mStartTime);
 			} else {
 				DBAdapter database = new DBAdapter(mContext);
 				database.open();

@@ -65,6 +65,7 @@ public class GameActivity extends Activity {
 		requestWindowFeature(Window.FEATURE_NO_TITLE);
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_game);
+
 		loadIcons();
 		setVolumeControlStream(AudioManager.STREAM_MUSIC);
 		ChessboardView board = (ChessboardView) findViewById(R.id.chessboard);

@@ -33,7 +33,6 @@ public class PlayerFrame extends RelativeLayout {
 	private LinkedList<Chesspiece> mCapturedPieces = new LinkedList<Chesspiece>();
 	private TextView mClock;
 	private GameActivity mActivity;
-	private int mColor;
 	private Context mContext;
 
 	public PlayerFrame(Context context, AttributeSet attributes) {
@@ -59,7 +58,6 @@ public class PlayerFrame extends RelativeLayout {
 	 * @param color
 	 */
 	public void setKingIcon(int color) {
-		mColor = color;
 		ImageView image = (ImageView) findViewById(R.id.img_king);
 		if (color == Chesspiece.WHITE) {
 			image.setImageDrawable(getDrawable(R.drawable.white_king, R.dimen.img_king_size));
@@ -222,7 +220,7 @@ public class PlayerFrame extends RelativeLayout {
 	 * @return A drawable scaled to fit inside the imageViews
 	 */
 	private Drawable getIcon(Chesspiece piece) {
-		if (mColor == Chesspiece.WHITE) {
+		if (piece.getColor() == Chesspiece.WHITE) {
 			if (piece instanceof Pawn) {
 				return mActivity.getPieceIcon(GameActivity.WHITEPAWN);
 			}

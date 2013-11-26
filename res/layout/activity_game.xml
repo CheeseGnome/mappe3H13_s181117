@@ -15,9 +15,10 @@
         android:layout_height="wrap_content"
         android:layout_above="@+id/blackFrame"
         android:layout_centerHorizontal="true"
-        android:layout_marginBottom="25dp"
+        android:layout_marginBottom="@dimen/standard_space_large"
         android:gravity="center"
         android:text="@string/txt_white_move"
+        android:background="@drawable/rectangle"
         android:textSize="@dimen/txt_move_size" />
 
     <hioa.android.chess.PlayerFrame

@@ -23,7 +23,7 @@
         android:layout_alignParentLeft="true"
         android:layout_alignParentTop="true"
         android:layout_marginLeft="5dp"
-        android:textAppearance="?android:attr/textAppearanceLarge" />
+        android:textSize="@dimen/txt_player_size" />
 
     <TextView
         android:id="@+id/txt_player_name"

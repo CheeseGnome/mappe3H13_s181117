@@ -3,13 +3,19 @@
 
     <dimen name="activity_horizontal_margin">16dp</dimen>
     <dimen name="activity_vertical_margin">16dp</dimen>
-    <dimen name="tile_size">41dp</dimen>
+    <dimen name="tile_size">39dp</dimen>
     <dimen name="captured_size">21dp</dimen>
     <dimen name="txt_check_size">35sp</dimen>
-    <dimen name="txt_move_size">23sp</dimen>
+    <dimen name="txt_move_size">25sp</dimen>
     <dimen name="img_king_size">40dp</dimen>
     <dimen name="standard_space_small">5dp</dimen>
     <dimen name="standard_space_medium">10dp</dimen>
+    <dimen name="standard_space_large">15dp</dimen>
+    <dimen name="standard_space_xlarge">45dp</dimen>
     <dimen name="txt_player_size">22sp</dimen>
+    <dimen name="txt_statistics_size">25sp</dimen>
+    <dimen name="img_stat_king_size">100dp</dimen>
+    <dimen name="txt_logo_size">60sp</dimen>
+    <dimen name="img_menu_king_size">80dp</dimen>
 
 </resources>
