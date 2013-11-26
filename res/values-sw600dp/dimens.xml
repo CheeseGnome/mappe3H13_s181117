@@ -10,4 +10,11 @@
     <dimen name="standard_space_small">7dp</dimen>
     <dimen name="standard_space_medium">15dp</dimen>
     <dimen name="txt_player_size">27sp</dimen>
+    <dimen name="txt_statistics_size">30sp</dimen>
+    <dimen name="img_stat_king_size">150dp</dimen>
+    <dimen name="txt_logo_size">75sp</dimen>
+    <dimen name="img_menu_king_size">120dp</dimen>
+    <dimen name="txt_check_margin_top">-8dp</dimen>
+    <dimen name="txt_check_margin_bottom">-22dp</dimen>
+    <dimen name="txt_to_move_width">300dp</dimen>
 </resources>

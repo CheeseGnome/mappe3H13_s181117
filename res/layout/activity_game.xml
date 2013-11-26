@@ -11,7 +11,7 @@
 
     <TextView
         android:id="@+id/txt_move"
-        android:layout_width="wrap_content"
+        android:layout_width="@dimen/txt_to_move_width"
         android:layout_height="wrap_content"
         android:layout_above="@+id/blackFrame"
         android:layout_centerHorizontal="true"

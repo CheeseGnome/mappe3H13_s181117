@@ -31,29 +31,26 @@ public final class R {
     }
     public static final class dimen {
         /**  Default screen margins, per the Android Design guidelines. 
-
-         Customize dimensions originally defined in res/values/dimens.xml (such as
-         screen margins) for sw720dp devices (e.g. 10" tablets) in landscape here.
-    
          */
         public static final int activity_horizontal_margin=0x7f080000;
         public static final int activity_vertical_margin=0x7f080001;
         public static final int captured_size=0x7f080003;
         public static final int img_king_size=0x7f080006;
-        public static final int img_menu_king_size=0x7f08000f;
-        public static final int img_stat_king_size=0x7f08000d;
-        public static final int standard_space_large=0x7f080009;
+        public static final int img_menu_king_size=0x7f08000d;
+        public static final int img_stat_king_size=0x7f08000b;
+        public static final int standard_space_large=0x7f080011;
         public static final int standard_space_medium=0x7f080008;
         public static final int standard_space_small=0x7f080007;
-        public static final int standard_space_xlarge=0x7f08000a;
+        public static final int standard_space_xlarge=0x7f080012;
         public static final int tile_size=0x7f080002;
-        public static final int txt_check_margin_bottom=0x7f080011;
-        public static final int txt_check_margin_top=0x7f080010;
+        public static final int txt_check_margin_bottom=0x7f08000f;
+        public static final int txt_check_margin_top=0x7f08000e;
         public static final int txt_check_size=0x7f080004;
-        public static final int txt_logo_size=0x7f08000e;
+        public static final int txt_logo_size=0x7f08000c;
         public static final int txt_move_size=0x7f080005;
-        public static final int txt_player_size=0x7f08000b;
-        public static final int txt_statistics_size=0x7f08000c;
+        public static final int txt_player_size=0x7f080009;
+        public static final int txt_statistics_size=0x7f08000a;
+        public static final int txt_to_move_width=0x7f080010;
     }
     public static final class drawable {
         public static final int black_bishop=0x7f020000;
@@ -255,6 +252,8 @@ public final class R {
         public static final int btn_offer_draw=0x7f0a0035;
         public static final int btn_ok=0x7f0a0026;
         public static final int btn_play=0x7f0a0041;
+        /**  There is no room for this on smaller screens, but it is more descriptive 
+         */
         public static final int btn_quit=0x7f0a0038;
         public static final int btn_resign=0x7f0a0037;
         public static final int btn_settings=0x7f0a0043;

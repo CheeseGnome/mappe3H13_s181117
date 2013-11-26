@@ -28,7 +28,7 @@ public class MainMenuActivity extends Activity {
 		setContentView(R.layout.activity_main_menu);
 
 		setVolumeControlStream(AudioManager.STREAM_MUSIC);
-		
+
 		((ImageView) findViewById(R.id.img_menu_king_white)).setImageDrawable(getKingIcon(Chesspiece.WHITE));
 		((ImageView) findViewById(R.id.img_menu_king_black)).setImageDrawable(getKingIcon(Chesspiece.BLACK));
 
@@ -81,7 +81,7 @@ public class MainMenuActivity extends Activity {
 			}
 		});
 	}
-	
+
 	private Drawable getKingIcon(int color) {
 		int id;
 		if (color == Chesspiece.WHITE) {

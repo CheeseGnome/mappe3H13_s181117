@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <dimen name="activity_horizontal_margin">16dp</dimen>
+    <dimen name="activity_vertical_margin">16dp</dimen>
+    <dimen name="tile_size">55dp</dimen>
+    <dimen name="captured_size">27dp</dimen>
+    <dimen name="txt_check_size">35sp</dimen>
+    <dimen name="txt_move_size">25sp</dimen>
+    <dimen name="img_king_size">45dp</dimen>
+    <dimen name="standard_space_small">5dp</dimen>
+    <dimen name="standard_space_medium">10dp</dimen>
+    <dimen name="standard_space_large">15dp</dimen>
+    <dimen name="standard_space_xlarge">65dp</dimen>
+    <dimen name="txt_player_size">30sp</dimen>
+    <dimen name="txt_statistics_size">35sp</dimen>
+    <dimen name="img_stat_king_size">150dp</dimen>
+    <dimen name="txt_logo_size">60sp</dimen>
+    <dimen name="img_menu_king_size">100dp</dimen>
+    <dimen name="txt_check_margin_top">-15dp</dimen>
+    <dimen name="txt_check_margin_bottom">-25dp</dimen>
+    <dimen name="txt_to_move_width">200dp</dimen>
+
+</resources>

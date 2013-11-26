@@ -3,5 +3,5 @@
     <integer name="chessboard_tiles_count">64</integer>
     <integer name="chesspiece_max_row_index">7</integer>
     <integer name="chesspiece_max_column_index">7</integer>
-    <integer name="shadow_radius">20</integer>
+    <integer name="shadow_radius">4</integer>
 </resources>
