@@ -3,22 +3,27 @@ package hioa.android.chess;
 import android.app.Activity;
 import android.content.Intent;
 import android.database.Cursor;
+import android.media.AudioManager;
 import android.os.Bundle;
+import android.os.Looper;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.Window;
 import android.widget.Button;
+import android.widget.Toast;
 
 public class MainMenuActivity extends Activity {
 
 	public static final String MOVES = "moves";
-	
+
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		requestWindowFeature(Window.FEATURE_NO_TITLE);
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_main_menu);
+		
+		setVolumeControlStream(AudioManager.STREAM_MUSIC);
 
 		Button button = (Button) findViewById(R.id.btn_new_game);
 		final Intent gameSettingsIntent = new Intent(this, GameSettingsActivity.class);
@@ -29,12 +34,23 @@ public class MainMenuActivity extends Activity {
 				Cursor cursor = database.getMoves();
 				if (cursor.getCount() == 0) {
 					startActivity(gameSettingsIntent);
-				}else{
-					Intent intent = new Intent(MainMenuActivity.this,GameActivity.class);
+				} else {
+					
+					new Thread(new Runnable() {
+						public void run() {
+							Looper.prepare();
+							Toast.makeText(MainMenuActivity.this, R.string.toast_loading, Toast.LENGTH_LONG).show();
+							Looper.loop();
+							Looper.myLooper().quit();
+						}
+					}).start();
+					Intent intent = new Intent(MainMenuActivity.this, GameActivity.class);
 					cursor.moveToFirst();
 					intent.putExtra(MOVES, cursor.getString(cursor.getColumnIndex(DBAdapter.MOVES)));
-					intent.putExtra(GameSettingsActivity.WHITENAME, cursor.getString(cursor.getColumnIndex(DBAdapter.WHITE_PLAYER)));
-					intent.putExtra(GameSettingsActivity.BLACKNAME, cursor.getString(cursor.getColumnIndex(DBAdapter.BLACK_PLAYER)));
+					intent.putExtra(GameSettingsActivity.WHITENAME,
+							cursor.getString(cursor.getColumnIndex(DBAdapter.WHITE_PLAYER)));
+					intent.putExtra(GameSettingsActivity.BLACKNAME,
+							cursor.getString(cursor.getColumnIndex(DBAdapter.BLACK_PLAYER)));
 					intent.putExtra(DBAdapter.WHITETIME, cursor.getString(cursor.getColumnIndex(DBAdapter.WHITETIME)));
 					intent.putExtra(DBAdapter.BLACKTIME, cursor.getString(cursor.getColumnIndex(DBAdapter.BLACKTIME)));
 					intent.putExtra(DBAdapter.TIME, cursor.getString(cursor.getColumnIndex(DBAdapter.TIME)));
@@ -43,7 +59,20 @@ public class MainMenuActivity extends Activity {
 				}
 			}
 		});
+		
+		((Button) findViewById(R.id.btn_statistics)).setOnClickListener(new View.OnClickListener() {
+			public void onClick(View v) {
+				Intent statistics = new Intent(MainMenuActivity.this, StatisticsActivity.class);
+				startActivity(statistics);
+			}
+		});
 
+		((Button) findViewById(R.id.btn_settings)).setOnClickListener(new View.OnClickListener() {
+			public void onClick(View v) {
+				Intent settings = new Intent(MainMenuActivity.this, Preferences.class);
+				startActivity(settings);
+			}
+		});
 	}
 
 	protected void onResume() {

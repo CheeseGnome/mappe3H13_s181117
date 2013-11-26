@@ -10,5 +10,6 @@
     <dimen name="img_king_size">40dp</dimen>
     <dimen name="standard_space_small">5dp</dimen>
     <dimen name="standard_space_medium">10dp</dimen>
+    <dimen name="txt_player_size">22sp</dimen>
 
 </resources>

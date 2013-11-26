@@ -9,6 +9,7 @@ import android.content.ClipboardManager;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.res.Resources;
+import android.media.MediaPlayer;
 import android.util.AttributeSet;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -47,12 +48,13 @@ public class ChessboardView extends TableLayout {
 	private Chesspiece mSelected;
 	private Context mContext;
 	private int mCurrentPlayer = Chesspiece.WHITE;
+	private MediaPlayer mPlayer;
+	private boolean mMute;
 
 
 
 	public ChessboardView(Context context, AttributeSet attributes) {
 		super(context, attributes);
-
 		LayoutInflater layoutInflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
 		layoutInflater.inflate(R.layout.chessboardlayout, this);
 		mResources = getResources();
@@ -61,7 +63,26 @@ public class ChessboardView extends TableLayout {
 		mChessboard = new Chessboard(context);
 		mChessboard.setChessboardView(this);
 		initializeButtonArray();
-		placePieces();
+	}
+	
+	public void setMute(boolean mute){
+		mMute = mute;
+	}
+	
+	private void playMoveSound(){
+		if(mMute){
+			return;
+		}
+		mPlayer = MediaPlayer.create(mContext, R.raw.move);
+        mPlayer.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
+            @Override
+            public void onCompletion(MediaPlayer mp) {
+                // TODO Auto-generated method stub
+                mp.release();
+            }
+
+        });   
+        mPlayer.start();
 	}
 
 	public void setLastMoveHint(int oldRow, int oldColumn, int row, int column) {
@@ -158,6 +179,7 @@ public class ChessboardView extends TableLayout {
 		mLegalMoves = null;
 		mChessboard.stopClock();
 		mRow = mColumn = mOldRow = mOldColumn = -1;
+		mActivity.setButtonsEnabled(false);
 		DBAdapter database = new DBAdapter(mContext);
 		database.open();
 		database.clearMoves();
@@ -281,6 +303,7 @@ public class ChessboardView extends TableLayout {
 			title = mResources.getString(R.string.title_draw);
 			body = mResources.getString(R.string.txt_draw_repetition);
 			mChessboard.mPositionHashFactory.insertGameResult(PositionHashFactory.DRAW);
+			mChessboard.mPositionHashFactory.insertDrawByRepetition();
 			break;
 		case DRAWAGREED:
 			title = mResources.getString(R.string.title_draw);
@@ -324,7 +347,7 @@ public class ChessboardView extends TableLayout {
 		mActivity.unrotate();
 	}
 
-	private void setButtonsEnabled(boolean enabled) {
+	protected void setButtonsEnabled(boolean enabled) {
 		for (int i = 0; i < mChessboard.getMaxRows(); i++) {
 			for (int j = 0; j < mChessboard.getMaxColumns(); j++) {
 				mButtons[i][j].setEnabled(enabled);
@@ -401,7 +424,7 @@ public class ChessboardView extends TableLayout {
 	 * This method iterates through the {@link Chessboard} and places icons in
 	 * the correct locations in this view
 	 */
-	private void placePieces() {
+	protected void placePieces() {
 		Chesspiece piece;
 		for (int i = 0; i < mChessboard.getMaxRows(); i++) {
 			for (int j = 0; j < mChessboard.getMaxColumns(); j++) {
@@ -497,6 +520,7 @@ public class ChessboardView extends TableLayout {
 		}
 		setLegalMovesHint();
 		placePieces();
+		playMoveSound();
 	}
 
 	/**

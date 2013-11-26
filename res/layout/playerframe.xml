@@ -31,7 +31,7 @@
         android:layout_height="wrap_content"
         android:layout_centerHorizontal="true"
         android:gravity="center"
-        android:textAppearance="?android:attr/textAppearanceLarge" />
+        android:textSize="@dimen/txt_player_size" />
     
     <ImageView
         android:id="@+id/img_king"

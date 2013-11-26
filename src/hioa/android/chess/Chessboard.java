@@ -60,6 +60,8 @@ public class Chessboard {
 	 * performing a decisive move.
 	 */
 	private volatile boolean mMoving = false;
+	
+	private volatile boolean mPause = false;
 
 	public Chessboard(Context context) {
 		mContext = context;
@@ -128,7 +130,7 @@ public class Chessboard {
 				long difference;
 				mRunningColor = Chesspiece.BLACK;
 				while (mWhiteTime > 0 && mBlackTime > 0) {
-					while (mMoving) {
+					while (mMoving || mPause) {
 						if (mStopClock) {
 							mStopClock = false;
 							mClockRunning = false;
@@ -513,8 +515,8 @@ public class Chessboard {
 				}
 				mMoveCount = 0;
 			}
+			mActivity.setDrawButtonEnabled(true);
 		}
-		mActivity.setDrawButtonEnabled(true);
 		boolean check = false, checkmate = false;
 		int color = Chesspiece.WHITE;
 		if (piece.getColor() == Chesspiece.WHITE) {
@@ -562,7 +564,13 @@ public class Chessboard {
 	public void revalidateClock() {
 		if (mRunningColor != -1 && mView.getCurrentPlayer() != mRunningColor) {
 			mChangeClockColor = true;
+		}else if(mRunningColor != -1){
+			mChangeClockColor = false;
 		}
+	}
+	
+	public void pauseClock(boolean pause){
+		mPause = pause;
 	}
 
 	/**

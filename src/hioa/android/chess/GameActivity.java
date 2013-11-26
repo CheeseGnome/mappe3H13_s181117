@@ -11,6 +11,7 @@ import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
+import android.media.AudioManager;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.view.Menu;
@@ -64,12 +65,16 @@ public class GameActivity extends Activity {
 		requestWindowFeature(Window.FEATURE_NO_TITLE);
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_game);
-		initializeDrawableArray();
-
+		loadIcons();
+		setVolumeControlStream(AudioManager.STREAM_MUSIC);
 		ChessboardView board = (ChessboardView) findViewById(R.id.chessboard);
-
+		board.setActivity(this);
+		board.placePieces();
 		mWhiteFrame = (PlayerFrame) findViewById(R.id.whiteFrame);
 		mBlackFrame = (PlayerFrame) findViewById(R.id.blackFrame);
+		
+		mWhiteFrame.setActivity(this);
+		mBlackFrame.setActivity(this);
 
 		mWhiteFrame.setKingIcon(Chesspiece.WHITE);
 		mBlackFrame.setKingIcon(Chesspiece.BLACK);
@@ -121,7 +126,7 @@ public class GameActivity extends Activity {
 
 	}
 
-	private void initializeDrawableArray() {
+	private void loadIcons() {
 		mIcons = new BitmapDrawable[12];
 		mIcons[BLACKPAWN] = getDrawable(R.drawable.black_pawn);
 		mIcons[BLACKROOK] = getDrawable(R.drawable.black_rook);
@@ -137,6 +142,12 @@ public class GameActivity extends Activity {
 		mIcons[WHITEQUEEN] = getDrawable(R.drawable.white_queen);
 		mIcons[WHITEKING] = getDrawable(R.drawable.white_king);
 	}
+	
+	public void setButtonsEnabled(boolean enabled){
+		((Button) findViewById(R.id.btn_resign)).setEnabled(enabled);
+		((Button) findViewById(R.id.btn_draw)).setEnabled(enabled);
+		((Button) findViewById(R.id.btn_quit)).setEnabled(enabled);
+	}
 
 	/**
 	 * This method returns the drawable found at id, resized to fit inside a
@@ -148,7 +159,7 @@ public class GameActivity extends Activity {
 	 *         imagebutton in this view
 	 */
 	private BitmapDrawable getDrawable(int id) {
-		Drawable dr = getDrawable(id);
+		Drawable dr = getResources().getDrawable(id);
 		Bitmap bitmap = ((BitmapDrawable) dr).getBitmap();
 		int size = getResources().getDimensionPixelSize(R.dimen.tile_size);
 		return new BitmapDrawable(getResources(), Bitmap.createScaledBitmap(bitmap, size, size, true));
@@ -342,6 +353,8 @@ public class GameActivity extends Activity {
 			mAlwaysOn = false;
 			getWindow().clearFlags(android.view.WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
 		}
+		
+		mChessboard.mView.setMute(mPreferences.getBoolean("mute", false));
 
 		mRotate = mPreferences.getBoolean("rotate", false);
 		if (!mRotate && mCurrentRotation != 0) {
@@ -412,7 +425,6 @@ public class GameActivity extends Activity {
 		String moves = bundle.getString(MainMenuActivity.MOVES);
 		// Initialized from main menu
 		if (moves != null) {
-			mPreferences = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
 			mStartTime = Long.parseLong(bundle.getString(DBAdapter.TIME, "0"));
 			mBonusTime = Long.parseLong(bundle.getString(DBAdapter.BONUS, "0"));
 			mChessboard.setTime(mStartTime, mBonusTime);
@@ -428,20 +440,28 @@ public class GameActivity extends Activity {
 		view.setPlayerNames(mWhiteName, mBlackName);
 		view.setActivity(this);
 		if (moves != null) {
-			int toMove = mChessboard.mPositionHashFactory.rebuildPosition(moves);
-			mChessboard.mView.setCurrentPlayer(toMove);
-			mChessboard.mView.reDraw();
 			long whiteTime = Long.parseLong(bundle.getString(DBAdapter.WHITETIME, "0"));
 			long blackTime = Long.parseLong(bundle.getString(DBAdapter.BLACKTIME, "0"));
+			mChessboard.pauseClock(true);
+			int toMove = mChessboard.mPositionHashFactory.rebuildPosition(moves);
+			mChessboard.mView.setCurrentPlayer(toMove);
+			mChessboard.revalidateClock();
+			mChessboard.pauseClock(false);
+			mChessboard.mView.reDraw();
+			try{
+				Thread.sleep(50);
+			}catch(InterruptedException ie){
+				
+			}
 			mChessboard.setTime(Chesspiece.WHITE, whiteTime);
 			mChessboard.setTime(Chesspiece.BLACK, blackTime);
 		} else {
+			mChessboard.revalidateClock();
 			mChessboard.setTime(Chesspiece.WHITE, mStartTime);
 			mChessboard.setTime(Chesspiece.BLACK, mStartTime);
 		}
 		updateClock(Chesspiece.WHITE, mChessboard.getTime(Chesspiece.WHITE));
 		updateClock(Chesspiece.BLACK, mChessboard.getTime(Chesspiece.BLACK));
-		mChessboard.revalidateClock();
 	}
 
 	@Override
@@ -558,6 +578,7 @@ public class GameActivity extends Activity {
 		}
 		setDrawButtonMode(OFFERDRAW);
 		setDrawButtonEnabled(true);
+		setButtonsEnabled(true);
 	}
 
 	/**

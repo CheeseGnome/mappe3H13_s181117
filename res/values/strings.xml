@@ -4,7 +4,6 @@
     <string name="app_name">Chess</string>
     <string name="action_settings">Settings</string>
     <string name="tile_description">Tile</string>
-    <string name="title_activity_game">GameActivity</string>
     <string name="promotion_title">Promotion!</string>
     <string name="promotion_text">Select a piece to promote to</string>
     <string name="description_queen">Queen</string>
@@ -26,17 +25,16 @@
     <string name="txt_win_timeout_1">is out of time!</string>
     <string name="txt_win_timeout_2">wins!</string>
     <string name="txt_draw_stalemate">Draw by stalemate!</string>
-    <string name="title_activity_game_settings">GameSettingsActivity</string>
     <string name="txt_white_name">White name</string>
     <string name="txt_black_name">Black name</string>
     <string name="etxt_default_white_name">White</string>
     <string name="etxt_default_black_name">Black</string>
-    <string name="txt_time">Time</string>
+    <string name="txt_time">Time per player</string>
     <string name="txt_minutes">Minutes</string>
     <string name="txt_seconds">Seconds</string>
     <string name="etxt_default_minutes">0</string>
     <string name="etxt_default_seconds">0</string>
-    <string name="txt_bonus">Bonus</string>
+    <string name="txt_bonus">Bonus time per move</string>
     <string name="etxt_default_bonus_minutes">0</string>
     <string name="etxt_default_bonus_seconds">0</string>
     <string name="btn_start">Start game</string>
@@ -68,5 +66,12 @@
     <string name="btn_view_board">View board</string>
     <string name="btn_copy">Copy to clipboard</string>
     <string name="toast_annotations">Annotations have been copied to clipboard</string>
+    <string name="btn_play">PLAY</string>
+    <string name="btn_statistics">STATISTICS</string>
+    <string name="btn_settings">SETTINGS</string>
+    <string name="toast_loading">Loading saved game…</string>
+    <string name="txt_white_win_count">White wins:</string>
+    <string name="txt_black_win_count">Black wins:</string>
+    <string name="txt_draw_count">Draws:</string>
 
 </resources>

@@ -23,7 +23,7 @@ import android.widget.TextView;
 
 public class PlayerFrame extends RelativeLayout {
 
-	private static final float SHADOWRADIUS = 20;
+	private static float SHADOWRADIUS;
 
 	public static final int NO_CHECK = 0, CHECK = 1, CHECKMATE = 2, WINNER = 3, DRAW = 4, RESIGNED = 5, TIMEOUT = 6;
 
@@ -39,6 +39,7 @@ public class PlayerFrame extends RelativeLayout {
 		layoutInflater.inflate(R.layout.playerframe, this);
 		mContext = context;
 		mClock = (TextView) findViewById(R.id.txt_clock);
+		SHADOWRADIUS = mContext.getResources().getInteger(R.integer.shadow_radius);
 	}
 
 	public void setActivity(GameActivity activity) {

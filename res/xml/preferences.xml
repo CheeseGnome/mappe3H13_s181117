@@ -40,5 +40,12 @@
             android:summary="Screen always on while playing"
             android:title="Screen always on" />
     </PreferenceCategory>
-
+    <PreferenceCategory
+        android:key="sound_settings"
+        android:title="Sound Settings" >
+        <CheckBoxPreference
+            android:defaultValue="false"
+            android:key="mute"
+            android:title="Mute sounds" />
+    </PreferenceCategory>
 </PreferenceScreen>

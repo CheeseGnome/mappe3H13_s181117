@@ -17,11 +17,11 @@ public class PositionHashFactory {
 	String[] mMoves = new String[ARRAY_INCREMENT];
 	private int mCurrentHashIndex = 0, mCurrentMoveIndex = 0;
 
-	private static final String WHITE = "a", BLACK = "b", ENPASSANT = "c",
-			NOPIECE = "d", WPAWN = "e", WROOK = "f", WBISHOP = "g",
-			WKNIGHT = "h", WKING = "i", WQUEEN = "j", BPAWN = "k", BROOK = "l",
-			BBISHOP = "m", BKNIGHT = "n", BKING = "o", BQUEEN = "p";
+	private static final String WHITE = "a", BLACK = "b", ENPASSANT = "c", NOPIECE = "d", WPAWN = "e", WROOK = "f",
+			WBISHOP = "g", WKNIGHT = "h", WKING = "i", WQUEEN = "j", BPAWN = "k", BROOK = "l", BBISHOP = "m",
+			BKNIGHT = "n", BKING = "o", BQUEEN = "p";
 	private static final String SPLIT = " ";
+	private boolean mRepetition = false;
 
 	/*
 	 * It is extremely important that this does not equal Chesspiece.WHITE or
@@ -61,7 +61,7 @@ public class PositionHashFactory {
 
 	public void insertGameResult(int winningColor) {
 		if (mCurrentMoveIndex == mMoves.length) {
-			expandArray(mMoves);
+			mMoves = expandArray(mMoves);
 		}
 		switch (winningColor) {
 		case Chesspiece.WHITE:
@@ -86,8 +86,7 @@ public class PositionHashFactory {
 	 *            The color to move
 	 */
 	private void performMove(String move, int color) {
-		move = move.replaceAll("x", "").replaceAll("\\+", "")
-				.replaceAll("#", "");
+		move = move.replaceAll("x", "").replaceAll("\\+", "").replaceAll("#", "");
 		char letter = move.charAt(0);
 		Chesspiece piece;
 		Chesspiece sameClass = null;
@@ -105,53 +104,43 @@ public class PositionHashFactory {
 		if (sameClass != null) {
 			letter = move.charAt(2);
 			if (Character.isDigit(letter)) {
-				piece = mChessboard.otherPieceCanMoveTo(sameClass,
-						translateRow(letter), translateColumn(move.charAt(1)));
-				mChessboard.mView.setLastMoveHint(piece.getRow(),
-						piece.getColumn(), translateRow(letter),
+				piece = mChessboard.otherPieceCanMoveTo(sameClass, translateRow(letter),
 						translateColumn(move.charAt(1)));
-				piece.move(translateRow(letter),
+				mChessboard.mView.setLastMoveHint(piece.getRow(), piece.getColumn(), translateRow(letter),
 						translateColumn(move.charAt(1)));
-			} else if (Character.isDigit(move.charAt(1))) {
-				piece = mChessboard.getPieceOnRow(sameClass,
-						translateRow(move.charAt(1)));
-				mChessboard.mView.setLastMoveHint(piece.getRow(),
-						piece.getColumn(), translateRow(letter),
+				piece.move(translateRow(letter), translateColumn(move.charAt(1)));
+			}
+			else if (Character.isDigit(move.charAt(1))) {
+				piece = mChessboard.getPieceOnRow(sameClass, translateRow(move.charAt(1)));
+				mChessboard.mView.setLastMoveHint(piece.getRow(), piece.getColumn(), translateRow(letter),
 						translateColumn(move.charAt(1)));
-				piece.move(translateRow(letter),
+				piece.move(translateRow(move.charAt(3)), translateColumn(letter));
+			} 
+			else {
+				piece = mChessboard.getPieceOnColumn(sameClass, translateColumn(move.charAt(1)));
+				mChessboard.mView.setLastMoveHint(piece.getRow(), piece.getColumn(), translateRow(letter),
 						translateColumn(move.charAt(1)));
-			} else {
-				piece = mChessboard.getPieceOnColumn(sameClass,
-						translateColumn(move.charAt(1)));
-				mChessboard.mView.setLastMoveHint(piece.getRow(),
-						piece.getColumn(), translateRow(letter),
-						translateColumn(move.charAt(1)));
-				piece.move(translateRow(letter),
-						translateColumn(move.charAt(1)));
+				piece.move(translateRow(move.charAt(3)), translateColumn(letter));
 			}
 		}
 
 		else if (letter == 'K') {
 			piece = mChessboard.getKing(color);
-			mChessboard.mView.setLastMoveHint(piece.getRow(),
-					piece.getColumn(), translateRow(move.charAt(2)),
+			mChessboard.mView.setLastMoveHint(piece.getRow(), piece.getColumn(), translateRow(move.charAt(2)),
 					translateColumn(move.charAt(1)));
-			piece.move(translateRow(move.charAt(2)),
-					translateColumn(move.charAt(1)));
+			piece.move(translateRow(move.charAt(2)), translateColumn(move.charAt(1)));
 		}
 		// castle
 		else if (letter == 'O') {
 			piece = mChessboard.getKing(color);
 			if (move.length() == 3) {
 				// kingside
-				mChessboard.mView.setLastMoveHint(piece.getRow(),
-						piece.getColumn(), piece.getRow(),
+				mChessboard.mView.setLastMoveHint(piece.getRow(), piece.getColumn(), piece.getRow(),
 						piece.getColumn() + 2);
 				piece.move(piece.getRow(), piece.getColumn() + 2);
 			} else {
 				// queenside
-				mChessboard.mView.setLastMoveHint(piece.getRow(),
-						piece.getColumn(), piece.getRow(),
+				mChessboard.mView.setLastMoveHint(piece.getRow(), piece.getColumn(), piece.getRow(),
 						piece.getColumn() - 2);
 				piece.move(piece.getRow(), piece.getColumn() - 2);
 			}
@@ -176,10 +165,8 @@ public class PositionHashFactory {
 				legalRow = translateRow(move.charAt(2));
 				legalColumn = translateColumn(move.charAt(1));
 			}
-			piece = mChessboard.getPawnOnColumn(color,
-					translateColumn(move.charAt(0)), legalRow, legalColumn);
-			mChessboard.mView.setLastMoveHint(piece.getRow(),
-					piece.getColumn(), legalRow, legalColumn);
+			piece = mChessboard.getPawnOnColumn(color, translateColumn(move.charAt(0)), legalRow, legalColumn);
+			mChessboard.mView.setLastMoveHint(piece.getRow(), piece.getColumn(), legalRow, legalColumn);
 			piece.move(legalRow, legalColumn);
 		}
 	}
@@ -216,12 +203,19 @@ public class PositionHashFactory {
 		return result;
 	}
 
-	public void insertMove(Chessboard board, Chesspiece piece, int row,
-			int column, int oldRow, int oldColumn, Chesspiece captured,
-			int flag, boolean check, boolean checkmate, Chesspiece other) {
+	public void insertDrawByRepetition() {
+		if (mMoves.length == mCurrentMoveIndex) {
+			mMoves = expandArray(mMoves);
+		}
+		mMoves[mCurrentMoveIndex] = mMoves[--mCurrentMoveIndex];
+		mRepetition = true;
+	}
+
+	public void insertMove(Chessboard board, Chesspiece piece, int row, int column, int oldRow, int oldColumn,
+			Chesspiece captured, int flag, boolean check, boolean checkmate, Chesspiece other) {
 
 		if (mCurrentMoveIndex == mMoves.length) {
-			expandArray(mMoves);
+			mMoves = expandArray(mMoves);
 		}
 		int addToIndex = 1;
 		if (checkmate) {
@@ -229,6 +223,8 @@ public class PositionHashFactory {
 			// checkmate
 			String result = mMoves[mCurrentMoveIndex - 1];
 			mMoves[mCurrentMoveIndex--] = result;
+			addToIndex++;
+		} else if (mRepetition) {
 			addToIndex++;
 		}
 		StringBuilder builder = new StringBuilder();
@@ -266,80 +262,16 @@ public class PositionHashFactory {
 			return;
 		}
 
-		else if (piece instanceof Rook) {
-			builder.append("R");
-			if (other != null) {
-				if (oldRow == other.getRow()) {
-					builder.append(translateColumn(oldColumn));
-				} else {
-					builder.append(translateRow(oldRow));
-				}
+		else if (piece instanceof Rook || piece instanceof Knight || piece instanceof Bishop || piece instanceof Queen) {
+			if (piece instanceof Rook) {
+				builder.append("R");
+			} else if (piece instanceof Knight) {
+				builder.append("N");
+			} else if (piece instanceof Bishop) {
+				builder.append("B");
+			} else if (piece instanceof Queen) {
+				builder.append("Q");
 			}
-			if (captured != null) {
-				builder.append("x");
-			}
-			builder.append(translateColumn(column));
-			builder.append(translateRow(row));
-			if (check) {
-				builder.append("+");
-			} else if (checkmate) {
-				builder.append("#");
-			}
-			mMoves[mCurrentMoveIndex] = builder.toString();
-			mCurrentMoveIndex += addToIndex;
-			return;
-		}
-
-		else if (piece instanceof Knight) {
-			builder.append("N");
-			if (other != null) {
-				if (oldRow == other.getRow()) {
-					builder.append(translateColumn(oldColumn));
-				} else {
-					builder.append(translateRow(oldRow));
-				}
-			}
-			if (captured != null) {
-				builder.append("x");
-			}
-			builder.append(translateColumn(column));
-			builder.append(translateRow(row));
-			if (check) {
-				builder.append("+");
-			} else if (checkmate) {
-				builder.append("#");
-			}
-			mMoves[mCurrentMoveIndex] = builder.toString();
-			mCurrentMoveIndex += addToIndex;
-			return;
-		}
-
-		else if (piece instanceof Bishop) {
-			builder.append("B");
-			if (other != null) {
-				if (oldRow == other.getRow()) {
-					builder.append(translateColumn(oldColumn));
-				} else {
-					builder.append(translateRow(oldRow));
-				}
-			}
-			if (captured != null) {
-				builder.append("x");
-			}
-			builder.append(translateColumn(column));
-			builder.append(translateRow(row));
-			if (check) {
-				builder.append("+");
-			} else if (checkmate) {
-				builder.append("#");
-			}
-			mMoves[mCurrentMoveIndex] = builder.toString();
-			mCurrentMoveIndex += addToIndex;
-			return;
-		}
-
-		else if (piece instanceof Queen) {
-			builder.append("Q");
 			if (other != null) {
 				if (oldRow == other.getRow()) {
 					builder.append(translateColumn(oldColumn));
@@ -452,7 +384,7 @@ public class PositionHashFactory {
 			}
 		}
 		if (mCurrentHashIndex == mHashedPositions.length) {
-			expandArray(mHashedPositions);
+			mHashedPositions = expandArray(mHashedPositions);
 		}
 		mHashedPositions[mCurrentHashIndex++] = builder.toString();
 	}
@@ -466,8 +398,7 @@ public class PositionHashFactory {
 	 */
 	public boolean drawByRepetition() {
 		// Last entered hash
-		String hash = mHashedPositions[mCurrentHashIndex - 1].replaceAll(
-				ENPASSANT, NOPIECE);
+		String hash = mHashedPositions[mCurrentHashIndex - 1].replaceAll(ENPASSANT, NOPIECE);
 		int repetition_count = 1;
 		for (int i = 0; i < mCurrentHashIndex - 1; i++) {
 			if (mHashedPositions[i].replaceAll(ENPASSANT, NOPIECE).equals(hash)) {
@@ -539,7 +470,7 @@ public class PositionHashFactory {
 	/**
 	 * Expands the array by ARRAY_INCREMENT number of spaces
 	 */
-	private void expandArray(String[] array) {
-		array = Arrays.copyOf(array, array.length + ARRAY_INCREMENT);
+	private String[] expandArray(String[] array) {
+		return Arrays.copyOf(array, array.length + ARRAY_INCREMENT);
 	}
 }

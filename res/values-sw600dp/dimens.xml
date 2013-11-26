@@ -2,11 +2,12 @@
 
     <dimen name="activity_horizontal_margin">24dp</dimen>
     <dimen name="activity_vertical_margin">24dp</dimen>
-    <dimen name="tile_size">60dp</dimen>
+    <dimen name="tile_size">69dp</dimen>
     <dimen name="captured_size">32dp</dimen>
-    <dimen name="txt_check_size">60sp</dimen>
+    <dimen name="txt_check_size">35sp</dimen>
     <dimen name="txt_move_size">40sp</dimen>
     <dimen name="img_king_size">60dp</dimen>
     <dimen name="standard_space_small">7dp</dimen>
     <dimen name="standard_space_medium">15dp</dimen>
+    <dimen name="txt_player_size">27sp</dimen>
 </resources>

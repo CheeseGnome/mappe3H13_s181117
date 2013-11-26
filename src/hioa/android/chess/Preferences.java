@@ -2,6 +2,7 @@ package hioa.android.chess;
 
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.OnSharedPreferenceChangeListener;
+import android.media.AudioManager;
 import android.os.Bundle;
 import android.preference.EditTextPreference;
 import android.preference.ListPreference;
@@ -23,6 +24,7 @@ public class Preferences extends PreferenceActivity {
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		getFragmentManager().beginTransaction().replace(android.R.id.content, mFragment).commit();
+		setVolumeControlStream(AudioManager.STREAM_MUSIC);
 	}
 
 	public static class MyPreferenceFragment extends PreferenceFragment implements OnSharedPreferenceChangeListener {

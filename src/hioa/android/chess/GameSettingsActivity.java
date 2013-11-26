@@ -5,6 +5,7 @@ import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.media.AudioManager;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.view.Menu;
@@ -25,6 +26,8 @@ public class GameSettingsActivity extends Activity {
 		requestWindowFeature(Window.FEATURE_NO_TITLE);
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_game_settings);
+		
+		setVolumeControlStream(AudioManager.STREAM_MUSIC);
 
 		Button start = (Button) findViewById(R.id.btn_start);
 		final Intent gameIntent = new Intent(this, GameActivity.class);
