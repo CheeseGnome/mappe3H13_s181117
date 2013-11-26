@@ -35,10 +35,8 @@ public class DBAdapter {
 	static final String BONUS = "bonus";
 	static final int DB_VERSION = 1;
 
-	public static final String WHITE_WON = "white_won",
-			BLACK_WON = "black_won", DRAW_STALEMATE = "draw_stalemate",
-			DRAW_REPETITION = "draw_repetition", DRAW_CLAIMED = "draw_claimed",
-			DRAW_AGREED = "draw_agreed";
+	public static final String WHITE_WON = "white_won", BLACK_WON = "black_won", DRAW_STALEMATE = "draw_stalemate",
+			DRAW_REPETITION = "draw_repetition", DRAW_CLAIMED = "draw_claimed", DRAW_AGREED = "draw_agreed";
 
 	private DatabaseHelper dbHelper;
 	private SQLiteDatabase database;
@@ -65,12 +63,30 @@ public class DBAdapter {
 		return this;
 	}
 
-	public void newPositionHashFactory() {
-		database.delete(TABLE_POSITION, null, null);
-	}
-
-	public void insertMoves(String moves, String whiteName, String blackName,
-			String whiteTime, String blackTime, String bonus, String time) {
+	/**
+	 * This is used to store the game state for rebuilding.
+	 * <p>
+	 * The method will automatically clear any already saved game states before
+	 * inserting this one.
+	 * 
+	 * @param moves
+	 *            The string of moves as defined by {@link PositionHashFactory}
+	 *            .getMoves()
+	 * @param whiteName
+	 *            White player's name
+	 * @param blackName
+	 *            Black player's name
+	 * @param whiteTime
+	 *            White player's remaining time
+	 * @param blackTime
+	 *            Black player's remaining time
+	 * @param bonus
+	 *            Bonus time per move
+	 * @param time
+	 *            Starting time per player
+	 */
+	public void insertGameState(String moves, String whiteName, String blackName, String whiteTime, String blackTime,
+			String bonus, String time) {
 		ContentValues values = new ContentValues();
 		values.put(MOVES, moves);
 		values.put(WHITE_PLAYER, whiteName);
@@ -82,19 +98,31 @@ public class DBAdapter {
 		database.delete(TABLE_POSITION, null, null);
 		database.insert(TABLE_POSITION, null, values);
 	}
-	
-	public void updateTimes(String whiteTime, String blackTime){
+
+	/**
+	 * Updates the player times for the stored game state
+	 * 
+	 * @param whiteTime
+	 *            White's remaining time
+	 * @param blackTime
+	 *            Black's remaining time
+	 */
+	public void updateTimes(String whiteTime, String blackTime) {
 		ContentValues values = new ContentValues();
 		values.put(WHITETIME, whiteTime);
 		values.put(BLACKTIME, blackTime);
 		database.update(TABLE_POSITION, values, null, null);
 	}
 
-	public Cursor getMoves() {
-		String[] columns = { MOVES, WHITE_PLAYER, BLACK_PLAYER, WHITETIME,
-				BLACKTIME, BONUS, TIME };
-		return database.query(TABLE_POSITION, columns, null, null, null, null,
-				null, null);
+	/**
+	 * Returns a cursor located before the saved game state
+	 * 
+	 * @return if getCount() == 0 then there is no state, if it's 1, then there
+	 *         is a saved game state
+	 */
+	public Cursor getGameState() {
+		String[] columns = { MOVES, WHITE_PLAYER, BLACK_PLAYER, WHITETIME, BLACKTIME, BONUS, TIME };
+		return database.query(TABLE_POSITION, columns, null, null, null, null, null, null);
 	}
 
 	/**
@@ -112,8 +140,7 @@ public class DBAdapter {
 	 *            The date when the game was played
 	 */
 	@SuppressLint("SimpleDateFormat")
-	protected void insertGameResult(String white_name, String black_name,
-			String moves, String result, Date date) {
+	protected void insertGameResult(String white_name, String black_name, String moves, String result, Date date) {
 		ContentValues values = new ContentValues();
 		values.put(WHITE_PLAYER, white_name);
 		values.put(BLACK_PLAYER, black_name);
@@ -125,41 +152,12 @@ public class DBAdapter {
 	}
 
 	/**
-	 * Delete a game result from the database
-	 * 
-	 * @param where
-	 *            The optional WHERE clause to apply when deleting. Passing null
-	 *            will delete all rows.
-	 * @param whereArgs
-	 *            You may include ?s in the where clause, which will be replaced
-	 *            by the values from whereArgs. The values will be bound as
-	 *            Strings.
+	 * Clears the saved game state.
+	 * <p>
+	 * Usually called at the end of a game
 	 */
-	public void delete(String where, String[] whereArgs) {
-		database.delete(TABLE, where, whereArgs);
-	}
-
-	public void clearMoves() {
+	public void clearGameState() {
 		database.delete(TABLE_POSITION, null, null);
-	}
-
-	/**
-	 * Update an entry in the database
-	 * 
-	 * @param values
-	 *            A map from column names to new column values. null is a valid
-	 *            value that will be translated to NULL.
-	 * @param selection
-	 *            The optional WHERE clause to apply when updating. Passing null
-	 *            will update all rows.
-	 * @param selectionArgs
-	 *            You may include ?s in the where clause, which will be replaced
-	 *            by the values from whereArgs. The values will be bound as
-	 *            Strings.
-	 */
-	public void update(ContentValues values, String selection,
-			String[] selectionArgs) {
-		database.update(TABLE, values, selection, selectionArgs);
 	}
 
 	/**
@@ -180,37 +178,8 @@ public class DBAdapter {
 	 * @return A Cursor object positioned before the first entry
 	 */
 	protected Cursor query(String where, String having) {
-		String[] columns = { ID, WHITE_PLAYER, BLACK_PLAYER, DATE, RESULT,
-				MOVES };
-		return database.query(false, TABLE, columns, where, null, null, having,
-				WHITE_PLAYER + " ASC", null, null);
-	}
-
-	/**
-	 * Queries the database for the entries matching the parameters
-	 * 
-	 * @param projection
-	 *            A list of which columns to return. Passing null will return
-	 *            all columns, which is discouraged to prevent reading data from
-	 *            storage that isn't going to be used.
-	 * @param selection
-	 *            A filter declaring which rows to return, formatted as an SQL
-	 *            WHERE clause (excluding the WHERE itself). Passing null will
-	 *            return all rows for the given table.
-	 * @param selectionArgs
-	 *            You may include ?s in selection, which will be replaced by the
-	 *            values from selectionArgs, in order that they appear in the
-	 *            selection. The values will be bound as Strings.
-	 * @param sortOrder
-	 *            How to order the rows, formatted as an SQL ORDER BY clause
-	 *            (excluding the ORDER BY itself). Passing null will use the
-	 *            default sort order, which may be unordered.
-	 * @return A Cursor object positioned before the first entry
-	 */
-	public Cursor query(String[] projection, String selection,
-			String[] selectionArgs, String sortOrder) {
-		return database.query(TABLE, projection, selection, selectionArgs,
-				null, null, sortOrder);
+		String[] columns = { ID, WHITE_PLAYER, BLACK_PLAYER, DATE, RESULT, MOVES };
+		return database.query(false, TABLE, columns, where, null, null, having, WHITE_PLAYER + " ASC", null, null);
 	}
 
 	/**
@@ -227,16 +196,12 @@ public class DBAdapter {
 
 		@Override
 		public void onCreate(SQLiteDatabase db) {
-			String sql = "create table " + TABLE + " (" + ID
-					+ " integer primary key autoincrement, " + WHITE_PLAYER
-					+ " text, " + BLACK_PLAYER + " text, " + DATE + " date, "
-					+ RESULT + " text, " + MOVES + " text);";
+			String sql = "create table " + TABLE + " (" + ID + " integer primary key autoincrement, " + WHITE_PLAYER
+					+ " text, " + BLACK_PLAYER + " text, " + DATE + " date, " + RESULT + " text, " + MOVES + " text);";
 			db.execSQL(sql);
-			sql = "create table " + TABLE_POSITION + " (" + ID
-					+ " integer primary key autoincrement, " + WHITE_PLAYER
-					+ " text, " + BLACK_PLAYER + " text, " + WHITETIME
-					+ " text, " + BLACKTIME + " text, " + BONUS + " text, " + TIME + " text, "
-					+ MOVES + " text);";
+			sql = "create table " + TABLE_POSITION + " (" + ID + " integer primary key autoincrement, " + WHITE_PLAYER
+					+ " text, " + BLACK_PLAYER + " text, " + WHITETIME + " text, " + BLACKTIME + " text, " + BONUS
+					+ " text, " + TIME + " text, " + MOVES + " text);";
 			db.execSQL(sql);
 		}
 
@@ -245,5 +210,4 @@ public class DBAdapter {
 			// Will never be called
 		}
 	}// end of DatabaseHelper
-
 }// end of DBAdapter

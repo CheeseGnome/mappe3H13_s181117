@@ -22,7 +22,7 @@ public class MainMenuActivity extends Activity {
 		requestWindowFeature(Window.FEATURE_NO_TITLE);
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_main_menu);
-		
+
 		setVolumeControlStream(AudioManager.STREAM_MUSIC);
 
 		Button button = (Button) findViewById(R.id.btn_new_game);
@@ -31,11 +31,11 @@ public class MainMenuActivity extends Activity {
 			public void onClick(View v) {
 				DBAdapter database = new DBAdapter(getApplicationContext());
 				database.open();
-				Cursor cursor = database.getMoves();
+				Cursor cursor = database.getGameState();
 				if (cursor.getCount() == 0) {
 					startActivity(gameSettingsIntent);
 				} else {
-					
+
 					new Thread(new Runnable() {
 						public void run() {
 							Looper.prepare();
@@ -59,7 +59,7 @@ public class MainMenuActivity extends Activity {
 				}
 			}
 		});
-		
+
 		((Button) findViewById(R.id.btn_statistics)).setOnClickListener(new View.OnClickListener() {
 			public void onClick(View v) {
 				Intent statistics = new Intent(MainMenuActivity.this, StatisticsActivity.class);
@@ -89,16 +89,6 @@ public class MainMenuActivity extends Activity {
 	@Override
 	public boolean onOptionsItemSelected(MenuItem item) {
 		switch (item.getItemId()) {
-		case android.R.id.home:
-			// This ID represents the Home or Up button. In the case of this
-			// activity, the Up button is shown. Use NavUtils to allow users
-			// to navigate up one level in the application structure. For
-			// more details, see the Navigation pattern on Android Design:
-			//
-			// http://developer.android.com/design/patterns/navigation.html#up-vs-back
-			//
-			// NavUtils.navigateUpFromSameTask(this);
-			return true;
 		case R.id.action_settings:
 			Intent settings = new Intent(this, Preferences.class);
 			startActivity(settings);

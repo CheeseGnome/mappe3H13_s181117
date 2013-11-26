@@ -35,6 +35,7 @@ public class Preferences extends PreferenceActivity {
 			SharedPreferences sharedPreferences = getPreferenceManager().getSharedPreferences();
 			sharedPreferences.registerOnSharedPreferenceChangeListener(this);
 
+			// Set summaries to reflect current values
 			EditTextPreference preference = (EditTextPreference) findPreference("whiteName");
 			preference.setSummary(sharedPreferences.getString("whiteName", ""));
 
@@ -48,6 +49,7 @@ public class Preferences extends PreferenceActivity {
 			list.setSummary(getTimeString(true, Long.parseLong(sharedPreferences.getString("bonus_preference", "0"))));
 		}
 
+		// Set summaries to reflect current values whenever a preference changes
 		public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key) {
 			if (key.equals("whiteName") || key.equals("blackName")) {
 				EditTextPreference preference = (EditTextPreference) findPreference(key);
@@ -59,6 +61,17 @@ public class Preferences extends PreferenceActivity {
 			}
 		}
 
+		/**
+		 * Converts the provided time to the string representation as found in
+		 * arrays.xml
+		 * 
+		 * @param bonus
+		 *            True if you want the strings for bonus time, false for
+		 *            normal time strings
+		 * @param time
+		 *            The time to convert
+		 * @return A string representing the current selection
+		 */
 		private String getTimeString(boolean bonus, long time) {
 			if (time == 0) {
 				if (bonus) {

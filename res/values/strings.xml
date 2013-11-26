@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-
     <string name="app_name">Chess</string>
     <string name="action_settings">Settings</string>
     <string name="tile_description">Tile</string>
@@ -57,7 +56,7 @@
     <string name="btn_offer_draw">Offer Draw</string>
     <string name="btn_claim_draw">Claim Draw</string>
     <string name="btn_resign">Resign</string>
-    <string name="btn_quit">Quit</string>
+    <string name="btn_quit">End game</string>
     <string name="title_draw_offer">Draw offered</string>
     <string name="txt_draw_offer">has offered you a draw</string>
     <string name="btn_accept">Accept</string>

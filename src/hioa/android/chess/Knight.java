@@ -2,6 +2,7 @@ package hioa.android.chess;
 
 /**
  * Represents a knight
+ * 
  * @author Lars Sætaberget
  * @version 2013-11-10
  */
@@ -13,12 +14,12 @@ public class Knight extends Chesspiece {
 		setRow(row);
 		setColumn(column);
 	}
-	
+
 	@Override
-	public boolean sameClass(Chesspiece piece){
+	public boolean sameClass(Chesspiece piece) {
 		return (piece instanceof Knight);
 	}
-	
+
 	@Override
 	public boolean move(int row, int column) {
 		if (legalMoves()[row][column] == true) {
@@ -31,15 +32,15 @@ public class Knight extends Chesspiece {
 		} else
 			return false;
 	}
-	
+
 	@Override
 	public boolean threatensPosition(int row, int column) {
-		if(getRow() == row - 2 || getRow() == row + 2){
-			if(getColumn() == column - 1 || getColumn() == column + 1)
+		if (getRow() == row - 2 || getRow() == row + 2) {
+			if (getColumn() == column - 1 || getColumn() == column + 1)
 				return true;
 		}
-		if(getRow() == row - 1 || getRow() == row + 1){
-			if(getColumn() == column - 2 || getColumn() == column + 2)
+		if (getRow() == row - 1 || getRow() == row + 1) {
+			if (getColumn() == column - 2 || getColumn() == column + 2)
 				return true;
 		}
 		return false;

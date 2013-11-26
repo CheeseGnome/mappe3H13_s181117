@@ -14,9 +14,9 @@ public class Queen extends Chesspiece {
 		setRow(row);
 		setColumn(column);
 	}
-	
+
 	@Override
-	public boolean sameClass(Chesspiece piece){
+	public boolean sameClass(Chesspiece piece) {
 		return (piece instanceof Queen);
 	}
 
@@ -35,8 +35,7 @@ public class Queen extends Chesspiece {
 
 	@Override
 	public boolean[][] legalMoves() {
-		boolean[][] board = new boolean[chessboard.getMaxRows()][chessboard
-				.getMaxColumns()];
+		boolean[][] board = new boolean[chessboard.getMaxRows()][chessboard.getMaxColumns()];
 		int enemy;
 		if (getColor() == WHITE)
 			enemy = BLACK;
@@ -56,8 +55,7 @@ public class Queen extends Chesspiece {
 	@Override
 	public boolean threatensPosition(int row, int column) {
 		// Not on the same row, not on the same column and not on a diagonal
-		if (getRow() != row && getColumn() != column
-				&& Math.abs(row - getRow()) != Math.abs(column - getColumn())) {
+		if (getRow() != row && getColumn() != column && Math.abs(row - getRow()) != Math.abs(column - getColumn())) {
 			return false;
 		}
 		// Straight movement
@@ -248,7 +246,7 @@ public class Queen extends Chesspiece {
 				break;
 			}
 			// Friendly piece blocking
-			else  if (chessboard.tileContains(row, column, false) == getColor()){
+			else if (chessboard.tileContains(row, column, false) == getColor()) {
 				break;
 			}
 			row -= 1;
@@ -283,7 +281,7 @@ public class Queen extends Chesspiece {
 				break;
 			}
 			// Friendly piece blocking
-			else  if (chessboard.tileContains(row, column, false) == getColor()){
+			else if (chessboard.tileContains(row, column, false) == getColor()) {
 				break;
 			}
 			row -= 1;
@@ -318,7 +316,7 @@ public class Queen extends Chesspiece {
 				break;
 			}
 			// Friendly piece blocking
-			else  if (chessboard.tileContains(row, column, false) == getColor()){
+			else if (chessboard.tileContains(row, column, false) == getColor()) {
 				break;
 			}
 			row += 1;
@@ -341,8 +339,7 @@ public class Queen extends Chesspiece {
 		int row = getRow() + 1;
 		int column = getColumn() + 1;
 
-		while (row < chessboard.getMaxRows()
-				&& column < chessboard.getMaxColumns()) {
+		while (row < chessboard.getMaxRows() && column < chessboard.getMaxColumns()) {
 			// empty tile
 			if (!chessboard.kingInCheckAfter(this, row, column)
 					&& chessboard.tileContains(row, column, false) == NO_PIECE) {
@@ -355,7 +352,7 @@ public class Queen extends Chesspiece {
 				break;
 			}
 			// Friendly piece blocking
-			else  if (chessboard.tileContains(row, column, false) == getColor()){
+			else if (chessboard.tileContains(row, column, false) == getColor()) {
 				break;
 			}
 			row += 1;
@@ -546,8 +543,7 @@ public class Queen extends Chesspiece {
 		int row = getRow() + 1;
 		int column = getColumn() + 1;
 
-		while (row < chessboard.getMaxRows()
-				&& column < chessboard.getMaxColumns()) {
+		while (row < chessboard.getMaxRows() && column < chessboard.getMaxColumns()) {
 			// non-empty tile
 			if (chessboard.tileContains(row, column, false) != NO_PIECE) {
 				if (row == kingRow && column == kingColumn)

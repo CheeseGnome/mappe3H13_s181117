@@ -33,6 +33,14 @@ public class PositionHashFactory {
 		mChessboard = board;
 	}
 
+	/**
+	 * Rebuilds the last position in this string representing an array of move
+	 * annotations sperated by SPLIT
+	 * 
+	 * @param moves
+	 *            The string to be converted into an array of chess annotations
+	 * @return The color who's turn it is
+	 */
 	public int rebuildPosition(String moves) {
 		String[] move = moves.split(SPLIT);
 		int color = Chesspiece.WHITE;
@@ -59,6 +67,12 @@ public class PositionHashFactory {
 		return mCurrentMoveIndex;
 	}
 
+	/**
+	 * Inserts an annotation representing the end of the game
+	 * 
+	 * @param winningColor
+	 *            The color that won or DRAW (in this class)
+	 */
 	public void insertGameResult(int winningColor) {
 		if (mCurrentMoveIndex == mMoves.length) {
 			mMoves = expandArray(mMoves);
@@ -109,14 +123,12 @@ public class PositionHashFactory {
 				mChessboard.mView.setLastMoveHint(piece.getRow(), piece.getColumn(), translateRow(letter),
 						translateColumn(move.charAt(1)));
 				piece.move(translateRow(letter), translateColumn(move.charAt(1)));
-			}
-			else if (Character.isDigit(move.charAt(1))) {
+			} else if (Character.isDigit(move.charAt(1))) {
 				piece = mChessboard.getPieceOnRow(sameClass, translateRow(move.charAt(1)));
 				mChessboard.mView.setLastMoveHint(piece.getRow(), piece.getColumn(), translateRow(letter),
 						translateColumn(move.charAt(1)));
 				piece.move(translateRow(move.charAt(3)), translateColumn(letter));
-			} 
-			else {
+			} else {
 				piece = mChessboard.getPieceOnColumn(sameClass, translateColumn(move.charAt(1)));
 				mChessboard.mView.setLastMoveHint(piece.getRow(), piece.getColumn(), translateRow(letter),
 						translateColumn(move.charAt(1)));
@@ -171,6 +183,13 @@ public class PositionHashFactory {
 		}
 	}
 
+	/**
+	 * Translates this row from annotation to index
+	 * 
+	 * @param row
+	 *            The row annotation to convert
+	 * @return An int representing the index of this row
+	 */
 	private int translateRow(char row) {
 		int result;
 		try {
@@ -181,6 +200,13 @@ public class PositionHashFactory {
 		return result;
 	}
 
+	/**
+	 * Translates this column from annotation to index
+	 * 
+	 * @param column
+	 *            The column annotation to convert
+	 * @return An int representing the index of this column
+	 */
 	private int translateColumn(char column) {
 		int result = -1;
 		if (column == 'a') {
@@ -203,6 +229,10 @@ public class PositionHashFactory {
 		return result;
 	}
 
+	/**
+	 * Shifts the draw annotation to it's correct place. This is a bugfix for
+	 * draws by repetitions
+	 */
 	public void insertDrawByRepetition() {
 		if (mMoves.length == mCurrentMoveIndex) {
 			mMoves = expandArray(mMoves);
@@ -211,6 +241,34 @@ public class PositionHashFactory {
 		mRepetition = true;
 	}
 
+	/**
+	 * Creates and stores the chess annotation for this move
+	 * 
+	 * @param board
+	 *            The {@link Chessboard} where the move took place
+	 * @param piece
+	 *            The {@link Chesspiece} that moved
+	 * @param row
+	 *            The row that was moved to
+	 * @param column
+	 *            The column that was moved to
+	 * @param oldRow
+	 *            The row that was moved from
+	 * @param oldColumn
+	 *            The column that was moved from
+	 * @param captured
+	 *            The {@link Chesspiece} that was captured, or null if no
+	 *            capture took place
+	 * @param flag
+	 *            The promotion flag for this move
+	 * @param check
+	 *            True if the move ended in check(but not in checkmate)
+	 * @param checkmate
+	 *            True if the move ended in checkmate
+	 * @param other
+	 *            The other piece of the same type and color that could have
+	 *            moved to the same location
+	 */
 	public void insertMove(Chessboard board, Chesspiece piece, int row, int column, int oldRow, int oldColumn,
 			Chesspiece captured, int flag, boolean check, boolean checkmate, Chesspiece other) {
 
@@ -323,11 +381,25 @@ public class PositionHashFactory {
 		}
 	}
 
+	/**
+	 * Translates this row index to the chess annotation for rows
+	 * 
+	 * @param row
+	 *            The row index to translate
+	 * @return A string representing the chess annotation for this index
+	 */
 	private String translateRow(int row) {
 		int result = 8 - row;
 		return "" + result;
 	}
 
+	/**
+	 * Translates this column index to the chess annotation for columns
+	 * 
+	 * @param row
+	 *            The column index to translate
+	 * @return A string representing the chess annotation for this index
+	 */
 	private String translateColumn(int column) {
 
 		switch (column) {
@@ -351,6 +423,12 @@ public class PositionHashFactory {
 		return "";
 	}
 
+	/**
+	 * Gets a String representation of the move annotations for all the moves in
+	 * this game seperated by SPLI
+	 * 
+	 * @return A string of all the stored moves
+	 */
 	public String getMoves() {
 		StringBuilder builder = new StringBuilder();
 		for (int i = 0; i < mCurrentMoveIndex; i++) {
@@ -361,6 +439,11 @@ public class PositionHashFactory {
 		return builder.toString();
 	}
 
+	/**
+	 * Gets an array of all the chess annotations that are stored in this object
+	 * 
+	 * @return An array of all the moves that have been made so far
+	 */
 	public String[] getMovesArray() {
 		return mMoves;
 	}

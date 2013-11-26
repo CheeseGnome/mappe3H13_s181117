@@ -19,9 +19,9 @@ public class Rook extends Chesspiece {
 		setRow(row);
 		setColumn(column);
 	}
-	
+
 	@Override
-	public boolean sameClass(Chesspiece piece){
+	public boolean sameClass(Chesspiece piece) {
 		return (piece instanceof Rook);
 	}
 
@@ -63,8 +63,7 @@ public class Rook extends Chesspiece {
 
 	@Override
 	public boolean[][] legalMoves() {
-		boolean[][] board = new boolean[chessboard.getMaxRows()][chessboard
-				.getMaxColumns()];
+		boolean[][] board = new boolean[chessboard.getMaxRows()][chessboard.getMaxColumns()];
 		int enemy;
 		if (getColor() == WHITE)
 			enemy = BLACK;

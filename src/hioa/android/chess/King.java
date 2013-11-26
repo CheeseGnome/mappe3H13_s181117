@@ -18,9 +18,9 @@ public class King extends Chesspiece {
 	public void setInCheck(boolean inCheck) {
 		mInCheck = inCheck;
 	}
-	
+
 	@Override
-	public boolean sameClass(Chesspiece piece){
+	public boolean sameClass(Chesspiece piece) {
 		return (piece instanceof King);
 	}
 
@@ -30,11 +30,9 @@ public class King extends Chesspiece {
 			// Castle
 			if (Math.abs(getColumn() - column) == 2) {
 				if (column > getColumn()) {
-					((Rook) chessboard.getPieceAt(row, column + 1)).move(row,
-							column - 1, true);
+					((Rook) chessboard.getPieceAt(row, column + 1)).move(row, column - 1, true);
 				} else {
-					((Rook) chessboard.getPieceAt(row, column - 2)).move(row,
-							column + 1, true);
+					((Rook) chessboard.getPieceAt(row, column - 2)).move(row, column + 1, true);
 				}
 			}
 			int oldRow = getRow();
@@ -50,8 +48,7 @@ public class King extends Chesspiece {
 
 	@Override
 	public boolean[][] legalMoves() {
-		boolean[][] board = new boolean[chessboard.getMaxRows()][chessboard
-				.getMaxColumns()];
+		boolean[][] board = new boolean[chessboard.getMaxRows()][chessboard.getMaxColumns()];
 		getLegalCastles(board);
 
 		int row = getRow();
@@ -94,8 +91,7 @@ public class King extends Chesspiece {
 		int row = getRow();
 		int column = getColumn();
 		// Kingside Castle
-		if (!mHasMoved && !mInCheck
-				&& chessboard.tileContains(row, column + 1, false) == NO_PIECE
+		if (!mHasMoved && !mInCheck && chessboard.tileContains(row, column + 1, false) == NO_PIECE
 				&& chessboard.tileContains(row, column + 2, false) == NO_PIECE
 				&& !chessboard.kingInCheckAfter(this, row, column + 1)
 				&& !chessboard.kingInCheckAfter(this, row, column + 2)) {
@@ -106,8 +102,7 @@ public class King extends Chesspiece {
 			}
 		}
 		// Queenside Castle
-		if (!mHasMoved && !mInCheck
-				&& chessboard.tileContains(row, column - 1, false) == NO_PIECE
+		if (!mHasMoved && !mInCheck && chessboard.tileContains(row, column - 1, false) == NO_PIECE
 				&& chessboard.tileContains(row, column - 2, false) == NO_PIECE
 				&& chessboard.tileContains(row, column - 3, false) == NO_PIECE
 				&& !chessboard.kingInCheckAfter(this, row, column - 1)
@@ -147,8 +142,7 @@ public class King extends Chesspiece {
 	 * @return True if both indexes are within the allowed range
 	 */
 	private boolean legalIndexes(int row, int column) {
-		return (row >= 0 && row < chessboard.getMaxRows() && column >= 0 && column < chessboard
-				.getMaxColumns());
+		return (row >= 0 && row < chessboard.getMaxRows() && column >= 0 && column < chessboard.getMaxColumns());
 	}
 
 	@Override
@@ -164,8 +158,7 @@ public class King extends Chesspiece {
 		} else if (column == getColumn()) {
 			return (Math.abs(row - getRow()) == 1);
 		} else {
-			return (Math.abs(row - getRow()) == 1 && Math.abs(column
-					- getColumn()) == 1);
+			return (Math.abs(row - getRow()) == 1 && Math.abs(column - getColumn()) == 1);
 		}
 	}
 

@@ -51,8 +51,6 @@ public class ChessboardView extends TableLayout {
 	private MediaPlayer mPlayer;
 	private boolean mMute;
 
-
-
 	public ChessboardView(Context context, AttributeSet attributes) {
 		super(context, attributes);
 		LayoutInflater layoutInflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
@@ -64,27 +62,49 @@ public class ChessboardView extends TableLayout {
 		mChessboard.setChessboardView(this);
 		initializeButtonArray();
 	}
-	
-	public void setMute(boolean mute){
+
+	/**
+	 * Mute the sounds coming from this view
+	 * 
+	 * @param mute
+	 *            True to mute, false to unmute
+	 */
+	public void setMute(boolean mute) {
 		mMute = mute;
 	}
-	
-	private void playMoveSound(){
-		if(mMute){
+
+	/**
+	 * Plays the move sound
+	 */
+	private void playMoveSound() {
+		if (mMute) {
 			return;
 		}
 		mPlayer = MediaPlayer.create(mContext, R.raw.move);
-        mPlayer.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
-            @Override
-            public void onCompletion(MediaPlayer mp) {
-                // TODO Auto-generated method stub
-                mp.release();
-            }
+		mPlayer.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
+			@Override
+			public void onCompletion(MediaPlayer mp) {
+				mp.release();
+			}
 
-        });   
-        mPlayer.start();
+		});
+		mPlayer.start();
 	}
 
+	/**
+	 * Sets the hint indexes indicating what the last move was.
+	 * <p>
+	 * The actual coloring of the tiles happens in getLegalMovesHint()
+	 * 
+	 * @param oldRow
+	 *            The row the piece was on
+	 * @param oldColumn
+	 *            The column the piece was on
+	 * @param row
+	 *            The row the piece is now on
+	 * @param column
+	 *            The column the piece is now on
+	 */
 	public void setLastMoveHint(int oldRow, int oldColumn, int row, int column) {
 		mOldRow = oldRow;
 		mOldColumn = oldColumn;
@@ -118,6 +138,10 @@ public class ChessboardView extends TableLayout {
 		mCurrentPlayer = color;
 	}
 
+	/**
+	 * Re-evaluate and refresh all the visual components in this view to reflect
+	 * the state of the underlying {@link Chessboard}
+	 */
 	public void reDraw() {
 		placePieces();
 		setLegalMovesHint();
@@ -182,7 +206,7 @@ public class ChessboardView extends TableLayout {
 		mActivity.setButtonsEnabled(false);
 		DBAdapter database = new DBAdapter(mContext);
 		database.open();
-		database.clearMoves();
+		database.clearGameState();
 		setLegalMovesHint();
 
 		final Dialog dialog = new Dialog(mContext);
@@ -347,6 +371,12 @@ public class ChessboardView extends TableLayout {
 		mActivity.unrotate();
 	}
 
+	/**
+	 * Enable or disable the tiles
+	 * 
+	 * @param enabled
+	 *            True to enable the tiles, false to disable
+	 */
 	protected void setButtonsEnabled(boolean enabled) {
 		for (int i = 0; i < mChessboard.getMaxRows(); i++) {
 			for (int j = 0; j < mChessboard.getMaxColumns(); j++) {
@@ -359,8 +389,11 @@ public class ChessboardView extends TableLayout {
 	 * Calls a dialog enabling the player to select a piece to promote to.
 	 * 
 	 * @param pawn
+	 *            The pawn to be promoted
 	 * @param row
+	 *            The promotion row
 	 * @param column
+	 *            The promotion column
 	 */
 	public void promote(Pawn pawn, final int row, final int column) {
 		final Dialog dialog = new Dialog(mContext);

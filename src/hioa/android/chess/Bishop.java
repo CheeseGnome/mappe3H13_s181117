@@ -14,9 +14,9 @@ public class Bishop extends Chesspiece {
 		setRow(row);
 		setColumn(column);
 	}
-	
+
 	@Override
-	public boolean sameClass(Chesspiece piece){
+	public boolean sameClass(Chesspiece piece) {
 		return (piece instanceof Bishop);
 	}
 

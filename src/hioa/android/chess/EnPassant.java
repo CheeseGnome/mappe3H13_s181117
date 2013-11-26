@@ -33,9 +33,9 @@ public class EnPassant extends Chesspiece {
 		}
 		mPawn = pawn;
 	}
-	
+
 	@Override
-	public boolean sameClass(Chesspiece piece){
+	public boolean sameClass(Chesspiece piece) {
 		return (piece instanceof EnPassant);
 	}
 

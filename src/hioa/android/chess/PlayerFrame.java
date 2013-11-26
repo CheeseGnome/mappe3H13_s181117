@@ -23,6 +23,9 @@ import android.widget.TextView;
 
 public class PlayerFrame extends RelativeLayout {
 
+	/**
+	 * The size of the shadow behind the check text as defined in integers.xml
+	 */
 	private static float SHADOWRADIUS;
 
 	public static final int NO_CHECK = 0, CHECK = 1, CHECKMATE = 2, WINNER = 3, DRAW = 4, RESIGNED = 5, TIMEOUT = 6;

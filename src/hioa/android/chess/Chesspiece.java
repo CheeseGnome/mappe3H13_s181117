@@ -14,12 +14,14 @@ import android.content.Context;
 
 public abstract class Chesspiece {
 	public static final int NO_PIECE = -1, BLACK = 0, WHITE = 1, EN_PASSANT = 2;
-	
+
 	/**
-	 * This variable is only used for allowing the pieces to easily orient themselves on the board.
-	 * It is used to determine legal moves and which positions they threaten.
+	 * This variable is only used for allowing the pieces to easily orient
+	 * themselves on the board. It is used to determine legal moves and which
+	 * positions they threaten.
 	 * <p>
-	 * The values for all other pieces in the same methods are derived from the current board state in {@link Chessboard}
+	 * The values for all other pieces in the same methods are derived from the
+	 * current board state in {@link Chessboard}
 	 */
 	private int mCurrentRow, mCurrentColumn;
 	private int mColor;
@@ -39,20 +41,34 @@ public abstract class Chesspiece {
 
 	/**
 	 * Provides an array of all legal moves for this piece
-	 * @return A 2d boolean array representing the chessboard where all legal moves are true and all illegal moves are false
+	 * 
+	 * @return A 2d boolean array representing the chessboard where all legal
+	 *         moves are true and all illegal moves are false
 	 */
 	public abstract boolean[][] legalMoves();
-	
+
 	/**
-	 * Used to determine whether or not this piece is currently checking the opposing king.
-	 * @param row The row that the opposing king is on
-	 * @param column The column that the opposing king is on
+	 * Used to determine whether or not this piece is currently checking the
+	 * opposing king.
+	 * 
+	 * @param row
+	 *            The row that the opposing king is on
+	 * @param column
+	 *            The column that the opposing king is on
 	 * @return True if this piece is threatening the given position
 	 */
 	public abstract boolean threatensPosition(int row, int column);
 
+	/**
+	 * Checks whether or not the provided piece is the same class as this piece
+	 * 
+	 * @param piece
+	 *            The piece to check
+	 * @return True if the provided piece is of the same lowest instance as this
+	 *         piece
+	 */
 	public abstract boolean sameClass(Chesspiece piece);
-	
+
 	public int getColor() {
 		return mColor;
 	}
@@ -60,19 +76,22 @@ public abstract class Chesspiece {
 	protected void setColor(int color) {
 		mColor = color;
 	}
-	
+
 	/**
 	 * Get the row that this piece is currently positioned at
+	 * 
 	 * @return The row position for this piece
 	 */
-	protected int getRow(){
+	protected int getRow() {
 		return mCurrentRow;
 	}
+
 	/**
 	 * Get the column that this piece is currently positioned at
+	 * 
 	 * @return The column position for this piece
 	 */
-	protected int getColumn(){
+	protected int getColumn() {
 		return mCurrentColumn;
 	}
 

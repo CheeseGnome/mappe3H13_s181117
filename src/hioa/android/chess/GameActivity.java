@@ -72,7 +72,7 @@ public class GameActivity extends Activity {
 		board.placePieces();
 		mWhiteFrame = (PlayerFrame) findViewById(R.id.whiteFrame);
 		mBlackFrame = (PlayerFrame) findViewById(R.id.blackFrame);
-		
+
 		mWhiteFrame.setActivity(this);
 		mBlackFrame.setActivity(this);
 
@@ -118,7 +118,7 @@ public class GameActivity extends Activity {
 			public void onClick(View v) {
 				DBAdapter database = new DBAdapter(GameActivity.this);
 				database.open();
-				database.clearMoves();
+				database.clearGameState();
 				finish();
 			}
 
@@ -126,6 +126,9 @@ public class GameActivity extends Activity {
 
 	}
 
+	/**
+	 * Loads the chesspiece icons
+	 */
 	private void loadIcons() {
 		mIcons = new BitmapDrawable[12];
 		mIcons[BLACKPAWN] = getDrawable(R.drawable.black_pawn);
@@ -142,8 +145,14 @@ public class GameActivity extends Activity {
 		mIcons[WHITEQUEEN] = getDrawable(R.drawable.white_queen);
 		mIcons[WHITEKING] = getDrawable(R.drawable.white_king);
 	}
-	
-	public void setButtonsEnabled(boolean enabled){
+
+	/**
+	 * Enables or disables the resign, draw and quit buttons
+	 * 
+	 * @param enabled
+	 *            True to enable, false to disable
+	 */
+	public void setButtonsEnabled(boolean enabled) {
 		((Button) findViewById(R.id.btn_resign)).setEnabled(enabled);
 		((Button) findViewById(R.id.btn_draw)).setEnabled(enabled);
 		((Button) findViewById(R.id.btn_quit)).setEnabled(enabled);
@@ -164,7 +173,7 @@ public class GameActivity extends Activity {
 		int size = getResources().getDimensionPixelSize(R.dimen.tile_size);
 		return new BitmapDrawable(getResources(), Bitmap.createScaledBitmap(bitmap, size, size, true));
 	}
-	
+
 	/**
 	 * Returns the appropriate icon for the provided piece
 	 * 
@@ -176,7 +185,6 @@ public class GameActivity extends Activity {
 	public Drawable getPieceIcon(int piece) {
 		return mIcons[piece];
 	}
-	
 
 	/**
 	 * Returns the appropriate icon for the provided piece
@@ -353,7 +361,7 @@ public class GameActivity extends Activity {
 			mAlwaysOn = false;
 			getWindow().clearFlags(android.view.WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
 		}
-		
+
 		mChessboard.mView.setMute(mPreferences.getBoolean("mute", false));
 
 		mRotate = mPreferences.getBoolean("rotate", false);
@@ -448,10 +456,10 @@ public class GameActivity extends Activity {
 			mChessboard.revalidateClock();
 			mChessboard.pauseClock(false);
 			mChessboard.mView.reDraw();
-			try{
+			try {
 				Thread.sleep(50);
-			}catch(InterruptedException ie){
-				
+			} catch (InterruptedException ie) {
+
 			}
 			mChessboard.setTime(Chesspiece.WHITE, whiteTime);
 			mChessboard.setTime(Chesspiece.BLACK, blackTime);
@@ -496,16 +504,6 @@ public class GameActivity extends Activity {
 	@Override
 	public boolean onOptionsItemSelected(MenuItem item) {
 		switch (item.getItemId()) {
-		case android.R.id.home:
-			// This ID represents the Home or Up button. In the case of this
-			// activity, the Up button is shown. Use NavUtils to allow users
-			// to navigate up one level in the application structure. For
-			// more details, see the Navigation pattern on Android Design:
-			//
-			// http://developer.android.com/design/patterns/navigation.html#up-vs-back
-			//
-			// NavUtils.navigateUpFromSameTask(this);
-			return true;
 		case R.id.action_settings:
 			Intent settings = new Intent(this, Preferences.class);
 			startActivity(settings);

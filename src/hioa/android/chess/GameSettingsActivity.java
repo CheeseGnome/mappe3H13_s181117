@@ -26,7 +26,7 @@ public class GameSettingsActivity extends Activity {
 		requestWindowFeature(Window.FEATURE_NO_TITLE);
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_game_settings);
-		
+
 		setVolumeControlStream(AudioManager.STREAM_MUSIC);
 
 		Button start = (Button) findViewById(R.id.btn_start);
@@ -86,16 +86,40 @@ public class GameSettingsActivity extends Activity {
 		super.onResume();
 	}
 
+	/**
+	 * Converts the string time in seconds to a string representing the same
+	 * time in minutes
+	 * 
+	 * @param time
+	 *            The total number of seconds
+	 * @return The number of whole minutes that is represented by time
+	 */
 	private String parsedMinutes(String time) {
 		long minutes = Long.parseLong(time) / 60;
 		return "" + minutes;
 	}
 
+	/**
+	 * Converts the string time in total seconds to a string representing the
+	 * same time in seconds after removing the whole minutes
+	 * 
+	 * @param time
+	 *            The total number of seconds
+	 * @return The number seconds over the minutes this string represents
+	 */
 	private String parsedSeconds(String time) {
 		long seconds = Long.parseLong(time) % 60;
 		return "" + seconds;
 	}
 
+	/**
+	 * Returns true if this string contains a char which is not a letter
+	 * 
+	 * @param name
+	 *            The string to check
+	 * @return True if the string contains a non-letter character, otherwise
+	 *         false.
+	 */
 	private boolean containsNonLetter(String name) {
 		for (int i = 0; i < name.length(); i++) {
 			if (!Character.isLetter(name.charAt(i))) {
@@ -183,16 +207,6 @@ public class GameSettingsActivity extends Activity {
 	@Override
 	public boolean onOptionsItemSelected(MenuItem item) {
 		switch (item.getItemId()) {
-		case android.R.id.home:
-			// This ID represents the Home or Up button. In the case of this
-			// activity, the Up button is shown. Use NavUtils to allow users
-			// to navigate up one level in the application structure. For
-			// more details, see the Navigation pattern on Android Design:
-			//
-			// http://developer.android.com/design/patterns/navigation.html#up-vs-back
-			//
-			// NavUtils.navigateUpFromSameTask(this);
-			return true;
 		case R.id.action_settings:
 			Intent settings = new Intent(this, Preferences.class);
 			startActivity(settings);
