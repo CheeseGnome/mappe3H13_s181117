@@ -319,11 +319,11 @@ public class GameActivity extends Activity {
 	}
 
 	@Override
-	protected void onPause() {
+	protected void onStop() {
 		DBAdapter database = new DBAdapter(this);
 		database.open();
 		database.updateTimes("" + mChessboard.getTime(Chesspiece.WHITE), "" + mChessboard.getTime(Chesspiece.BLACK));
-		super.onPause();
+		super.onStop();
 	}
 
 	/**
@@ -360,7 +360,7 @@ public class GameActivity extends Activity {
 			getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
 		} else if (mAlwaysOn) {
 			mAlwaysOn = false;
-			getWindow().clearFlags(android.view.WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
+			getWindow().clearFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
 		}
 
 		mChessboard.mView.setMute(mPreferences.getBoolean("mute", false));
@@ -436,35 +436,32 @@ public class GameActivity extends Activity {
 		if (moves != null) {
 			mStartTime = Long.parseLong(bundle.getString(DBAdapter.TIME, "0"));
 			mBonusTime = Long.parseLong(bundle.getString(DBAdapter.BONUS, "0"));
-			mChessboard.setTime(mStartTime, mBonusTime);
 		}
-		// initialised from gamesettings
+		// Initialized from GameSettingsActivity
 		else {
 			mStartTime = bundle.getLong(GameSettingsActivity.TIME);
 			mBonusTime = bundle.getLong(GameSettingsActivity.BONUS);
-			mChessboard.setTime(mStartTime, mBonusTime);
 		}
+		mChessboard.setTime(mStartTime, mBonusTime);
 		mWhiteName = bundle.getString(GameSettingsActivity.WHITENAME);
 		mBlackName = bundle.getString(GameSettingsActivity.BLACKNAME);
 		view.setPlayerNames(mWhiteName, mBlackName);
 		view.setActivity(this);
+		// Initialized from main menu
 		if (moves != null) {
 			long whiteTime = Long.parseLong(bundle.getString(DBAdapter.WHITETIME, "0"));
 			long blackTime = Long.parseLong(bundle.getString(DBAdapter.BLACKTIME, "0"));
 			mChessboard.pauseClock(true);
 			int toMove = mChessboard.mPositionHashFactory.rebuildPosition(moves);
 			mChessboard.mView.setCurrentPlayer(toMove);
+			mChessboard.setTime(Chesspiece.WHITE, whiteTime);
+			mChessboard.setTime(Chesspiece.BLACK, blackTime);
 			mChessboard.revalidateClock();
 			mChessboard.pauseClock(false);
 			mChessboard.mView.reDraw();
-			try {
-				Thread.sleep(50);
-			} catch (InterruptedException ie) {
-
-			}
-			mChessboard.setTime(Chesspiece.WHITE, whiteTime);
-			mChessboard.setTime(Chesspiece.BLACK, blackTime);
-		} else {
+		}
+		// Initialized from GameSettingsActivity
+		else {
 			mChessboard.revalidateClock();
 			mChessboard.setTime(Chesspiece.WHITE, mStartTime);
 			mChessboard.setTime(Chesspiece.BLACK, mStartTime);

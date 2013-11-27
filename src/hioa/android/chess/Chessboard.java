@@ -147,6 +147,9 @@ public class Chessboard {
 							mClockRunning = false;
 							return;
 						}
+						if(mPause){
+							diff2 = diff1 = new Date().getTime();
+						}
 					}
 					if (mStopClock) {
 						mStopClock = false;
@@ -606,6 +609,10 @@ public class Chessboard {
 
 	public void revalidateClock() {
 		if (mRunningColor != -1 && mView.getCurrentPlayer() != mRunningColor) {
+			// This fixes a bug regarding the bonus time which only happens to black
+			if (mRunningColor == Chesspiece.BLACK) {
+				mBlackTime -= mBonusTime;
+			}
 			mChangeClockColor = true;
 		} else if (mRunningColor != -1) {
 			mChangeClockColor = false;
