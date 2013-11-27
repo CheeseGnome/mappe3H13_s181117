@@ -578,8 +578,8 @@ public class Chessboard {
 			if (status == GAMENOTOVER) {
 				DBAdapter database = new DBAdapter(mContext);
 				database.open();
-				database.insertGameState(mPositionHashFactory.getMoves(), mView.getWhiteName(), mView.getBlackName(),
-						"" + mWhiteTime, "" + mBlackTime, "" + mBonusTime, "" + mStartTime);
+				database.insertGameState(mPositionHashFactory.getIntMoves(), mView.getWhiteName(),
+						mView.getBlackName(), "" + mWhiteTime, "" + mBlackTime, "" + mBonusTime, "" + mStartTime);
 			} else {
 				DBAdapter database = new DBAdapter(mContext);
 				database.open();

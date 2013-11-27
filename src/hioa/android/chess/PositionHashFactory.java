@@ -15,7 +15,10 @@ public class PositionHashFactory {
 	private static final int ARRAY_INCREMENT = 100;
 	String[] mHashedPositions = new String[ARRAY_INCREMENT];
 	String[] mMoves = new String[ARRAY_INCREMENT];
-	private int mCurrentHashIndex = 0, mCurrentMoveIndex = 0;
+	String[] mIntMoves = new String[ARRAY_INCREMENT];
+	private int mCurrentHashIndex = 0, mCurrentMoveIndex = 0, mCurrentIntMoveIndex = 0;
+
+	private static final int ROW = 0, COLUMN = 1, OLDROW = 2, OLDCOLUMN = 3;
 
 	private static final String WHITE = "a", BLACK = "b", ENPASSANT = "c", NOPIECE = "d", WPAWN = "e", WROOK = "f",
 			WBISHOP = "g", WKNIGHT = "h", WKING = "i", WQUEEN = "j", BPAWN = "k", BROOK = "l", BBISHOP = "m",
@@ -34,8 +37,8 @@ public class PositionHashFactory {
 	}
 
 	/**
-	 * Rebuilds the last position in this string representing an array of move
-	 * annotations sperated by SPLIT
+	 * Rebuilds the last position in this string representing an array of moves
+	 * seperated by SPLIT
 	 * 
 	 * @param moves
 	 *            The string to be converted into an array of chess annotations
@@ -43,19 +46,19 @@ public class PositionHashFactory {
 	 */
 	public int rebuildPosition(String moves) {
 		String[] move = moves.split(SPLIT);
-		int color = Chesspiece.WHITE;
+		int row = -1, column = -1, oldRow = -1, oldColumn = -1;
 
 		for (int i = 0; i < move.length; i++) {
 			if (move[i] == null) {
 				break;
 			}
-			performMove(move[i], color);
-			if (color == Chesspiece.WHITE) {
-				color = Chesspiece.BLACK;
-			} else {
-				color = Chesspiece.WHITE;
-			}
+			row = Integer.parseInt("" + move[i].charAt(ROW));
+			column = Integer.parseInt("" + move[i].charAt(COLUMN));
+			oldRow = Integer.parseInt("" + move[i].charAt(OLDROW));
+			oldColumn = Integer.parseInt("" + move[i].charAt(OLDCOLUMN));
+			mChessboard.getPieceAt(oldRow, oldColumn).move(row, column);
 		}
+		mChessboard.mView.setLastMoveHint(oldRow, oldColumn, row, column);
 		if (move.length % 2 == 0) {
 			return Chesspiece.WHITE;
 		} else {
@@ -91,145 +94,6 @@ public class PositionHashFactory {
 	}
 
 	/**
-	 * Performs a move based on the chess annotation for the move and the color
-	 * that moved
-	 * 
-	 * @param move
-	 *            The chess annotation for the move to perform
-	 * @param color
-	 *            The color to move
-	 */
-	private void performMove(String move, int color) {
-		move = move.replaceAll("x", "").replaceAll("\\+", "").replaceAll("#", "");
-		char letter = move.charAt(0);
-		Chesspiece piece;
-		Chesspiece sameClass = null;
-
-		if (letter == 'R') {
-			sameClass = new Rook(color, -1, -1);
-		} else if (letter == 'N') {
-			sameClass = new Knight(color, -1, -1);
-		} else if (letter == 'B') {
-			sameClass = new Bishop(color, -1, -1);
-		} else if (letter == 'Q') {
-			sameClass = new Queen(color, -1, -1);
-		}
-
-		if (sameClass != null) {
-			letter = move.charAt(2);
-			if (Character.isDigit(letter)) {
-				piece = mChessboard.otherPieceCanMoveTo(sameClass, translateRow(letter),
-						translateColumn(move.charAt(1)));
-				mChessboard.mView.setLastMoveHint(piece.getRow(), piece.getColumn(), translateRow(letter),
-						translateColumn(move.charAt(1)));
-				piece.move(translateRow(letter), translateColumn(move.charAt(1)));
-			} else if (Character.isDigit(move.charAt(1))) {
-				piece = mChessboard.getPieceOnRow(sameClass, translateRow(move.charAt(1)));
-				mChessboard.mView.setLastMoveHint(piece.getRow(), piece.getColumn(), translateRow(letter),
-						translateColumn(move.charAt(1)));
-				piece.move(translateRow(move.charAt(3)), translateColumn(letter));
-			} else {
-				piece = mChessboard.getPieceOnColumn(sameClass, translateColumn(move.charAt(1)));
-				mChessboard.mView.setLastMoveHint(piece.getRow(), piece.getColumn(), translateRow(letter),
-						translateColumn(move.charAt(1)));
-				piece.move(translateRow(move.charAt(3)), translateColumn(letter));
-			}
-		}
-
-		else if (letter == 'K') {
-			piece = mChessboard.getKing(color);
-			mChessboard.mView.setLastMoveHint(piece.getRow(), piece.getColumn(), translateRow(move.charAt(2)),
-					translateColumn(move.charAt(1)));
-			piece.move(translateRow(move.charAt(2)), translateColumn(move.charAt(1)));
-		}
-		// castle
-		else if (letter == 'O') {
-			piece = mChessboard.getKing(color);
-			if (move.length() == 3) {
-				// kingside
-				mChessboard.mView.setLastMoveHint(piece.getRow(), piece.getColumn(), piece.getRow(),
-						piece.getColumn() + 2);
-				piece.move(piece.getRow(), piece.getColumn() + 2);
-			} else {
-				// queenside
-				mChessboard.mView.setLastMoveHint(piece.getRow(), piece.getColumn(), piece.getRow(),
-						piece.getColumn() - 2);
-				piece.move(piece.getRow(), piece.getColumn() - 2);
-			}
-		}
-
-		else {
-			sameClass = new Pawn(color, -1, -1);
-			if (move.lastIndexOf("Q") != -1) {
-				mChessboard.setPromotionFlag(Chessboard.QUEEN);
-			} else if (move.lastIndexOf("N") != -1) {
-				mChessboard.setPromotionFlag(Chessboard.KNIGHT);
-			} else if (move.lastIndexOf("R") != -1) {
-				mChessboard.setPromotionFlag(Chessboard.ROOK);
-			} else if (move.lastIndexOf("B") != -1) {
-				mChessboard.setPromotionFlag(Chessboard.BISHOP);
-			}
-			int legalRow, legalColumn;
-			if (Character.isDigit(move.charAt(1))) {
-				legalRow = translateRow(move.charAt(1));
-				legalColumn = translateColumn(move.charAt(0));
-			} else {
-				legalRow = translateRow(move.charAt(2));
-				legalColumn = translateColumn(move.charAt(1));
-			}
-			piece = mChessboard.getPawnOnColumn(color, translateColumn(move.charAt(0)), legalRow, legalColumn);
-			mChessboard.mView.setLastMoveHint(piece.getRow(), piece.getColumn(), legalRow, legalColumn);
-			piece.move(legalRow, legalColumn);
-		}
-	}
-
-	/**
-	 * Translates this row from annotation to index
-	 * 
-	 * @param row
-	 *            The row annotation to convert
-	 * @return An int representing the index of this row
-	 */
-	private int translateRow(char row) {
-		int result;
-		try {
-			result = 8 - Integer.parseInt("" + row);
-		} catch (NumberFormatException nfe) {
-			result = -1;
-		}
-		return result;
-	}
-
-	/**
-	 * Translates this column from annotation to index
-	 * 
-	 * @param column
-	 *            The column annotation to convert
-	 * @return An int representing the index of this column
-	 */
-	private int translateColumn(char column) {
-		int result = -1;
-		if (column == 'a') {
-			result = 0;
-		} else if (column == 'b') {
-			result = 1;
-		} else if (column == 'c') {
-			result = 2;
-		} else if (column == 'd') {
-			result = 3;
-		} else if (column == 'e') {
-			result = 4;
-		} else if (column == 'f') {
-			result = 5;
-		} else if (column == 'g') {
-			result = 6;
-		} else if (column == 'h') {
-			result = 7;
-		}
-		return result;
-	}
-
-	/**
 	 * Shifts the draw annotation to it's correct place. This is a bugfix for
 	 * draws by repetitions
 	 */
@@ -239,6 +103,41 @@ public class PositionHashFactory {
 		}
 		mMoves[mCurrentMoveIndex] = mMoves[--mCurrentMoveIndex];
 		mRepetition = true;
+	}
+
+	/**
+	 * Returns the array used to rebuild the state of the game
+	 * 
+	 * @return A string that should be stored in the database
+	 */
+	public String getIntMoves() {
+		StringBuilder builder = new StringBuilder();
+		for (int i = 0; i < mCurrentIntMoveIndex; i++) {
+			builder.append(mIntMoves[i] + SPLIT);
+		}
+		// remove last split
+		builder.deleteCharAt(builder.length() - 1);
+		return builder.toString();
+	}
+
+	/**
+	 * Inserts a move into the array responsible for saving the game state
+	 * 
+	 * @param row
+	 *            the row that was moved to
+	 * @param column
+	 *            the column that was moved to
+	 * @param oldRow
+	 *            the row that was moved from
+	 * @param oldColumn
+	 *            the column that was moved from
+	 */
+	private void insertIntMove(int row, int column, int oldRow, int oldColumn) {
+		if (mIntMoves.length == mCurrentIntMoveIndex) {
+			mIntMoves = expandArray(mIntMoves);
+		}
+		String move = "" + row + "" + column + "" + oldRow + "" + oldColumn;
+		mIntMoves[mCurrentIntMoveIndex++] = move;
 	}
 
 	/**
@@ -286,6 +185,7 @@ public class PositionHashFactory {
 			addToIndex++;
 		}
 		StringBuilder builder = new StringBuilder();
+		insertIntMove(row, column, oldRow, oldColumn);
 
 		if (piece instanceof Pawn) {
 			if (captured != null) {
