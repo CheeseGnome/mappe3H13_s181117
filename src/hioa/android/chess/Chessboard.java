@@ -13,7 +13,7 @@ import android.content.Context;
 
 public class Chessboard {
 
-	public static final int NO_PROMOTION = -1, QUEEN = 0, ROOK = 1, BISHOP = 2, KNIGHT = 3;
+	public static final int NO_PROMOTION = 0, QUEEN = 1, ROOK = 2, BISHOP = 3, KNIGHT = 4;
 	public static final int CHECKMATE = 0, OTHERGAMEOVER = 1, GAMENOTOVER = 2;
 
 	private Chesspiece[][] mChessboard;

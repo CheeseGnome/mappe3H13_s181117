@@ -18,7 +18,7 @@ public class PositionHashFactory {
 	String[] mIntMoves = new String[ARRAY_INCREMENT];
 	private int mCurrentHashIndex = 0, mCurrentMoveIndex = 0, mCurrentIntMoveIndex = 0;
 
-	private static final int ROW = 0, COLUMN = 1, OLDROW = 2, OLDCOLUMN = 3;
+	private static final int ROW = 0, COLUMN = 1, OLDROW = 2, OLDCOLUMN = 3, FLAG = 4;
 
 	private static final String WHITE = "a", BLACK = "b", ENPASSANT = "c", NOPIECE = "d", WPAWN = "e", WROOK = "f",
 			WBISHOP = "g", WKNIGHT = "h", WKING = "i", WQUEEN = "j", BPAWN = "k", BROOK = "l", BBISHOP = "m",
@@ -46,7 +46,7 @@ public class PositionHashFactory {
 	 */
 	public int rebuildPosition(String moves) {
 		String[] move = moves.split(SPLIT);
-		int row = -1, column = -1, oldRow = -1, oldColumn = -1;
+		int row = -1, column = -1, oldRow = -1, oldColumn = -1, flag;
 
 		for (int i = 0; i < move.length; i++) {
 			if (move[i] == null) {
@@ -56,6 +56,10 @@ public class PositionHashFactory {
 			column = Integer.parseInt("" + move[i].charAt(COLUMN));
 			oldRow = Integer.parseInt("" + move[i].charAt(OLDROW));
 			oldColumn = Integer.parseInt("" + move[i].charAt(OLDCOLUMN));
+			flag = Integer.parseInt("" + move[i].charAt(FLAG));
+			if (flag != Chessboard.NO_PROMOTION) {
+				mChessboard.setPromotionFlag(flag);
+			}
 			mChessboard.getPieceAt(oldRow, oldColumn).move(row, column);
 		}
 		mChessboard.mView.setLastMoveHint(oldRow, oldColumn, row, column);
@@ -132,11 +136,11 @@ public class PositionHashFactory {
 	 * @param oldColumn
 	 *            the column that was moved from
 	 */
-	private void insertIntMove(int row, int column, int oldRow, int oldColumn) {
+	private void insertIntMove(int row, int column, int oldRow, int oldColumn, int promotionFlag) {
 		if (mIntMoves.length == mCurrentIntMoveIndex) {
 			mIntMoves = expandArray(mIntMoves);
 		}
-		String move = "" + row + "" + column + "" + oldRow + "" + oldColumn;
+		String move = "" + row + "" + column + "" + oldRow + "" + oldColumn + "" + promotionFlag;
 		mIntMoves[mCurrentIntMoveIndex++] = move;
 	}
 
@@ -185,7 +189,7 @@ public class PositionHashFactory {
 			addToIndex++;
 		}
 		StringBuilder builder = new StringBuilder();
-		insertIntMove(row, column, oldRow, oldColumn);
+		insertIntMove(row, column, oldRow, oldColumn, flag);
 
 		if (piece instanceof Pawn) {
 			if (captured != null) {
