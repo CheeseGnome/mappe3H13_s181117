@@ -213,8 +213,8 @@ public class Bishop extends Chesspiece {
 				board[row][column] = true;
 				break;
 			}
-			// Friendly piece blocking
-			else if (chessboard.tileContains(row, column, false) == getColor()) {
+			// Blocked
+			else if (chessboard.tileContains(row, column, false) != NO_PIECE) {
 				break;
 			}
 			row -= 1;
@@ -248,8 +248,8 @@ public class Bishop extends Chesspiece {
 				board[row][column] = true;
 				break;
 			}
-			// Friendly piece blocking
-			else if (chessboard.tileContains(row, column, false) == getColor()) {
+			// Blocked
+			else if (chessboard.tileContains(row, column, false) != NO_PIECE) {
 				break;
 			}
 			row -= 1;
@@ -283,8 +283,8 @@ public class Bishop extends Chesspiece {
 				board[row][column] = true;
 				break;
 			}
-			// Friendly piece blocking
-			else if (chessboard.tileContains(row, column, false) == getColor()) {
+			// Blocked
+			else if (chessboard.tileContains(row, column, false) != NO_PIECE) {
 				break;
 			}
 			row += 1;
@@ -319,8 +319,8 @@ public class Bishop extends Chesspiece {
 				board[row][column] = true;
 				break;
 			}
-			// Friendly piece blocking
-			else if (chessboard.tileContains(row, column, false) == getColor()) {
+			// Blocked
+			else if (chessboard.tileContains(row, column, false) != NO_PIECE) {
 				break;
 			}
 			row += 1;

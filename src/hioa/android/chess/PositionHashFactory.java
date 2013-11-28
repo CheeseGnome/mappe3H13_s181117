@@ -24,7 +24,7 @@ public class PositionHashFactory {
 			WBISHOP = "g", WKNIGHT = "h", WKING = "i", WQUEEN = "j", BPAWN = "k", BROOK = "l", BBISHOP = "m",
 			BKNIGHT = "n", BKING = "o", BQUEEN = "p";
 	private static final String SPLIT = " ";
-	private boolean mRepetition = false;
+	private boolean mRepetition = false, mIsRebuilding = false;
 
 	/*
 	 * It is extremely important that this does not equal Chesspiece.WHITE or
@@ -47,10 +47,11 @@ public class PositionHashFactory {
 	public int rebuildPosition(String moves) {
 		String[] move = moves.split(SPLIT);
 		int row = -1, column = -1, oldRow = -1, oldColumn = -1, flag;
+		mIsRebuilding = true;
 
 		for (int i = 0; i < move.length; i++) {
-			if (move[i] == null) {
-				break;
+			if (i + 1 == move.length) {
+				mIsRebuilding = false;
 			}
 			row = Integer.parseInt("" + move[i].charAt(ROW));
 			column = Integer.parseInt("" + move[i].charAt(COLUMN));
@@ -68,6 +69,10 @@ public class PositionHashFactory {
 		} else {
 			return Chesspiece.BLACK;
 		}
+	}
+
+	public boolean isRebuilding() {
+		return mIsRebuilding;
 	}
 
 	public int getCurrentMovesIndex() {

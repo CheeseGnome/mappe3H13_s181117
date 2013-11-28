@@ -104,8 +104,8 @@ public class Rook extends Chesspiece {
 				board[i][getColumn()] = true;
 				break;
 			}
-			// Friendly piece blocking
-			else if (chessboard.tileContains(i, getColumn(), false) == getColor()) {
+			// Blocked
+			else if (chessboard.tileContains(i, getColumn(), false) != NO_PIECE) {
 				break;
 			}
 
@@ -137,8 +137,8 @@ public class Rook extends Chesspiece {
 				board[getRow()][i] = true;
 				break;
 			}
-			// Friendly piece blocking
-			else if (chessboard.tileContains(getRow(), i, false) == getColor()) {
+			// Blocked
+			else if (chessboard.tileContains(getRow(), i, false) != NO_PIECE) {
 				break;
 			}
 
@@ -170,8 +170,8 @@ public class Rook extends Chesspiece {
 				board[i][getColumn()] = true;
 				break;
 			}
-			// Friendly piece blocking
-			else if (chessboard.tileContains(i, getColumn(), false) == getColor()) {
+			// Blocked
+			else if (chessboard.tileContains(i, getColumn(), false) != NO_PIECE) {
 				break;
 			}
 
@@ -202,8 +202,8 @@ public class Rook extends Chesspiece {
 				board[getRow()][i] = true;
 				break;
 			}
-			// Friendly piece blocking
-			else if (chessboard.tileContains(getRow(), i, false) == getColor()) {
+			// Blocked
+			else if (chessboard.tileContains(getRow(), i, false) != NO_PIECE) {
 				break;
 			}
 

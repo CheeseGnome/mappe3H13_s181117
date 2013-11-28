@@ -539,7 +539,10 @@ public class Chessboard {
 		}
 		getKing(piece.getColor()).setInCheck(false);
 		mActivity.setCheckText(piece.getColor(), PlayerFrame.NO_CHECK);
-		int status = checkForGameEnd(piece.getColor());
+		int status = GAMENOTOVER;
+		if (!mPositionHashFactory.isRebuilding()) {
+			status = checkForGameEnd(piece.getColor());
+		}
 
 		if (!firstMove && !castle) {
 			mChangeClockColor = true;
