@@ -16,13 +16,16 @@ public class PositionHashFactory {
 	String[] mHashedPositions = new String[ARRAY_INCREMENT];
 	String[] mMoves = new String[ARRAY_INCREMENT];
 	String[] mIntMoves = new String[ARRAY_INCREMENT];
-	private int mCurrentHashIndex = 0, mCurrentMoveIndex = 0, mCurrentIntMoveIndex = 0;
+	private int mCurrentHashIndex = 0, mCurrentMoveIndex = 0,
+			mCurrentIntMoveIndex = 0;
 
-	private static final int ROW = 0, COLUMN = 1, OLDROW = 2, OLDCOLUMN = 3, FLAG = 4;
+	private static final int ROW = 0, COLUMN = 1, OLDROW = 2, OLDCOLUMN = 3,
+			FLAG = 4;
 
-	private static final String WHITE = "a", BLACK = "b", ENPASSANT = "c", NOPIECE = "d", WPAWN = "e", WROOK = "f",
-			WBISHOP = "g", WKNIGHT = "h", WKING = "i", WQUEEN = "j", BPAWN = "k", BROOK = "l", BBISHOP = "m",
-			BKNIGHT = "n", BKING = "o", BQUEEN = "p";
+	private static final String WHITE = "a", BLACK = "b", ENPASSANT = "c",
+			NOPIECE = "d", WPAWN = "e", WROOK = "f", WBISHOP = "g",
+			WKNIGHT = "h", WKING = "i", WQUEEN = "j", BPAWN = "k", BROOK = "l",
+			BBISHOP = "m", BKNIGHT = "n", BKING = "o", BQUEEN = "p";
 	private static final String SPLIT = " ";
 	private boolean mRepetition = false, mIsRebuilding = false;
 
@@ -141,11 +144,13 @@ public class PositionHashFactory {
 	 * @param oldColumn
 	 *            the column that was moved from
 	 */
-	private void insertIntMove(int row, int column, int oldRow, int oldColumn, int promotionFlag) {
+	private void insertIntMove(int row, int column, int oldRow, int oldColumn,
+			int promotionFlag) {
 		if (mIntMoves.length == mCurrentIntMoveIndex) {
 			mIntMoves = expandArray(mIntMoves);
 		}
-		String move = "" + row + "" + column + "" + oldRow + "" + oldColumn + "" + promotionFlag;
+		String move = "" + row + "" + column + "" + oldRow + "" + oldColumn
+				+ "" + promotionFlag;
 		mIntMoves[mCurrentIntMoveIndex++] = move;
 	}
 
@@ -177,8 +182,9 @@ public class PositionHashFactory {
 	 *            The other piece of the same type and color that could have
 	 *            moved to the same location
 	 */
-	public void insertMove(Chessboard board, Chesspiece piece, int row, int column, int oldRow, int oldColumn,
-			Chesspiece captured, int flag, boolean check, boolean checkmate, Chesspiece other) {
+	public void insertMove(Chessboard board, Chesspiece piece, int row,
+			int column, int oldRow, int oldColumn, Chesspiece captured,
+			int flag, boolean check, boolean checkmate, Chesspiece other, Chesspiece other2) {
 
 		if (mCurrentMoveIndex == mMoves.length) {
 			mMoves = expandArray(mMoves);
@@ -229,7 +235,8 @@ public class PositionHashFactory {
 			return;
 		}
 
-		else if (piece instanceof Rook || piece instanceof Knight || piece instanceof Bishop || piece instanceof Queen) {
+		else if (piece instanceof Rook || piece instanceof Knight
+				|| piece instanceof Bishop || piece instanceof Queen) {
 			if (piece instanceof Rook) {
 				builder.append("R");
 			} else if (piece instanceof Knight) {
@@ -241,9 +248,21 @@ public class PositionHashFactory {
 			}
 			if (other != null) {
 				if (oldRow == other.getRow()) {
-					builder.append(translateColumn(oldColumn));
+					other = mChessboard.getPieceOnColumn(piece, oldColumn);
+					if (other2 != null) {
+						builder.append(translateColumn(oldColumn)
+								+ translateRow(oldRow));
+					} else {
+						builder.append(translateColumn(oldColumn));
+					}
 				} else {
-					builder.append(translateRow(oldRow));
+					other = mChessboard.getPieceOnRow(piece, oldRow);
+					if (other2 != null) {
+						builder.append(translateColumn(oldColumn)
+								+ translateRow(oldRow));
+					} else {
+						builder.append(translateRow(oldRow));
+					}
 				}
 			}
 			if (captured != null) {
@@ -390,7 +409,8 @@ public class PositionHashFactory {
 	 */
 	public boolean drawByRepetition() {
 		// Last entered hash
-		String hash = mHashedPositions[mCurrentHashIndex - 1].replaceAll(ENPASSANT, NOPIECE);
+		String hash = mHashedPositions[mCurrentHashIndex - 1].replaceAll(
+				ENPASSANT, NOPIECE);
 		int repetition_count = 1;
 		for (int i = 0; i < mCurrentHashIndex - 1; i++) {
 			if (mHashedPositions[i].replaceAll(ENPASSANT, NOPIECE).equals(hash)) {
