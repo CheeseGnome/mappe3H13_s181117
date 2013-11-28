@@ -360,7 +360,7 @@ public class ChessboardView extends TableLayout {
 			title = mResources.getString(R.string.title_win_timeout);
 			body = loser + " " + mResources.getString(R.string.txt_win_timeout_1) + " " + winner + " "
 					+ mResources.getString(R.string.txt_win_timeout_2);
-
+			mChessboard.mPositionHashFactory.insertGameResult(color);
 		}
 
 		dialog.setTitle(title);
