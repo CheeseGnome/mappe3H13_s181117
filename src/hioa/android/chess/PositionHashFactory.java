@@ -109,7 +109,7 @@ public class PositionHashFactory {
 	 * Shifts the draw annotation to it's correct place. This is a bugfix for
 	 * draws by repetitions
 	 */
-	public void insertDrawByRepetition() {
+	public void insertDrawByRepetitionOrStalemate() {
 		if (mMoves.length == mCurrentMoveIndex) {
 			mMoves = expandArray(mMoves);
 		}

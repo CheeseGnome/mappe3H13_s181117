@@ -327,7 +327,7 @@ public class ChessboardView extends TableLayout {
 			title = mResources.getString(R.string.title_draw);
 			body = mResources.getString(R.string.txt_draw_repetition);
 			mChessboard.mPositionHashFactory.insertGameResult(PositionHashFactory.DRAW);
-			mChessboard.mPositionHashFactory.insertDrawByRepetition();
+			mChessboard.mPositionHashFactory.insertDrawByRepetitionOrStalemate();
 			break;
 		case DRAWAGREED:
 			title = mResources.getString(R.string.title_draw);
@@ -354,7 +354,7 @@ public class ChessboardView extends TableLayout {
 			title = mResources.getString(R.string.title_draw);
 			body = mResources.getString(R.string.txt_draw_stalemate);
 			mChessboard.mPositionHashFactory.insertGameResult(PositionHashFactory.DRAW);
-			mChessboard.mPositionHashFactory.insertGameResult(color);
+			mChessboard.mPositionHashFactory.insertDrawByRepetitionOrStalemate();
 			break;
 		case WINTIMEOUT:
 			title = mResources.getString(R.string.title_win_timeout);
