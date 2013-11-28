@@ -147,7 +147,7 @@ public class Chessboard {
 							mClockRunning = false;
 							return;
 						}
-						if(mPause){
+						if (mPause) {
 							diff2 = diff1 = new Date().getTime();
 						}
 					}
@@ -609,7 +609,8 @@ public class Chessboard {
 
 	public void revalidateClock() {
 		if (mRunningColor != -1 && mView.getCurrentPlayer() != mRunningColor) {
-			// This fixes a bug regarding the bonus time which only happens to black
+			// This fixes a bug regarding the bonus time which only happens to
+			// black
 			if (mRunningColor == Chesspiece.BLACK) {
 				mBlackTime -= mBonusTime;
 			}
