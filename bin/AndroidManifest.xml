@@ -25,7 +25,7 @@
         <activity
             android:name="hioa.android.chess.Preferences"
             android:label="@string/action_settings"
-            android:parentActivityName="hioa.android.chess.MainMenuActivity" >
+            android:parentActivityName="hioa.android.chess.MainMenuActivity" android:screenOrientation="portrait">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="hioa.android.chess.MainMenuActivity" />
